@@ -23,6 +23,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import java.awt.Color;
+import java.awt.Event;
 import java.awt.Panel;
 import javax.swing.JPanel;
 
@@ -117,6 +118,7 @@ public class Bomberbeach{
 		ipField.setBounds(851, 24, 130, 26);
 		ipField.setColumns(10);
 		// **********************
+		frmBomberbeach.addKeyListener(new KeyAction());
 		
         // *** chat ***
         final JScrollPane scrollPane = new JScrollPane(tchatarea);
@@ -193,6 +195,16 @@ public class Bomberbeach{
 	class KeyAction implements KeyListener{
 	   //la méthode keyPressed est appelée lorsque l'on presse une touche  
 	        public void keyPressed(KeyEvent e){
+	        	if(joueur ==null) return;
+	        	if(e.getSource() instanceof JTextField){
+	        		if(e.getSource().equals(tchatfield)){//si click dans le tchatfield on ne redispatch pas et passe a la suite
+	        			
+	        		}
+	        		else{//redispatch le keyevent si click dans le tchatarea
+	        			Bomberbeach.this.frmBomberbeach.getContentPane().requestFocus();
+	        		}
+	        	}
+	        	
 	               if (e.getKeyCode()== KeyEvent.VK_ENTER) { // si appui sur touche entrer
 	            		if(tchatfield.getText().length()>0){
 		            		if(joueur.equals("1")){
