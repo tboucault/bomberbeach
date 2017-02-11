@@ -1,20 +1,90 @@
 package com.thbvc.bomberbeach;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.Socket;
 
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
 
-public class Client {
+public class Client implements Communicateur {
+
+/************************************************ D�claration des variables : */
+
+
+	private String IPServeur;
+	private int port;
+	private Connexion cnx;
+	private int idClient;	
+
+/********************************************** D�claration du constructeur : */
+
+
+	public Client(String IPServeur, int port) {
+		
+		this.IPServeur = IPServeur;
+		this.port = port;
+		creationClient();
+	}	
+	
+
+/************************************************* D�claration des m�thodes : */
+
+
+	public void creationClient() {
+		
+		
+		// Creation de la socket {serveur}.
+		try {
+			
+			Socket s = new Socket(IPServeur, port);
+			
+			// Creation de la connection {Serveur, moi}.
+			cnx = new Connexion(s, this);
+			
+			System.out.println("Vous etes connecte au serveur ...");
+			
+		} catch (Exception e) {
+			
+			System.out.println("Erreur lors de la creation du client : " + e);
+		}
+	}
+	
+	
+	public void traiteMessage(Object O)	{	
+		
+		try	{
+				if (O instanceof Message) {
+					
+					System.out.println("Message recu : " + O);
+				
+				} else {
+					
+					idClient = Integer.parseInt((String) O);
+					
+					System.out.println("Le serveur vous attribue l'identifiant " + idClient + ".");
+				}		
+			
+		} catch (Exception e) {
+		
+			System.out.println("Objet recu non identifie !");
+		}	
+	}
+	
+	
+	public Connexion getCnx() {
+		
+		return cnx;
+	}
+	
+	public int getIdClient() {
+		
+		return idClient;
+	}
+    
+
+	/*
 	JTextPane chat;
 	JTextField chatfield;
 
-	  static Bomberbeach b = new Bomberbeach();
+	  static Bomberbeach b;
+	  static Map m;
 	  static int level = 1;
 	  private static int skt_port = 5000;
 	  private static String skt_ip = "127.0.0.1";
@@ -22,16 +92,17 @@ public class Client {
       private BufferedReader in;
       private PrintWriter out;
 
-      public Client(JTextPane chat,JTextField chatfield){
-     	 this.chat = chat;
-    	 this.chatfield = chatfield;
-      }
+      public Client(JTextPane chat,JTextField chatfield, Bomberbeach b){
+     	 this.b = b;
+      	 this.chat = chat;
+     	 this.chatfield = chatfield;
+       }
    
       public void envoyer(String message){
           SwingUtilities.invokeLater(new Runnable() {
               @Override
               public void run() {
-            	 if(message.charAt(0)!='*'){ //ce n'est pas un message système donc on l'envoi dans le tchat
+            	 if(message.charAt(0)!='*' && message.charAt(0)!='@'){ //ce n'est pas un message système donc on l'envoi dans le tchat
             		 chat.setText(chat.getText() + "\nJoueur 2: "+message);
             	 }
               }
@@ -50,16 +121,26 @@ public class Client {
           System.out.println("posY 1to2: "+y); //debug
   		  b.receive_pos_player(1,Integer.parseInt(x),Integer.parseInt(y));    
       }
+
+      public void traitement_boost(String msg){
+  		  //String line = in.readLine();
+          //System.out.println(line); //debug
+          String[] parts = msg.split("\\|");
+          String type = parts[1];
+          String id = parts[2];
+          System.out.println(type+" 1to2: "+ id); //debug
+  		  b.receive_boost_player(1,Integer.parseInt(id));    
+      }
       
       public void start(String ip, int port){
       try {
          /*
          * les informations du serveur ( port et adresse IP ou nom d'hote
          * 127.0.0.1 est l'adresse local de la machine
-         */
+         *
          clientSocket = new Socket(ip,port);
          System.out.println("Client démarré\n###################");
-         b.setlevel(level);
+         m.setlevel(level);
          System.out.println("Joueur 2 rejoint la partie");
    
          //flux pour envoyer
@@ -79,9 +160,12 @@ public class Client {
                         @Override
                         public void run() {
                     	 if(msg.charAt(0)=='*'){//message système: on recoit la position du joueur 1 et la traite
-                    		 //todo: on lit le message et envoi la pos x et y
+                    		 //on lit le message et envoi la pos x et y
                     		 traitement(msg);                    		 
                       	 }
+                    	 else if(msg.charAt(0)=='@'){//message système: on recoit l'info qu'un joueur à utilisé un boost
+                    		 traitement_boost(msg);
+                    	 }
                       	 else //message texte, on affiche le message du joueur 1 dans notre tchat
                       		 chat.setText(chat.getText() +"\nJoueur 1: "+ msg);
                         }
@@ -104,5 +188,5 @@ public class Client {
       } catch (IOException e) {
            e.printStackTrace();
       }
-  }
+  }*/
 }

@@ -10,6 +10,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,6 +23,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -41,8 +47,9 @@ public class Bomberbeach{
 	ImageIcon icon_mur;
 	ImageIcon icon_boite;
 	ImageIcon icon_brique;
-	ImageIcon icon_pop;
+	ImageIcon icon_portal;
 	ImageIcon icon_player;
+	ImageIcon icon_player2;
 	ImageIcon icon_boost;
 	String FILE_PATH_lvl1 = "/level1.txt";
 	private static JLabel[] sprites_m = new JLabel[200];
@@ -61,11 +68,20 @@ public class Bomberbeach{
 	private static JTextField tchatfield = new JTextField();
 	private static JLabel lbl_level = new JLabel();
 	private static JLabel lbl_info = new JLabel();
-	static Server s = new Server(tchatarea,tchatfield);
-	static Client c = new Client(tchatarea,tchatfield);
-	private JButton btnCreate = new JButton("Créer une partie");
+	static Server s;
+	static Client c;
+	static Map m = new Map(getPanel_nogame(),getTchatfield(),getLbl_info(),getLbl_level(),isStart_game());
+	static Joueur j = new Joueur();
+	private JButton btnCreate = new JButton("Creer une partie");
 	private JButton btnJoin = new JButton("Rejoindre une partie");
+	
 
+
+	private static int myposx_j1 ;
+	private static int myposy_j1 ;
+	private static int myposx_j2 ;
+	private static int myposy_j2 ;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -81,12 +97,14 @@ public class Bomberbeach{
 			}
 		});
 	}
-
+	
 	/**
 	 * Create the application.
 	 */
 	public Bomberbeach() {
 		initialize();
+		//this.s = new Server(tchatarea,getTchatfield(), this);
+		//this.c = new Client(tchatarea,getTchatfield(), this);
 	}
 
 	/**
@@ -99,20 +117,23 @@ public class Bomberbeach{
 			InputStream mur_is = new BufferedInputStream(this.getClass().getResourceAsStream("/mur.jpg"));
 			InputStream boite_is = new BufferedInputStream(this.getClass().getResourceAsStream("/boite.jpg"));
 			InputStream brique_is = new BufferedInputStream(this.getClass().getResourceAsStream("/brique.jpg"));
-			InputStream pop_is = new BufferedInputStream(this.getClass().getResourceAsStream("/pop.jpg"));
+			InputStream portal_is = new BufferedInputStream(this.getClass().getResourceAsStream("/portal.jpg"));
 			InputStream player_is = new BufferedInputStream(this.getClass().getResourceAsStream("/player.png"));
+			InputStream player2_is = new BufferedInputStream(this.getClass().getResourceAsStream("/player2.png"));
 			InputStream boost_is = new BufferedInputStream(this.getClass().getResourceAsStream("/speed.png"));
 			Image mur_image = ImageIO.read(mur_is);
 			Image boite_image = ImageIO.read(boite_is);
 			Image brique_image = ImageIO.read(brique_is);
-			Image pop_image = ImageIO.read(pop_is);
+			Image portal_image = ImageIO.read(portal_is);
 			Image player_image = ImageIO.read(player_is);
+			Image player2_image = ImageIO.read(player2_is);
 			Image boost_image = ImageIO.read(boost_is);
 			icon_mur = new ImageIcon(mur_image);
 			icon_boite = new ImageIcon(boite_image);
 			icon_brique = new ImageIcon(brique_image);
-			icon_pop = new ImageIcon(pop_image);
+			icon_portal = new ImageIcon(portal_image);
 			icon_player = new ImageIcon(player_image);
+			icon_player2 = new ImageIcon(player2_image);
 			icon_boost = new ImageIcon(boost_image);
 			
 		}
@@ -131,17 +152,17 @@ public class Bomberbeach{
 		frmBomberbeach.getContentPane().setLayout(null);
 		frmBomberbeach.setBounds(100, 100, 992, 564);
 
-		panel_nogame.setBackground(new Color(46, 139, 87));
-		panel_nogame.setBounds(0, 0, 708, 512);
-		frmBomberbeach.getContentPane().add(panel_nogame);
-		panel_nogame.setLayout(null);
-		lbl_info.setBounds(231, 239, 273, 16);
-		lbl_info.setText("En attente d'un concurrent...");
-		panel_nogame.add(lbl_info);
-		panel_nogame.setVisible(true);
-		lbl_level.setBounds(741, 24, 61, 16);
-		lbl_level.setVisible(true);
-		frmBomberbeach.getContentPane().add(lbl_level);
+		getPanel_nogame().setBackground(new Color(46, 139, 87));
+		getPanel_nogame().setBounds(0, 0, 708, 512);
+		frmBomberbeach.getContentPane().add(getPanel_nogame());
+		getPanel_nogame().setLayout(null);
+		getLbl_info().setBounds(231, 239, 273, 16);
+		getLbl_info().setText("En attente d'un concurrent...");
+		getPanel_nogame().add(getLbl_info());
+		getPanel_nogame().setVisible(true);
+		getLbl_level().setBounds(741, 24, 61, 16);
+		getLbl_level().setVisible(true);
+		frmBomberbeach.getContentPane().add(getLbl_level());
 
 		// *** client/serveur ***
 		portField.setBounds(851, 62, 130, 26);
@@ -162,17 +183,17 @@ public class Bomberbeach{
 		tchatarea.setBackground(new Color(211, 211, 211));
 		tchatarea.addKeyListener(new KeyAction());
 
-		tchatfield = new JTextField();
-		tchatfield.disable();
-		tchatfield.setBackground(new Color(211, 211, 211));
-		tchatfield.setBounds(712, 466, 271, 30);
-		frmBomberbeach.getContentPane().add(tchatfield);
-		tchatfield.setColumns(10);
+		setTchatfield(new JTextField());
+		getTchatfield().disable();
+		getTchatfield().setBackground(new Color(211, 211, 211));
+		getTchatfield().setBounds(712, 466, 271, 30);
+		frmBomberbeach.getContentPane().add(getTchatfield());
+		getTchatfield().setColumns(10);
 
 		frmBomberbeach.getContentPane().add(ipField);
 
 		frmBomberbeach.getContentPane().add(portField);
-		tchatfield.addKeyListener(new KeyAction());
+		getTchatfield().addKeyListener(new KeyAction());
 		// *************
 
 
@@ -183,7 +204,7 @@ public class Bomberbeach{
 		JMenu mnMenu = new JMenu("Menu");
 		menuBar.add(mnMenu);
 
-		JMenuItem mntmPrfrences = new JMenuItem("Préférences");
+		JMenuItem mntmPrfrences = new JMenuItem("Preferences");
 		mnMenu.add(mntmPrfrences);
 
 		JMenuItem mntmQuitter = new JMenuItem("Quitter");
@@ -228,9 +249,14 @@ public class Bomberbeach{
 	class KeyAction implements KeyListener{
 		//la méthode keyPressed est appelée lorsque l'on presse une touche  
 		public void keyPressed(KeyEvent e){
+			myposx_j1 = sprites_j[1].getX();
+			myposy_j1 = sprites_j[1].getY();
+			myposx_j2 = sprites_j[20].getX();
+			myposy_j2 = sprites_j[20].getY();
+			
 			if(joueur ==null) return;
 			if(e.getSource() instanceof JTextField){
-				if(e.getSource().equals(tchatfield)){//si click dans le tchatfield on ne redispatch pas et passe a la suite
+				if(e.getSource().equals(getTchatfield())){//si click dans le tchatfield on ne redispatch pas et passe a la suite
 
 				}
 				else{//redispatch le keyevent si click dans le tchatarea
@@ -239,90 +265,98 @@ public class Bomberbeach{
 			}
 
 			if (e.getKeyCode()== KeyEvent.VK_ENTER) { // si appui sur touche entrer
-				if(tchatfield.getText().length()>0){
+				if(getTchatfield().getText().length()>0){
 					if(joueur.equals("1")){
-						if(tchatfield.getText().length()>0){
-							s.envoyer(tchatfield.getText());
+						if(getTchatfield().getText().length()>0){
+							//s.envoyer(getTchatfield().getText());
 							tchatarea.setCaretPosition(tchatarea.getDocument().getLength());
-							tchatfield.setText(""); //on vide le champ
+							getTchatfield().setText(""); //on vide le champ
 						}
 					}
 					else{
-						c.envoyer(tchatfield.getText());
+						//c.envoyer(getTchatfield().getText());
 						tchatarea.setCaretPosition(tchatarea.getDocument().getLength());
-						tchatfield.setText(""); //on vide le champ
+						getTchatfield().setText(""); //on vide le champ
 					}
 				}
 			}
 			else if (e.getKeyCode()== KeyEvent.VK_DOWN) {
 				if(joueur.equals("1")){
-					if(traitement_position("bas")==1){ //je ne vais pas rencontrer un obstacle
+					if(can_walk(1,myposx_j1,myposy_j1,"bas")){ //je ne vais pas rencontrer un obstacle
+						traitement_powerup("bas");
 						System.out.println("<down key> : x="+player1_x+" y="+player1_y);
 						player1_y=player1_y+32; // on bouge le personnage d'une case vers le bas
 						sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
-						s.envoyer("*|"+player1_x+"|"+player1_y); //envoi de la position du joueur 1 au joueur 2
+						//s.envoyer("*|"+player1_x+"|"+player1_y); //envoi de la position du joueur 1 au joueur 2
 					}
 				}
 				else if(joueur.equals("2")){
 					if(traitement_position("bas")==1){ //je ne vais pas rencontrer un obstacle
+						traitement_powerup("bas");
 						System.out.println("<down key> : x="+player2_x+" y="+player2_y);
 						player2_y=player2_y+32; // on bouge le personnage d'une case vers le bas
 						sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
-						c.envoyer("*|"+player2_x+"|"+player2_y); //envoi de la position du joueur 2 au joueur 1
+						//c.envoyer("*|"+player2_x+"|"+player2_y); //envoi de la position du joueur 2 au joueur 1
 					}
 				}
 			}
 			else if (e.getKeyCode()== KeyEvent.VK_UP) {
 				if(joueur.equals("1")){
 					if(traitement_position("haut")==1){ //je ne vais pas rencontrer un obstacle
+						traitement_powerup("haut");
 						System.out.println("<up key> : x="+player1_x+" y="+player1_y);
 						player1_y=player1_y-32; // on bouge le personnage d'une case vers le haut
 						sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
-						s.envoyer("*|"+player1_x+"|"+player1_y);
+						//s.envoyer("*|"+player1_x+"|"+player1_y);
 					}
 				}
 				else if(joueur.equals("2")){
 					if(traitement_position("haut")==1){ //je ne vais pas rencontrer un obstacle
+						traitement_powerup("haut");
 						System.out.println("<up key> : x="+player2_x+" y="+player2_y);
 						player2_y=player2_y-32; // on bouge le personnage d'une case vers le haut
 						sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
-						c.envoyer("*|"+player2_x+"|"+player2_y);
+						//c.envoyer("*|"+player2_x+"|"+player2_y);
 					}
 				}
 			}
 			else if (e.getKeyCode()== KeyEvent.VK_RIGHT) {
 				if(joueur.equals("1")){
 					if(traitement_position("droite")==1){ //je ne vais pas rencontrer un obstacle
+						traitement_powerup("droite");
 						System.out.println("<right key> : x="+player1_x+" y="+player1_y);
 						player1_x=player1_x+32; // on bouge le personnage d'une case vers la droite
 						sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
-						s.envoyer("*|"+player1_x+"|"+player1_y);
+						//s.envoyer("*|"+player1_x+"|"+player1_y);
 					}
 				}
 				else if(joueur.equals("2")){
 					if(traitement_position("droite")==1){ //je ne vais pas rencontrer un obstacle
+						traitement_powerup("droite");
 						System.out.println("<right key> : x="+player2_x+" y="+player2_y);
 						player2_x=player2_x+32; // on bouge le personnage d'une case vers la droite
 						sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
-						c.envoyer("*|"+player2_x+"|"+player2_y);
+						//c.envoyer("*|"+player2_x+"|"+player2_y);
 					}
 				}
 			}
 			else if (e.getKeyCode()== KeyEvent.VK_LEFT) {
 				if(joueur.equals("1")){
 					if(traitement_position("gauche")==1){ //je ne vais pas rencontrer un obstacle
+						traitement_powerup("gauche");
 						System.out.println("<left key> : x="+player1_x+" y="+player1_y);
 						player1_x=player1_x-32; // on bouge le personnage d'une case vers la gauche
 						sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
-						s.envoyer("*|"+player1_x+"|"+player1_y);
+						//s.envoyer("*|"+player1_x+"|"+player1_y);
 					}
 				}
 				else if(joueur.equals("2")){
 					if(traitement_position("gauche")==1){ //je ne vais pas rencontrer un obstacle
+						traitement_powerup("gauche");
 						System.out.println("<left key> : x="+player2_x+" y="+player2_y);
 						player2_x=player2_x-32; // on bouge le personnage d'une case vers la gauche
 						sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
-						c.envoyer("*|"+player2_x+"|"+player2_y);
+						//c.envoyer("*|"+player2_x+"|"+player2_y);
 					}
 				}
 			}
@@ -345,6 +379,7 @@ public class Bomberbeach{
 					JOptionPane.showMessageDialog(null, "Veuillez saisir une ip et un port valide","Bomberbeach",JOptionPane.PLAIN_MESSAGE);				
 				}
 				else{
+					/*
 					String ip=ipField.getText();
 					int port=Integer.parseInt(portField.getText());
 					//ipField.disable();
@@ -361,9 +396,8 @@ public class Bomberbeach{
 						}
 					});
 					t.start();
-					ReadFile();
 					tchatarea.setText("Bienvenue joueur "+joueur+"\nAttente d'un concurent\n");
-					enable=false; //on désactive le reclic sur le bouton	
+					enable=false; //on désactive le reclic sur le bouton	*/
 				}
 			}
 			if (e.getSource().equals(btnJoin) && enable==true){ //choix rejoindre partie (joueur 2)
@@ -371,6 +405,8 @@ public class Bomberbeach{
 					JOptionPane.showMessageDialog(null, "Veuillez saisir une ip et un port valide","Bomberbeach",JOptionPane.PLAIN_MESSAGE);
 				}
 				else{
+					new Client("127.0.0.1", 1234);  // Client.
+					/*
 					ip=ipField.getText();
 					port=Integer.parseInt(portField.getText());
 					joueur = "2";
@@ -379,12 +415,11 @@ public class Bomberbeach{
 
 						@Override
 						public void run() {
-							c.start(ip,port); //lancement client
+							//c.start(ip,port); //lancement client
 						}
 					});
 					t2.start();
-					ReadFile();
-					if (start_game==true){
+					if (isStart_game()==true){
 						//ipField.disable();
 						//portField.disable();
 						btnJoin.setForeground(Color.GREEN);
@@ -397,10 +432,9 @@ public class Bomberbeach{
 						port=Integer.parseInt(portField.getText());
 						joueur = "2";
 						t2.start();
-						ReadFile();
 					}
 					tchatarea.setText("Bienvenue joueur "+joueur+"\nAttente d'un concurent\n");
-					enable=false; //on désactive le reclic sur le bouton
+					enable=false; //on désactive le reclic sur le bouton*/
 				}
 			}
 		}
@@ -410,33 +444,11 @@ public class Bomberbeach{
 
 	public void player_leave(String joueur){
 		System.out.println("joueur "+ joueur +" a quitté le jeux");
-		panel_nogame.setVisible(true); //un joueur est parti on stop le jeux
-		lbl_info.setVisible(true);
-		lbl_info.setText("Votre concurrent est parti");
+		getPanel_nogame().setVisible(true); //un joueur est parti on stop le jeux
+		getLbl_info().setVisible(true);
+		getLbl_info().setText("Votre concurrent est parti");
 		JOptionPane.showMessageDialog(null, "Votre concurrent est parti","Bomberbeach | Fin du jeu",JOptionPane.PLAIN_MESSAGE);
 		System.exit(0);
-	}
-
-	public int createlevel(int level){
-		switch (level)
-		{
-		case 1:
-			// ********************************************************************
-			// *** Création textures lvl 1                                      ***
-			// ********************************************************************
-			for(int i=0;i<3;i++){ //bord droit (*17)
-				//sprites_1[i].setVisible(true);
-			}
-			// ********************************************************************
-			System.out.println("lvl 1 chargé");
-			break; 
-		case 2:
-			/* chargement sprites lv2 */
-			break;          
-		default:
-			/*Action*/;             
-		}
-		return level;
 	}
 
 
@@ -449,12 +461,19 @@ public class Bomberbeach{
 
 		}
 	}
+	
 
-	// ********************************************************************
-	// *** Fonction de traitement position personnage pour eviter       ***
-	// *** un déplacement sur un obstacle                               ***
-	// ********************************************************************
-	public int traitement_position(String mvmt){
+	public void receive_boost_player(int player,int id){
+		if(player==1){
+			sprites_bo[id].hide();
+		}
+		else if(player==2){
+			sprites_bo[id].hide();
+
+		}
+	}
+
+	public void traitement_powerup(String mvmt){
 		int myposx_j1 = sprites_j[1].getX();
 		int myposy_j1 = sprites_j[1].getY();
 		int myposx_j2 = sprites_j[20].getX();
@@ -462,6 +481,104 @@ public class Bomberbeach{
 
 		switch (mvmt) {
 		case "bas":
+			if(joueur=="1"){
+				if((myposx_j1==sprites_bo[10].getX() && myposy_j1==sprites_bo[10].getY()-32) ){
+					System.out.println("BOOOOOOOOST");
+					sprites_bo[10].hide();
+					//s.envoyer("@|boost|10");
+				}	
+				else if(myposx_j1==sprites_bo[16].getX() && myposy_j1==sprites_bo[16].getY()-32){
+					System.out.println("BOOOOOOOOST");
+					sprites_bo[16].hide();
+					//s.envoyer("@|boost|16");					
+				}
+				else if(myposx_j1==sprites_bo[4].getX() && myposy_j1==sprites_bo[4].getY()-32){
+					System.out.println("BOOOOOOOOST");
+					sprites_bo[4].hide();
+					//s.envoyer("@|boost|4");
+				}
+			}	
+			else{
+				if(myposx_j2==sprites_bo[10].getX() && myposy_j2==sprites_bo[10].getY()-32){
+					System.out.println("BOOOOOOOOST");
+					sprites_bo[10].hide();
+				}		
+				
+			}
+		case "haut":
+			if(joueur=="1"){
+				if(myposx_j1==sprites_bo[10].getX() && myposy_j1==sprites_bo[10].getY()+32){
+					System.out.println("BOOOOOOOOST");
+					sprites_bo[10].hide();
+				}				
+			}		
+			else{
+				if(myposx_j2==sprites_bo[10].getX() && myposy_j2==sprites_bo[10].getY()+32){
+					System.out.println("BOOOOOOOOST");
+					sprites_bo[10].hide();
+				}		
+				
+			}
+		case "droite":
+			if(joueur=="1"){
+				if(myposx_j1==sprites_bo[10].getX()-32 && myposy_j1==sprites_bo[10].getY()){
+					System.out.println("BOOOOOOOOST");
+					sprites_bo[10].hide();
+				}				
+			}	
+			else{
+				if(myposx_j2==sprites_bo[10].getX()-32 && myposy_j2==sprites_bo[10].getY()){
+					System.out.println("BOOOOOOOOST");
+					sprites_bo[10].hide();
+				}		
+				
+			}
+		case "gauche":
+			if(joueur=="1"){
+				if(myposx_j1==sprites_bo[10].getX()+32 && myposy_j1==sprites_bo[10].getY()){
+					System.out.println("BOOOOOOOOST");
+					sprites_bo[10].hide();
+				}				
+			}		
+			else{
+				if(myposx_j2==sprites_bo[10].getX()+32 && myposy_j2==sprites_bo[10].getY()){
+					System.out.println("BOOOOOOOOST");
+					sprites_bo[10].hide();
+				}		
+				
+			}
+		default:
+			break;
+		}
+		
+		
+	}
+	
+	public boolean can_walk(int joueur,int x,int y,String mvmt){
+		int myposx_j1 = sprites_j[1].getX();
+		int myposy_j1 = sprites_j[1].getY();
+		int myposx_j2 = sprites_j[20].getX();
+		int myposy_j2 = sprites_j[20].getY();
+		
+		
+		return true;
+	}
+	
+	// ********************************************************************
+	// *** Fonction de traitement position personnage pour eviter       ***
+	// *** un déplacement sur un obstacle                               ***
+	// ********************************************************************
+	public int traitement_position(String mvmt){
+
+		switch (mvmt) {
+		case "bas":
+			/*if(joueur=="1"){
+				if(can_walk(1,myposx_j1,myposy_j1,"bas")){
+					return 1;
+				}
+				else
+					return 0;
+			}*/
 			if(joueur=="1"){
 				if(myposy_j1==sprites_p[2].getY()-32 && myposx_j1==sprites_p[2].getX()){
 					return 0;
@@ -536,31 +653,17 @@ public class Bomberbeach{
 	}
 	// ********************************************************************
 
-	public void setlevel(int level){
-		panel_nogame.setVisible(false); //on masque le panel vide pour afficher le jeu
-		start_game=true;
-		tchatfield.enable();
-		lbl_info.setVisible(false);
-		lbl_level.setVisible(true); //affichage du label lvl
+ 
 
-		switch (level)
-		{
-		case 1:
-			System.out.println("Lancement level 1");
-			lbl_level.setText("Level : " + level);
-			createlevel(level);
-			break;        
-		default:
-			/*Action*/;             
-		}
-	}
-
-	public void ReadFile() {
+	public void ReadFile(int level) {
 		BufferedReader reader = null;
 		int rows = 0;
 		String[] charactere = new String[22];
 		try {
-			reader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(FILE_PATH_lvl1)));
+			if(level==1){ // on charge le path du fichier lv1
+				reader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(FILE_PATH_lvl1)));				
+			}
+			//TODO: pour les autres levels
 
 			String line = reader.readLine();
 			while(line != null){
@@ -575,7 +678,6 @@ public class Bomberbeach{
 						sprites_p[i] = new JLabel(icon_brique); //import de l'image du mur
 						sprites_p[i].setBounds(i*32, rows*32, 32, 32); //position
 						frmBomberbeach.getContentPane().add(sprites_p[i]); //affichage sur la fenêtre
-						//System.out.println("pilier i= "+i);
 
 					}
 					else if(charactere[i].equals("*")){//c'est une boite
@@ -583,19 +685,21 @@ public class Bomberbeach{
 						sprites_b[i].setBounds(i*32, rows*32, 32, 32); //position
 						frmBomberbeach.getContentPane().add(sprites_b[i]); //affichage sur la fenêtre    	            	
 					}
-					else if(charactere[i].equals("p")){//c'est un joueur
+					else if(charactere[i].equals("1")){//c'est un joueur
 						sprites_j[i] = new JLabel(icon_player); //import de l'image du mur
-						sprites_j[i+1] = new JLabel(icon_pop);
 						sprites_j[i].setBounds(i*32, rows*32, 32, 32); //position
-						sprites_j[i+1].setBounds(i*32, rows*32, 32, 32); //position
 						frmBomberbeach.getContentPane().add(sprites_j[i]); //affichage sur la fenêtre
-						frmBomberbeach.getContentPane().add(sprites_j[i+1]); //affichage sur la fenêtre
-						System.out.println("lol: "+i);
+					}
+					else if(charactere[i].equals("2")){//c'est un joueur
+						sprites_j[i] = new JLabel(icon_player2); //import de l'image du mur
+						sprites_j[i].setBounds(i*32, rows*32, 32, 32); //position
+						frmBomberbeach.getContentPane().add(sprites_j[i]); //affichage sur la fenêtre
 					}
 					else if(charactere[i].equals("b")){//c'est un boost
 						sprites_bo[i] = new JLabel(icon_boost); //import de l'image du mur
 						sprites_bo[i].setBounds(i*32, rows*32, 32, 32); //position
-						frmBomberbeach.getContentPane().add(sprites_bo[i]); //affichage sur la fenêtre    	            	
+						frmBomberbeach.getContentPane().add(sprites_bo[i]); //affichage sur la fenêtre    	
+						//System.out.println("boost:"+i +": X="+sprites_bo[i].getX()+" Y="+sprites_bo[i].getY());
 					}
 				}
 				line = reader.readLine();
@@ -607,5 +711,45 @@ public class Bomberbeach{
 			e.printStackTrace();
 		} finally {
 		}
+	}
+
+	public static Panel getPanel_nogame() {
+		return panel_nogame;
+	}
+
+	public static void setPanel_nogame(Panel panel_nogame) {
+		Bomberbeach.panel_nogame = panel_nogame;
+	}
+
+	public static JTextField getTchatfield() {
+		return tchatfield;
+	}
+
+	public static void setTchatfield(JTextField tchatfield) {
+		Bomberbeach.tchatfield = tchatfield;
+	}
+
+	public static JLabel getLbl_info() {
+		return lbl_info;
+	}
+
+	public static void setLbl_info(JLabel lbl_info) {
+		Bomberbeach.lbl_info = lbl_info;
+	}
+
+	public static JLabel getLbl_level() {
+		return lbl_level;
+	}
+
+	public static void setLbl_level(JLabel lbl_level) {
+		Bomberbeach.lbl_level = lbl_level;
+	}
+
+	public static boolean isStart_game() {
+		return start_game;
+	}
+
+	public static void setStart_game(boolean start_game) {
+		Bomberbeach.start_game = start_game;
 	}
 }

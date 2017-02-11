@@ -1,21 +1,133 @@
 package com.thbvc.bomberbeach;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.LinkedList;
 
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
+public class Server implements Communicateur, Runnable {
 
-public class Server {
-	JTextPane chat;
+	
+	
+/************************************************ D�claration des variables : */
+
+	private int port;
+	private int nbCli;
+	private ServerSocket serv;
+	private Connexion cnx;
+	private LinkedList lCli;
+	private LinkedList lMessages;
+	
+
+/********************************************** D�claration du constructeur : */
+
+
+	public Server(int port, int nbCli) {
+		
+		this.port = port;
+		this.nbCli = nbCli;
+		lMessages = new LinkedList();
+		creationServeur();
+	}	
+	
+	
+/************************************************* D�claration des m�thodes : */
+
+	
+	public void creationServeur() {
+	
+		try {
+	
+			serv = new ServerSocket(port, nbCli);
+
+		} catch (Exception e) {
+			
+			System.out.println("Erreur dans la cr�ation du serveur : " + e);	
+		}
+		
+		Thread t = new Thread(this);
+		t.start();				
+	}
+	
+		
+	public void run()
+	{
+		lCli = new LinkedList();
+		
+		try {
+
+			while (true) {
+			
+				System.out.println("En attente d'un client ...");
+				
+				Socket cli = serv.accept();
+				
+				System.out.println("Client accepte ...");
+				
+				cnx = new Connexion(cli, this);
+				lCli.add(cnx);
+				System.out.println("Client connecte ...\n");
+				
+				// On renvoie l'identifiant du client {Utile lorsqu'il d�sire
+				// Changer de serveur et donc se retirer de celui-ci}.
+				
+				cnx.Envoie((Object) (new Integer (lCli.size()).toString()));
+			}
+			
+		} catch(Exception e) {
+		
+			System.out.println("Erreur lors de la connexion d'un client : " + e);	
+		}
+	}
+	
+	
+	public synchronized void traiteMessage(Object O) {
+		
+		try	{
+	
+				// Si l'objet peut-�tre assign� � un message.
+
+				if (Class.forName("Message").isAssignableFrom(O.getClass())) {
+					
+					lMessages.addLast(O);
+					
+					for (int i = 0; i < lCli.size(); i ++) {
+					
+						((Connexion)lCli.get(i)).Envoie(O);	
+					}
+				
+				} else {
+				
+					// Sinon, c'est un String, nous enlevons alors le client de
+					// La liste.
+					
+					int rang = Integer.parseInt((String) O);
+					
+					lCli.remove(rang);
+					
+					System.out.println("Le client " + rang + " s'est deconnecte ...");
+					
+					// Nous r�-indexons ensuite la liste des client en leur
+					// Envoyant un nouvel identifiant.
+					
+					for (int i = 0; i < lCli.size(); i ++) {
+					
+						((Connexion)lCli.get(i)).Envoie((Object) (new Integer (i).toString()));	
+					}
+					
+					System.out.println("Re-indexation des client ...");					 			
+				}
+						
+		} catch (Exception e) {
+		
+			System.out.println("Objet recu non identifi� !");	
+		}
+	}
+	
+	/*JTextPane chat;
 	JTextField chatfield;
 
-	 static Bomberbeach b = new Bomberbeach();
+	 static Bomberbeach b;
+	 static Map m;
 	 private static int skt_port = 5000;
 	 static int level = 1;
      private ServerSocket serveurSocket  ;
@@ -23,7 +135,9 @@ public class Server {
      private BufferedReader in;
      private PrintWriter out;
      
-     public Server(JTextPane chat,JTextField chatfield){
+     public Server(JTextPane chat,JTextField chatfield, Bomberbeach b){
+    	 this.b = b;
+    	 this.m = new Map(b.getPanel_nogame(),b.getTchatfield(),b.getLbl_info(),b.getLbl_level(),b.isStart_game());
      	 this.chat = chat;
     	 this.chatfield = chatfield;
       }
@@ -32,7 +146,7 @@ public class Server {
          SwingUtilities.invokeLater(new Runnable() {
              @Override
              public void run() {
-            	 if(message.charAt(0)!='*'){ //ce n'est pas un message système donc on l'envoi dans le tchat
+            	 if(message.charAt(0)!='*' && message.charAt(0)!='@'){ //ce n'est pas un message système donc on l'envoi dans le tchat
             		 chat.setText(chat.getText() + "\nJoueur 1: "+message);
             	 }
              }
@@ -52,15 +166,24 @@ public class Server {
         System.out.println("posY 2to1: "+y); //debug
 		b.receive_pos_player(2,Integer.parseInt(x),Integer.parseInt(y));    
      }
-     
-     
+
+     public void traitement_boost(String msg){
+ 		  //String line = in.readLine();
+         //System.out.println(line); //debug
+         String[] parts = msg.split("\\|");
+         String type = parts[1];
+         String id = parts[2];
+         System.out.println(type+" 1to2: "+ id); //debug
+ 		  b.receive_boost_player(1,Integer.parseInt(id));    
+     }
+         
      
      public void start(String ip, int port){
      try {
        serveurSocket = new ServerSocket(port);
        clientSocket = serveurSocket.accept();
        System.out.println("Serveur démarré\n###################");
-       b.setlevel(level);
+       m.setlevel(level);// chargement de la map
        System.out.println("Joueur 1 rejoint la partie");
        out = new PrintWriter(clientSocket.getOutputStream());
        in = new BufferedReader (new InputStreamReader (clientSocket.getInputStream()));
@@ -106,6 +229,6 @@ public class Server {
       }catch (IOException e) {
          e.printStackTrace();
       }
-     }
+     }*/
 
 }
