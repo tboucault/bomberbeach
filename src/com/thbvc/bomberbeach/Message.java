@@ -15,7 +15,7 @@ public class Message implements Serializable
 	}
 	
 
-/* M�thodes *******************************************************************/
+/* Methodes *******************************************************************/
 	
 	public int ecrisMoi(Graphics g, int absc, int ordo) {
 		

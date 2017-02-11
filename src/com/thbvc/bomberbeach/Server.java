@@ -30,7 +30,7 @@ public class Server implements Communicateur, Runnable {
 	}	
 	
 	
-/************************************************* D�claration des m�thodes : */
+/************************************************* D�claration des methodes : */
 
 	
 	public void creationServeur() {
@@ -41,7 +41,7 @@ public class Server implements Communicateur, Runnable {
 
 		} catch (Exception e) {
 			
-			System.out.println("Erreur dans la cr�ation du serveur : " + e);	
+			System.out.println("Erreur dans la creation du serveur : " + e);	
 		}
 		
 		Thread t = new Thread(this);
@@ -71,6 +71,7 @@ public class Server implements Communicateur, Runnable {
 				// Changer de serveur et donc se retirer de celui-ci}.
 				
 				cnx.Envoie((Object) (new Integer (lCli.size()).toString()));
+				cnx.Envoie((Object) (new Map(1)));
 			}
 			
 		} catch(Exception e) {
@@ -119,7 +120,7 @@ public class Server implements Communicateur, Runnable {
 						
 		} catch (Exception e) {
 		
-			System.out.println("Objet recu non identifi� !");	
+			System.out.println("Objet recu non identifie !");	
 		}
 	}
 	

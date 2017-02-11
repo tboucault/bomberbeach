@@ -1,30 +1,38 @@
 package com.thbvc.bomberbeach;
 
+import java.awt.Color;
 import java.net.Socket;
+
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
 
 
 public class Client implements Communicateur {
 
-/************************************************ D�claration des variables : */
+/************************************************ Declaration des variables : */
 
+	static Bomberbeach b;
+	static Map m;
 
 	private String IPServeur;
 	private int port;
 	private Connexion cnx;
 	private int idClient;	
 
-/********************************************** D�claration du constructeur : */
+/********************************************** Declaration du constructeur : */
 
 
-	public Client(String IPServeur, int port) {
+	public Client(String IPServeur, int port,Bomberbeach b){
+     	 this.b = b;
 		
+    	 
 		this.IPServeur = IPServeur;
 		this.port = port;
 		creationClient();
 	}	
 	
 
-/************************************************* D�claration des m�thodes : */
+/************************************************* Declaration des methodes : */
 
 
 	public void creationClient() {
@@ -54,11 +62,18 @@ public class Client implements Communicateur {
 					
 					System.out.println("Message recu : " + O);
 				
-				} else {
+				} else if (Map.class.isInstance(O)) {
+					
+					System.out.println("Map recu : " + O);
+					Map map = (Map) O;
+				}else {
 					
 					idClient = Integer.parseInt((String) O);
 					
 					System.out.println("Le serveur vous attribue l'identifiant " + idClient + ".");
+					b.tchatarea.setText(b.tchatarea.getText() +"Bienvenue joueur " + idClient);
+					b.getbtnJoin().setEnabled(false);
+					//b.setlevel(1);
 				}		
 			
 		} catch (Exception e) {

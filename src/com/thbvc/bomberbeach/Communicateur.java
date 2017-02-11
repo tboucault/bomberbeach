@@ -1,5 +1,5 @@
 package com.thbvc.bomberbeach;
-/** Cette interface permet de "typer" les objets "Client" et "Serveur" afin * de cr�er des connexions entre eux. */ 
+/** Cette interface permet de "typer" les objets "Client" et "Serveur" afin * de creer des connexions entre eux. */ 
 
 public interface Communicateur {
 	

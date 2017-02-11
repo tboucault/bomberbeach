@@ -63,17 +63,17 @@ public class Bomberbeach{
 	private static String ip;
 	private static int port;
 	private static boolean start_game = false;
-	private static JTextPane tchatarea = new JTextPane();
-	private static Panel panel_nogame = new Panel();
-	private static JTextField tchatfield = new JTextField();
-	private static JLabel lbl_level = new JLabel();
-	private static JLabel lbl_info = new JLabel();
+	public static JTextPane tchatarea = new JTextPane();
+	public static Panel panel_nogame = new Panel();
+	public static JTextField tchatfield = new JTextField();
+	public static JLabel lbl_level = new JLabel();
+	public static JLabel lbl_info = new JLabel();
 	static Server s;
 	static Client c;
-	static Map m = new Map(getPanel_nogame(),getTchatfield(),getLbl_info(),getLbl_level(),isStart_game());
+	static Bomberbeach b;
+	//static Map m = new Map(getPanel_nogame(),getTchatfield(),getLbl_info(),getLbl_level(),isStart_game());
 	static Joueur j = new Joueur();
-	private JButton btnCreate = new JButton("Creer une partie");
-	private JButton btnJoin = new JButton("Rejoindre une partie");
+	private static JButton btnJoin = new JButton("Rejoindre une partie");
 	
 
 
@@ -105,6 +105,8 @@ public class Bomberbeach{
 		initialize();
 		//this.s = new Server(tchatarea,getTchatfield(), this);
 		//this.c = new Client(tchatarea,getTchatfield(), this);
+		this. b = this;
+		//this.c = new Client(ip, port,tchatarea,getTchatfield(), this);  // Client.
 	}
 
 	/**
@@ -211,18 +213,15 @@ public class Bomberbeach{
 		mnMenu.add(mntmQuitter);
 
 		menuBar.add(Box.createHorizontalGlue());
-		menuBar.add(btnCreate);
-		btnCreate.addActionListener(actionClick);
-		btnCreate.addKeyListener(new KeyAction());
-
-		menuBar.add(btnJoin);
+		menuBar.add(getbtnJoin());
 		btnJoin.addActionListener(actionClick);
 		btnJoin.addKeyListener(new KeyAction());
 
 
 		mntmQuitter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+				//c.getCnx().Envoie((Object)(new Integer(c.getIdClient()).toString()));
+				System.exit(0);	
 			}
 		});
 		// *************
@@ -374,51 +373,15 @@ public class Bomberbeach{
 	ActionListener actionClick = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 
-			if (e.getSource().equals(btnCreate) && enable==true){ //choix créer partie (joueur 1)
-				if(ipField.getText().equals("") && portField.getText().equals("")){
-					JOptionPane.showMessageDialog(null, "Veuillez saisir une ip et un port valide","Bomberbeach",JOptionPane.PLAIN_MESSAGE);				
-				}
-				else{
-					/*
-					String ip=ipField.getText();
-					int port=Integer.parseInt(portField.getText());
-					//ipField.disable();
-					//portField.disable();
-					btnCreate.setForeground(Color.GREEN);
-					btnJoin.setEnabled(false);
-					joueur = "1";
-					//attente du serveur
-					Thread t = new Thread(new Runnable() {
-
-						@Override
-						public void run() {
-							s.start(ip,port); //lancement serveur
-						}
-					});
-					t.start();
-					tchatarea.setText("Bienvenue joueur "+joueur+"\nAttente d'un concurent\n");
-					enable=false; //on désactive le reclic sur le bouton	*/
-				}
-			}
-			if (e.getSource().equals(btnJoin) && enable==true){ //choix rejoindre partie (joueur 2)
+			if (e.getSource().equals(btnJoin) && enable==true){ //choix rejoindre partie
 				if(ipField.getText().equals("") && portField.getText().equals("")){
 					JOptionPane.showMessageDialog(null, "Veuillez saisir une ip et un port valide","Bomberbeach",JOptionPane.PLAIN_MESSAGE);
 				}
 				else{
-					new Client("127.0.0.1", 1234);  // Client.
-					/*
 					ip=ipField.getText();
 					port=Integer.parseInt(portField.getText());
-					joueur = "2";
-					//attente du client
-					Thread t2 = new Thread(new Runnable() {
-
-						@Override
-						public void run() {
-							//c.start(ip,port); //lancement client
-						}
-					});
-					t2.start();
+					new Client(ip,port,b);  // Client.
+					/*
 					if (isStart_game()==true){
 						//ipField.disable();
 						//portField.disable();
@@ -432,9 +395,7 @@ public class Bomberbeach{
 						port=Integer.parseInt(portField.getText());
 						joueur = "2";
 						t2.start();
-					}
-					tchatarea.setText("Bienvenue joueur "+joueur+"\nAttente d'un concurent\n");
-					enable=false; //on désactive le reclic sur le bouton*/
+					}*/
 				}
 			}
 		}
@@ -653,7 +614,31 @@ public class Bomberbeach{
 	}
 	// ********************************************************************
 
- 
+
+
+ 	// ********************************************************************
+ 	// *** Lancement du lvl après connexion entre client et serveur     ***
+ 	// ********************************************************************
+	public void setlevel(int level){
+		panel_nogame.setVisible(false); //on masque le panel vide pour afficher le jeu
+		start_game=true;
+		tchatfield.enable();
+		lbl_info.setVisible(false);
+		lbl_level.setVisible(true); //affichage du label lvl
+
+		switch (level)
+		{
+		case 1:
+			System.out.println("Lancement level 1");
+			ReadFile(1);
+			lbl_level.setText("Level : " + level);
+			System.out.println("lvl 1 chargé");
+			break;        
+		default:
+			/*Action*/;             
+		}
+	}
+	
 
 	public void ReadFile(int level) {
 		BufferedReader reader = null;
@@ -731,6 +716,10 @@ public class Bomberbeach{
 
 	public static JLabel getLbl_info() {
 		return lbl_info;
+	}
+	
+	public static JButton getbtnJoin() {
+		return btnJoin;
 	}
 
 	public static void setLbl_info(JLabel lbl_info) {
