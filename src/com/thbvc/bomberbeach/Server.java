@@ -70,13 +70,16 @@ public class Server implements Communicateur, Runnable {
 				// On renvoie l'identifiant du client {Utile lorsqu'il d�sire
 				// Changer de serveur et donc se retirer de celui-ci}.
 				
-				cnx.Envoie((Object) (new Integer (lCli.size()).toString()));
-				cnx.Envoie((Object) (new Map(1)));
+				cnx.Envoie((Object) (new Integer (lCli.size()).toString())); //ajout du client à la liste des clients
+				cnx.Envoie((Object) (new Map(1))); //envoie de la map aux clients
+				if(lCli.size()>=2){//il y a au moins 2 joueurs donc on peut lancer la partie
+				}
 			}
 			
 		} catch(Exception e) {
 		
 			System.out.println("Erreur lors de la connexion d'un client : " + e);	
+			
 		}
 	}
 	

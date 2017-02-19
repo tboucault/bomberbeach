@@ -630,7 +630,6 @@ public class Bomberbeach{
 		{
 		case 1:
 			System.out.println("Lancement level 1");
-			ReadFile(1);
 			lbl_level.setText("Level : " + level);
 			System.out.println("lvl 1 chargé");
 			break;        
@@ -640,62 +639,45 @@ public class Bomberbeach{
 	}
 	
 
-	public void ReadFile(int level) {
-		BufferedReader reader = null;
-		int rows = 0;
-		String[] charactere = new String[22];
-		try {
-			if(level==1){ // on charge le path du fichier lv1
-				reader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(FILE_PATH_lvl1)));				
-			}
-			//TODO: pour les autres levels
+	public void create_map(String[][] mamap,int level){
+		for(int column=0;column<mamap[0].length;column++){
 
-			String line = reader.readLine();
-			while(line != null){
-				for(int i=0;i<22;i++){//pour chaque caractère par ligne
-					charactere[i] = line.substring(i, i+1);//on récupère caractère par caractère
-					if(charactere[i].equals("#")){//c'est un mur
-						sprites_m[i] = new JLabel(icon_mur); //import de l'image du mur
-						sprites_m[i].setBounds(-42+i*32, rows*32, 117, 32); //position
-						frmBomberbeach.getContentPane().add(sprites_m[i]); //affichage sur la fenêtre
-					}
-					else if(charactere[i].equals("@")){//c'est un pilier
-						sprites_p[i] = new JLabel(icon_brique); //import de l'image du mur
-						sprites_p[i].setBounds(i*32, rows*32, 32, 32); //position
-						frmBomberbeach.getContentPane().add(sprites_p[i]); //affichage sur la fenêtre
-
-					}
-					else if(charactere[i].equals("*")){//c'est une boite
-						sprites_b[i] = new JLabel(icon_boite); //import de l'image du mur
-						sprites_b[i].setBounds(i*32, rows*32, 32, 32); //position
-						frmBomberbeach.getContentPane().add(sprites_b[i]); //affichage sur la fenêtre    	            	
-					}
-					else if(charactere[i].equals("1")){//c'est un joueur
-						sprites_j[i] = new JLabel(icon_player); //import de l'image du mur
-						sprites_j[i].setBounds(i*32, rows*32, 32, 32); //position
-						frmBomberbeach.getContentPane().add(sprites_j[i]); //affichage sur la fenêtre
-					}
-					else if(charactere[i].equals("2")){//c'est un joueur
-						sprites_j[i] = new JLabel(icon_player2); //import de l'image du mur
-						sprites_j[i].setBounds(i*32, rows*32, 32, 32); //position
-						frmBomberbeach.getContentPane().add(sprites_j[i]); //affichage sur la fenêtre
-					}
-					else if(charactere[i].equals("b")){//c'est un boost
-						sprites_bo[i] = new JLabel(icon_boost); //import de l'image du mur
-						sprites_bo[i].setBounds(i*32, rows*32, 32, 32); //position
-						frmBomberbeach.getContentPane().add(sprites_bo[i]); //affichage sur la fenêtre    	
-						//System.out.println("boost:"+i +": X="+sprites_bo[i].getX()+" Y="+sprites_bo[i].getY());
-					}
+			for(int row=0;row<mamap.length;row++){
+				if(mamap[row][column].equals("#")){//c'est un mur
+					sprites_m[row] = new JLabel(icon_mur); //import de l'image du mur
+					sprites_m[row].setBounds(-42+row*32, column*32, 117, 32); //position
+					frmBomberbeach.getContentPane().add(sprites_m[row]); //affichage sur la fenêtre
 				}
-				line = reader.readLine();
-				rows++;
-			}
-			System.out.println("fichier lv1 lu");
+				else if(mamap[row][column].equals("@")){//c'est un pilier
+					sprites_p[row] = new JLabel(icon_brique); //import de l'image du mur
+					sprites_p[row].setBounds(row*32, column*32, 32, 32); //position
+					frmBomberbeach.getContentPane().add(sprites_p[row]); //affichage sur la fenêtre
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
+				}
+				else if(mamap[row][column].equals("*")){//c'est une boite
+					sprites_b[row] = new JLabel(icon_boite); //import de l'image du mur
+					sprites_b[row].setBounds(row*32, column*32, 32, 32); //position
+					frmBomberbeach.getContentPane().add(sprites_b[row]); //affichage sur la fenêtre    	            	
+				}
+				else if(mamap[row][column].equals("1")){//c'est un joueur
+					sprites_j[row] = new JLabel(icon_player); //import de l'image du mur
+					sprites_j[row].setBounds(row*32, column*32, 32, 32); //position
+					frmBomberbeach.getContentPane().add(sprites_j[row]); //affichage sur la fenêtre
+				}
+				else if(mamap[row][column].equals("2")){//c'est un joueur
+					sprites_j[row] = new JLabel(icon_player2); //import de l'image du mur
+					sprites_j[row].setBounds(row*32, column*32, 32, 32); //position
+					frmBomberbeach.getContentPane().add(sprites_j[row]); //affichage sur la fenêtre
+				}
+				else if(mamap[row][column].equals("b")){//c'est un boost
+					sprites_bo[row] = new JLabel(icon_boost); //import de l'image du mur
+					sprites_bo[row].setBounds(row*32, column*32, 32, 32); //position
+					frmBomberbeach.getContentPane().add(sprites_bo[row]); //affichage sur la fenêtre    	
+					//System.out.println("boost:"+i +": X="+sprites_bo[i].getX()+" Y="+sprites_bo[i].getY());
+				}
+			}
 		}
+		setlevel(level);
 	}
 
 	public static Panel getPanel_nogame() {

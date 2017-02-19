@@ -3,6 +3,7 @@ package com.thbvc.bomberbeach;
 import java.awt.Color;
 import java.net.Socket;
 
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
@@ -56,7 +57,8 @@ public class Client implements Communicateur {
 	
 	
 	public void traiteMessage(Object O)	{	
-		
+
+		String[][] mamap = new String[22][16];
 		try	{
 				if (O instanceof Message) {
 					
@@ -64,8 +66,10 @@ public class Client implements Communicateur {
 				
 				} else if (Map.class.isInstance(O)) {
 					
-					System.out.println("Map recu : " + O);
+					System.out.println("Map reçue : " + O);
 					Map map = (Map) O;
+					mamap=map.ReadFile(1);// on récupère la matrice map créée
+					b.create_map(mamap,1);// on l'envoie à bomberbeach qui traitera la matrice pour afficher la map
 				}else {
 					
 					idClient = Integer.parseInt((String) O);
@@ -73,7 +77,6 @@ public class Client implements Communicateur {
 					System.out.println("Le serveur vous attribue l'identifiant " + idClient + ".");
 					b.tchatarea.setText(b.tchatarea.getText() +"Bienvenue joueur " + idClient);
 					b.getbtnJoin().setEnabled(false);
-					//b.setlevel(1);
 				}		
 			
 		} catch (Exception e) {

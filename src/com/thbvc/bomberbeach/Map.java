@@ -41,7 +41,7 @@ public class Map implements Serializable{
 		
 	}
 
-	private void ReadFile(int level) {
+	public String[][] ReadFile(int level) {
 		BufferedReader reader = null;
 		int rows = 0;
 		int column = 0;
@@ -54,21 +54,24 @@ public class Map implements Serializable{
 			String line = reader.readLine();
 			while(line != null){
 				for(column=0;column<line.length();column++){
-					map[column][rows] = ""+line.charAt(column);
+					map[column][rows] = ""+line.charAt(column); //création de la matrice map
 				}
 				line = reader.readLine();
 				rows++;
 			}
-			System.out.println("fichier lv1 lu");
-			show_map();
-
+			System.out.println("Fichier lv1 lu, matrice créée");
+			//show_map_debug(); //appel de la fonction pour l'afficher en debug
+			//TODO envoi de la matrice map a bomberbeach pour afficher.
+			return map;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return map;
+			//TODO pas renvoyer map mais message erreur
 		}
 	}
 
 
-	public void show_map(){
+	public void show_map_debug(){
 		for(int column=0;column<map[0].length;column++){
 
 			for(int row=0;row<map.length;row++){
@@ -78,6 +81,7 @@ public class Map implements Serializable{
 		}
 	}
 	
+
 	public String[][] getMap() {
 		return map;
 	}
