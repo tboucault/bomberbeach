@@ -61,8 +61,7 @@ public class Map implements Serializable{
 			}
 			System.out.println("Fichier lv1 lu, matrice créée");
 			//show_map_debug(); //appel de la fonction pour l'afficher en debug
-			//TODO envoi de la matrice map a bomberbeach pour afficher.
-			return map;
+			return map; //retour de la matrice map au client
 		} catch (IOException e) {
 			e.printStackTrace();
 			return map;
@@ -70,7 +69,7 @@ public class Map implements Serializable{
 		}
 	}
 
-
+//fct debug pour afficher toute la matrice map en console voir si on à bien lu le fichier
 	public void show_map_debug(){
 		for(int column=0;column<map[0].length;column++){
 
@@ -89,37 +88,5 @@ public class Map implements Serializable{
 	public void setMap(String[][] map) {
 		this.map = map;
 	}
-
-    /* public Map(Panel panel_nogame,JTextField tchatfield,JLabel lbl_info,JLabel lbl_lvl,boolean start_game){
-    	 this.panel_nogame = panel_nogame;
-     	 this.lbl_info = lbl_info;
-     	 this.lbl_lvl = lbl_lvl;
-    	 this.tchatfield = tchatfield;
-    	 this.start_game = start_game;
-      }*/
-     
-
- 	// ********************************************************************
- 	// *** Lancement du lvl après connexion entre client et serveur     ***
- 	// ********************************************************************
-/*	public void setlevel(int level){
-		panel_nogame.setVisible(false); //on masque le panel vide pour afficher le jeu
-		start_game=true;
-		tchatfield.enable();
-		lbl_info.setVisible(false);
-		lbl_lvl.setVisible(true); //affichage du label lvl
-
-		switch (level)
-		{
-		case 1:
-			System.out.println("Lancement level 1");
-			b.ReadFile(1);
-			lbl_lvl.setText("Level : " + level);
-			System.out.println("lvl 1 chargé");
-			break;        
-		default:
-			/*Action*;             
-		}
-	}*/
 	
 }

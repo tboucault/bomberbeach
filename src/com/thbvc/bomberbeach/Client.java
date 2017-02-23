@@ -64,12 +64,12 @@ public class Client implements Communicateur {
 					
 					System.out.println("Message recu : " + O);
 				
-				} else if (Map.class.isInstance(O)) {
+				} else if (Map.class.isInstance(O)) { //on reçoit un objet de type map
 					
 					System.out.println("Map reçue : " + O);
-					Map map = (Map) O;
-					mamap=map.ReadFile(1);// on récupère la matrice map créée
-					b.create_map(mamap,1);// on l'envoie à bomberbeach qui traitera la matrice pour afficher la map
+					Map map = (Map) O; //appel classe map
+					mamap=map.ReadFile(1);// on récupère la matrice map retourné par la classe Map
+					b.create_map(mamap,1);// on l'envoi à bomberbeach qui traitera la matrice pour afficher la map
 				}else {
 					
 					idClient = Integer.parseInt((String) O);
@@ -77,6 +77,9 @@ public class Client implements Communicateur {
 					System.out.println("Le serveur vous attribue l'identifiant " + idClient + ".");
 					b.tchatarea.setText(b.tchatarea.getText() +"Bienvenue joueur " + idClient);
 					b.getbtnJoin().setEnabled(false);
+					b.getipField().setEnabled(false);
+					b.getportField().setEnabled(false);
+					b.joueur=Integer.toString(idClient);
 				}		
 			
 		} catch (Exception e) {
