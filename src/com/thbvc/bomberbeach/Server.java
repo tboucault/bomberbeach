@@ -4,6 +4,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 
+import javax.swing.SwingUtilities;
+
 public class Server implements Communicateur, Runnable {
 
 	
@@ -14,7 +16,7 @@ public class Server implements Communicateur, Runnable {
 	private int nbCli;
 	private ServerSocket serv;
 	private Connexion cnx;
-	private LinkedList lCli;
+	public LinkedList lCli;
 	private LinkedList lMessages;
 	
 
@@ -71,8 +73,11 @@ public class Server implements Communicateur, Runnable {
 				// Changer de serveur et donc se retirer de celui-ci}.
 				
 				cnx.Envoie((Object) (new Integer (lCli.size()).toString())); //ajout du client à la liste des clients
-				cnx.Envoie((Object) (new Map(1))); //envoie de la map aux clients
+				
 				if(lCli.size()>=2){//il y a au moins 2 joueurs donc on peut lancer la partie
+					for (int i = 0; i < lCli.size(); i ++) {
+						((Connexion)lCli.get(i)).Envoie((Object) (new Map(1)));
+					}
 				}
 			}
 			
@@ -82,7 +87,16 @@ public class Server implements Communicateur, Runnable {
 			
 		}
 	}
-	
+
+    public void envoyer_position(int pos_x, int pos_y, int joueur){
+    	//TODO probleme: la liste est vide... impossible d'envoyer a tt les joueurs...
+		System.out.println("lol: "+lCli.size());
+    	for (int i = 1; i <= lCli.size(); i ++) {
+    		((Connexion)lCli.get(i)).Envoie((Object)  (new Joueur(joueur,pos_x,pos_y))); //envoie de la position d'un joueur aux autres
+    		System.out.println("test2");    	
+    	}
+    }
+
 	
 	public synchronized void traiteMessage(Object O) {
 		
@@ -99,7 +113,7 @@ public class Server implements Communicateur, Runnable {
 						((Connexion)lCli.get(i)).Envoie(O);	
 					}
 				
-				} else {
+				}else {
 				
 					// Sinon, c'est un String, nous enlevons alors le client de
 					// La liste.

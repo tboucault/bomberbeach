@@ -1,6 +1,7 @@
 package com.thbvc.bomberbeach;
 
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -72,7 +73,6 @@ public class Bomberbeach{
 	static Client c;
 	static Bomberbeach b;
 	//static Map m = new Map(getPanel_nogame(),getTchatfield(),getLbl_info(),getLbl_level(),isStart_game());
-	static Joueur j = new Joueur();
 	private static JButton btnJoin = new JButton("Rejoindre une partie");
 	private final static JTextField ipField = new JTextField();
 	private final static JTextField portField = new JTextField();
@@ -103,10 +103,11 @@ public class Bomberbeach{
 	 */
 	public Bomberbeach() {
 		initialize();
-		//this.s = new Server(tchatarea,getTchatfield(), this);
+		this.s = new Server(port, 0);
 		//this.c = new Client(tchatarea,getTchatfield(), this);
 		this. b = this;
 		//this.c = new Client(ip, port,tchatarea,getTchatfield(), this);  // Client.
+		
 	}
 
 	/**
@@ -284,9 +285,9 @@ public class Bomberbeach{
 					if(can_walk(1,myposx_j1,myposy_j1,"bas")){ //je ne vais pas rencontrer un obstacle
 						traitement_powerup("bas");
 						System.out.println("<down key> : x="+player1_x+" y="+player1_y);
-						player1_y=player1_y+32; // on bouge le personnage d'une case vers le bas
-						sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
-						//s.envoyer("*|"+player1_x+"|"+player1_y); //envoi de la position du joueur 1 au joueur 2
+						//player1_y=player1_y+32; // on bouge le personnage d'une case vers le bas
+						//sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+						s.envoyer_position(player1_x,player1_y,Integer.parseInt(joueur)); //envoi de la position du joueur 1 au joueur 2
 					}
 				}
 				else if(joueur.equals("2")){
@@ -411,14 +412,26 @@ public class Bomberbeach{
 	}
 
 
-	public void receive_pos_player(int player,int x,int y){
+	public void receive_pos_player(String maposition){
+		//TODO decouper le string recu maposition pour split et extraire player,x,y...
+					//String line = in.readLine();
+		            //System.out.println(line); //debug
+		            String[] parts = maposition.split("\\,");
+		            String joueur = parts[1];
+		            String x = parts[2];
+		            String y = parts[3];
+		            System.out.println("joueur: "+joueur+" x: "+x+" y: "+y); //debug
+		           /* b[Integer.parseInt(id)].setEnabled(false);
+		            b[Integer.parseInt(id)].setFont(new Font("Arial", Font.PLAIN, 40));
+					b[Integer.parseInt(id)].setText("X");
+					tableau[Integer.parseInt(id)]=1;
 		if(player==1){ //on recoit la position du joueur 1 il faut la modifier (on est le joueur 2)
 			sprites_j[1].setBounds(x, y, 32, 32);
 		}
 		else if(player==2){ //on recoit la position du joueur 2 il faut la modifier (on est le joueur 1)
 			sprites_j[20].setBounds(x, y, 32, 32);
 
-		}
+		}*/
 	}
 	
 

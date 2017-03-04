@@ -59,6 +59,7 @@ public class Client implements Communicateur {
 	public void traiteMessage(Object O)	{	
 
 		String[][] mamap = new String[22][16];
+		String maposition ;
 		try	{
 				if (O instanceof Message) {
 					
@@ -66,10 +67,16 @@ public class Client implements Communicateur {
 				
 				} else if (Map.class.isInstance(O)) { //on reçoit un objet de type map
 					
-					System.out.println("Map reçue : " + O);
+					System.out.println("Map recue : " + O);
 					Map map = (Map) O; //appel classe map
 					mamap=map.ReadFile(1);// on récupère la matrice map retourné par la classe Map
 					b.create_map(mamap,1);// on l'envoi à bomberbeach qui traitera la matrice pour afficher la map
+				} else if (Joueur.class.isInstance(O)) { //on reçoit un objet de type joueur
+					
+					System.out.println("Pos Joueur recue : " + O);
+					Joueur joueur = (Joueur) O; //appel classe map
+					maposition = joueur.setPosition();
+					b.receive_pos_player(maposition);// on l'envoi à bomberbeach qui traitera la matrice pour afficher la map
 				}else {
 					
 					idClient = Integer.parseInt((String) O);
