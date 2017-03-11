@@ -12,6 +12,7 @@ public class Server implements Communicateur, Runnable {
 	
 /************************************************ D�claration des variables : */
 
+	static Bomberbeach b;
 	private int port;
 	private int nbCli;
 	private ServerSocket serv;
@@ -88,23 +89,27 @@ public class Server implements Communicateur, Runnable {
 		}
 	}
 
-    public void envoyer_position(int pos_x, int pos_y, int joueur){
+    public void envoyer_position(int pos_x, String mvmt, int pos_y, int joueur){
     	//TODO probleme: la liste est vide... impossible d'envoyer a tt les joueurs...
 		System.out.println("lol: "+lCli.size());
     	for (int i = 1; i <= lCli.size(); i ++) {
-    		((Connexion)lCli.get(i)).Envoie((Object)  (new Joueur(joueur,pos_x,pos_y))); //envoie de la position d'un joueur aux autres
+    		((Connexion)lCli.get(i)).Envoie((Object)  (new Joueur(joueur,mvmt,pos_x,pos_y))); //envoie de la position d'un joueur aux autres
     		System.out.println("test2");    	
     	}
     }
 
 	
 	public synchronized void traiteMessage(Object O) {
-		
+		String maposition;
 		try	{
+			if (O instanceof Message) {
+				System.out.println("Message recu : " + O);
+			}
+				
 	
 				// Si l'objet peut-�tre assign� � un message.
 
-				if (Class.forName("Message").isAssignableFrom(O.getClass())) {
+				/*if (Class.forName("Message").isAssignableFrom(O.getClass())) {
 					
 					lMessages.addLast(O);
 					
@@ -113,6 +118,14 @@ public class Server implements Communicateur, Runnable {
 						((Connexion)lCli.get(i)).Envoie(O);	
 					}
 				
+				}*/ else if (Joueur.class.isInstance(O)) { //on reçoit un objet de type joueur
+					Joueur j = (Joueur) O;
+					System.out.println("(server)Pos Joueur recue : " + O);
+
+			    	for (int i = 0; i <= lCli.size(); i ++) {
+			    		((Connexion)lCli.get(i)).Envoie((Object)j); //envoie de la position d'un joueur aux autres
+			    		System.out.println("envoi pos player au joueur "+(i+1));    	
+			    	}
 				}else {
 				
 					// Sinon, c'est un String, nous enlevons alors le client de

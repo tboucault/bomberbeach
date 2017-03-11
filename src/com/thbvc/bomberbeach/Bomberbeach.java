@@ -15,6 +15,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.Socket;
+
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -81,6 +83,8 @@ public class Bomberbeach{
 	private static int myposy_j1 ;
 	private static int myposx_j2 ;
 	private static int myposy_j2 ;
+	
+	private Client moi;
 	
 	/**
 	 * Launch the application.
@@ -285,9 +289,9 @@ public class Bomberbeach{
 					if(can_walk(1,myposx_j1,myposy_j1,"bas")){ //je ne vais pas rencontrer un obstacle
 						traitement_powerup("bas");
 						System.out.println("<down key> : x="+player1_x+" y="+player1_y);
-						//player1_y=player1_y+32; // on bouge le personnage d'une case vers le bas
-						//sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
-						s.envoyer_position(player1_x,player1_y,Integer.parseInt(joueur)); //envoi de la position du joueur 1 au joueur 2
+						player1_y=player1_y+32; // on bouge le personnage d'une case vers le bas
+						sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bas",player1_x,player1_y)));
 					}
 				}
 				else if(joueur.equals("2")){
@@ -296,7 +300,7 @@ public class Bomberbeach{
 						System.out.println("<down key> : x="+player2_x+" y="+player2_y);
 						player2_y=player2_y+32; // on bouge le personnage d'une case vers le bas
 						sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
-						//c.envoyer("*|"+player2_x+"|"+player2_y); //envoi de la position du joueur 2 au joueur 1
+						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bas",player2_x,player2_y)));
 					}
 				}
 			}
@@ -307,7 +311,7 @@ public class Bomberbeach{
 						System.out.println("<up key> : x="+player1_x+" y="+player1_y);
 						player1_y=player1_y-32; // on bouge le personnage d'une case vers le haut
 						sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
-						//s.envoyer("*|"+player1_x+"|"+player1_y);
+						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"haut",player1_x,player1_y)));
 					}
 				}
 				else if(joueur.equals("2")){
@@ -316,7 +320,7 @@ public class Bomberbeach{
 						System.out.println("<up key> : x="+player2_x+" y="+player2_y);
 						player2_y=player2_y-32; // on bouge le personnage d'une case vers le haut
 						sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
-						//c.envoyer("*|"+player2_x+"|"+player2_y);
+						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"haut",player2_x,player2_y)));
 					}
 				}
 			}
@@ -327,7 +331,7 @@ public class Bomberbeach{
 						System.out.println("<right key> : x="+player1_x+" y="+player1_y);
 						player1_x=player1_x+32; // on bouge le personnage d'une case vers la droite
 						sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
-						//s.envoyer("*|"+player1_x+"|"+player1_y);
+						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"droite",player1_x,player1_y)));
 					}
 				}
 				else if(joueur.equals("2")){
@@ -336,7 +340,7 @@ public class Bomberbeach{
 						System.out.println("<right key> : x="+player2_x+" y="+player2_y);
 						player2_x=player2_x+32; // on bouge le personnage d'une case vers la droite
 						sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
-						//c.envoyer("*|"+player2_x+"|"+player2_y);
+						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"droite",player2_x,player2_y)));
 					}
 				}
 			}
@@ -347,7 +351,7 @@ public class Bomberbeach{
 						System.out.println("<left key> : x="+player1_x+" y="+player1_y);
 						player1_x=player1_x-32; // on bouge le personnage d'une case vers la gauche
 						sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
-						//s.envoyer("*|"+player1_x+"|"+player1_y);
+						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"gauche",player1_x,player1_y)));
 					}
 				}
 				else if(joueur.equals("2")){
@@ -356,7 +360,7 @@ public class Bomberbeach{
 						System.out.println("<left key> : x="+player2_x+" y="+player2_y);
 						player2_x=player2_x-32; // on bouge le personnage d'une case vers la gauche
 						sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
-						//c.envoyer("*|"+player2_x+"|"+player2_y);
+						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"gauche",player2_x,player2_y)));
 					}
 				}
 			}
@@ -381,7 +385,7 @@ public class Bomberbeach{
 				else{
 					ip=ipField.getText();
 					port=Integer.parseInt(portField.getText());
-					new Client(ip,port,b);  // lancement d'une instance Client
+					moi = new Client(ip,port,b);  // lancement d'une instance Client
 					/*
 					if (isStart_game()==true){
 						//ipField.disable();
@@ -413,25 +417,40 @@ public class Bomberbeach{
 
 
 	public void receive_pos_player(String maposition){
-		//TODO decouper le string recu maposition pour split et extraire player,x,y...
-					//String line = in.readLine();
-		            //System.out.println(line); //debug
-		            String[] parts = maposition.split("\\,");
-		            String joueur = parts[1];
-		            String x = parts[2];
-		            String y = parts[3];
-		            System.out.println("joueur: "+joueur+" x: "+x+" y: "+y); //debug
-		           /* b[Integer.parseInt(id)].setEnabled(false);
-		            b[Integer.parseInt(id)].setFont(new Font("Arial", Font.PLAIN, 40));
-					b[Integer.parseInt(id)].setText("X");
-					tableau[Integer.parseInt(id)]=1;
-		if(player==1){ //on recoit la position du joueur 1 il faut la modifier (on est le joueur 2)
-			sprites_j[1].setBounds(x, y, 32, 32);
-		}
-		else if(player==2){ //on recoit la position du joueur 2 il faut la modifier (on est le joueur 1)
-			sprites_j[20].setBounds(x, y, 32, 32);
-
-		}*/
+        String[] parts = maposition.split("\\,");
+        String joueur = parts[0];
+        String mvmt = parts[1];
+        String x = parts[2];
+        String y = parts[3];
+        System.out.println("joueur: "+"mouvement: "+mvmt +joueur+" x: "+x+" y: "+y); //debug
+        
+        if(joueur.equals("1")){
+        	if(mvmt.equals("bas")){
+				sprites_j[1].setBounds(Integer.parseInt(x), Integer.parseInt(y), 32, 32);
+        	}
+        	else if(mvmt.equals("haut")){
+				sprites_j[1].setBounds(Integer.parseInt(x), Integer.parseInt(y), 32, 32);
+        	}
+        	else if(mvmt.equals("gauche")){
+				sprites_j[1].setBounds(Integer.parseInt(x), Integer.parseInt(y), 32, 32);
+        	}
+        	else if(mvmt.equals("droite")){
+				sprites_j[1].setBounds(Integer.parseInt(x), Integer.parseInt(y), 32, 32);
+        	}
+        }else if(joueur.equals("2")){
+        	if(mvmt.equals("bas")){
+				sprites_j[20].setBounds(Integer.parseInt(x), Integer.parseInt(y), 32, 32);
+        	}
+        	else if(mvmt.equals("haut")){
+				sprites_j[20].setBounds(Integer.parseInt(x), Integer.parseInt(y), 32, 32);
+        	}
+        	else if(mvmt.equals("gauche")){
+				sprites_j[20].setBounds(Integer.parseInt(x), Integer.parseInt(y), 32, 32);
+        	}
+        	else if(mvmt.equals("droite")){
+				sprites_j[20].setBounds(Integer.parseInt(x), Integer.parseInt(y), 32, 32);
+        	}        	
+        }
 	}
 	
 

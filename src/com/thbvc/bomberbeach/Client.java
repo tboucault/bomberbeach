@@ -74,7 +74,7 @@ public class Client implements Communicateur {
 				} else if (Joueur.class.isInstance(O)) { //on reçoit un objet de type joueur
 					
 					System.out.println("Pos Joueur recue : " + O);
-					Joueur joueur = (Joueur) O; //appel classe map
+					Joueur joueur = (Joueur) O; //appel classe joueur
 					maposition = joueur.setPosition();
 					b.receive_pos_player(maposition);// on l'envoi à bomberbeach qui traitera la matrice pour afficher la map
 				}else {
