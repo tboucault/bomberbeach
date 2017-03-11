@@ -89,7 +89,7 @@ public class Client implements Communicateur {
 					idClient = Integer.parseInt((String) O);
 					
 					System.out.println("Le serveur vous attribue l'identifiant " + idClient + ".");
-					b.tchatarea.setText(b.tchatarea.getText() +"Bienvenue joueur " + idClient);
+					b.getLbl_player().setText("Vous êtes le joueur "+ idClient);
 					b.getbtnJoin().setEnabled(false);
 					b.getipField().setEnabled(false);
 					b.getportField().setEnabled(false);

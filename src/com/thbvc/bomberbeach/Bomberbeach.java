@@ -42,6 +42,8 @@ import java.awt.Color;
 import java.awt.Event;
 import java.awt.Panel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.JSeparator;
 
 public class Bomberbeach{
 
@@ -80,11 +82,9 @@ public class Bomberbeach{
 	private static String ip;
 	private static int port;
 	private static boolean start_game = false;
-	public static JTextPane tchatarea = new JTextPane();
 	public static Panel panel_nogame = new Panel();
-	public static JTextField tchatfield = new JTextField();
-	public static JLabel lbl_level = new JLabel();
 	public static JLabel lbl_info = new JLabel();
+	public static JLabel lbl_player = new JLabel();
 	static Server s;
 	static Client c;
 	static Bomberbeach b;
@@ -121,9 +121,7 @@ public class Bomberbeach{
 	public Bomberbeach() {
 		initialize();
 		this.s = new Server(port, 0);
-		//this.c = new Client(tchatarea,getTchatfield(), this);
 		this. b = this;
-		//this.c = new Client(ip, port,tchatarea,getTchatfield(), this);  // Client.
 		
 	}
 
@@ -194,7 +192,7 @@ public class Bomberbeach{
 		//frmBomberbeach.setUndecorated(true); //on masque la barre de titre
 		frmBomberbeach.getContentPane().setBackground(new Color(46, 139, 87)); //fond couleur verte
 		frmBomberbeach.getContentPane().setLayout(null);
-		frmBomberbeach.setBounds(100, 100, 992, 564);
+		frmBomberbeach.setBounds(100, 100, 703, 564);
 
 		getPanel_nogame().setBackground(new Color(46, 139, 87));
 		getPanel_nogame().setBounds(0, 0, 708, 512);
@@ -204,9 +202,6 @@ public class Bomberbeach{
 		getLbl_info().setText("En attente d'un concurrent...");
 		getPanel_nogame().add(getLbl_info());
 		getPanel_nogame().setVisible(true);
-		getLbl_level().setBounds(741, 24, 61, 16);
-		getLbl_level().setVisible(true);
-		frmBomberbeach.getContentPane().add(getLbl_level());
 
 		// *** client/serveur ***
 		getportField().setBounds(851, 62, 130, 26);
@@ -218,26 +213,8 @@ public class Bomberbeach{
 		// **********************
 		frmBomberbeach.addKeyListener(new KeyAction());
 
-		// *** chat ***
-		final JScrollPane scrollPane = new JScrollPane(tchatarea);
-		scrollPane.setBounds(714, 119, 267, 342);
-		frmBomberbeach.getContentPane().add(scrollPane);
-		tchatarea.setEditable(false);
-		tchatarea.setSize(200, 200);
-		tchatarea.setBackground(new Color(211, 211, 211));
-		tchatarea.addKeyListener(new KeyAction());
-
-		setTchatfield(new JTextField());
-		getTchatfield().disable();
-		getTchatfield().setBackground(new Color(211, 211, 211));
-		getTchatfield().setBounds(712, 466, 271, 30);
-		frmBomberbeach.getContentPane().add(getTchatfield());
-		getTchatfield().setColumns(10);
-
-		frmBomberbeach.getContentPane().add(ipField);
-
-		frmBomberbeach.getContentPane().add(portField);
-		getTchatfield().addKeyListener(new KeyAction());
+		//frmBomberbeach.getContentPane().add(ipField);
+		//frmBomberbeach.getContentPane().add(portField);
 		// *************
 
 
@@ -253,6 +230,18 @@ public class Bomberbeach{
 
 		JMenuItem mntmQuitter = new JMenuItem("Quitter");
 		mnMenu.add(mntmQuitter);
+		
+		JLabel label = new JLabel("           ");
+		JLabel label_1 = new JLabel("           ");
+		JLabel label_2 = new JLabel("           ");
+		
+		menuBar.add(label);
+		menuBar.add(ipField);
+		menuBar.add(portField);
+		menuBar.add(label_1);
+		menuBar.add(getLbl_player());
+		menuBar.add(label_2);
+		
 
 		menuBar.add(Box.createHorizontalGlue());
 		menuBar.add(getbtnJoin());
@@ -262,7 +251,7 @@ public class Bomberbeach{
 
 		mntmQuitter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//c.getCnx().Envoie((Object)(new Integer(c.getIdClient()).toString()));
+				//TODO envoyer aux autres joueurs que le joueur a quitté la partie
 				System.exit(0);	
 			}
 		});
@@ -297,32 +286,16 @@ public class Bomberbeach{
 			myposy_j2 = sprites_j[20].getY();
 			
 			if(joueur ==null) return;
-			if(e.getSource() instanceof JTextField){
+			/*if(e.getSource() instanceof JTextField){
 				if(e.getSource().equals(getTchatfield())){//si click dans le tchatfield on ne redispatch pas et passe a la suite
 
 				}
 				else{//redispatch le keyevent si click dans le tchatarea
 					Bomberbeach.this.frmBomberbeach.getContentPane().requestFocus();
 				}
-			}
+			}*/
 
-			if (e.getKeyCode()== KeyEvent.VK_ENTER) { // si appui sur touche entrer
-				if(getTchatfield().getText().length()>0){
-					if(joueur.equals("1")){
-						if(getTchatfield().getText().length()>0){
-							//s.envoyer(getTchatfield().getText());
-							tchatarea.setCaretPosition(tchatarea.getDocument().getLength());
-							getTchatfield().setText(""); //on vide le champ
-						}
-					}
-					else{
-						//c.envoyer(getTchatfield().getText());
-						tchatarea.setCaretPosition(tchatarea.getDocument().getLength());
-						getTchatfield().setText(""); //on vide le champ
-					}
-				}
-			}
-			else if (e.getKeyCode()== KeyEvent.VK_DOWN) {
+			if (e.getKeyCode()== KeyEvent.VK_DOWN) {
 				if(joueur.equals("1")){
 					if(can_walk(1,myposx_j1,myposy_j1,"bas")){ //je ne vais pas rencontrer un obstacle
 						traitement_powerup("bas");
@@ -611,6 +584,20 @@ public class Bomberbeach{
 			(player1_x == sprites_fire[8].getX()) && (player1_y == sprites_fire[8].getY()) ){
 			sprites_j[1].hide(); //le joueur est mort
 			
+			if(joueur.equals("1")){
+				if(JOptionPane.showConfirmDialog(null, "Vous êtes mort! :( Voulez-vous refaire une partie?","Bomberbeach",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+					//newParty();
+				}
+				else
+					System.exit(0);
+			}else if(joueur.equals("2")){
+				if(JOptionPane.showConfirmDialog(null, "Vous avez gagné !:) Voulez-vous refaire une partie?","Bomberbeach",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+					//newParty();
+				}
+				else
+					System.exit(0);				
+			}
+			
 		}else if( (player2_x == sprites_fire[0].getX()) && (player2_y == sprites_fire[0].getY()) ||
 				(player2_x == sprites_fire[1].getX()) && (player2_y == sprites_fire[1].getY()) ||
 			    (player2_x == sprites_fire[2].getX()) && (player2_y == sprites_fire[2].getY()) ||
@@ -621,6 +608,19 @@ public class Bomberbeach{
 				(player2_x == sprites_fire[7].getX()) && (player2_y == sprites_fire[7].getY()) ||
 				(player2_x == sprites_fire[8].getX()) && (player2_y == sprites_fire[8].getY()) ){
 			sprites_j[20].hide(); //le joueur est mort
+			if(joueur.equals("1")){
+				if(JOptionPane.showConfirmDialog(null, "Vous avez gagné !:) Voulez-vous refaire une partie?","Bomberbeach",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+					//newParty();
+				}
+				else
+					System.exit(0);	
+			}else if(joueur.equals("2")){			
+				if(JOptionPane.showConfirmDialog(null, "Vous êtes mort! :( Voulez-vous refaire une partie?","Bomberbeach",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+					//newParty();
+				}
+				else
+					System.exit(0);
+			}
 		}
 
 	}
@@ -778,15 +778,12 @@ public class Bomberbeach{
 	public void setlevel(int level){
 		panel_nogame.setVisible(false); //on masque le panel vide pour afficher le jeu
 		start_game=true;
-		tchatfield.enable();
 		lbl_info.setVisible(false);
-		lbl_level.setVisible(true); //affichage du label lvl
 
 		switch (level)
 		{
 		case 1:
 			System.out.println("Lancement level 1");
-			lbl_level.setText("Level : " + level);
 			System.out.println("lvl 1 chargé");
 			break;        
 		default:
@@ -802,14 +799,6 @@ public class Bomberbeach{
 
 	public static void setPanel_nogame(Panel panel_nogame) {
 		Bomberbeach.panel_nogame = panel_nogame;
-	}
-
-	public static JTextField getTchatfield() {
-		return tchatfield;
-	}
-
-	public static void setTchatfield(JTextField tchatfield) {
-		Bomberbeach.tchatfield = tchatfield;
 	}
 
 	public static JLabel getLbl_info() {
@@ -832,13 +821,10 @@ public class Bomberbeach{
 		Bomberbeach.lbl_info = lbl_info;
 	}
 
-	public static JLabel getLbl_level() {
-		return lbl_level;
+	public static JLabel getLbl_player() {
+		return lbl_player;
 	}
 
-	public static void setLbl_level(JLabel lbl_level) {
-		Bomberbeach.lbl_level = lbl_level;
-	}
 
 	public static boolean isStart_game() {
 		return start_game;
