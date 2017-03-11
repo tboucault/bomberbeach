@@ -60,6 +60,7 @@ public class Client implements Communicateur {
 
 		String[][] mamap = new String[22][16];
 		String maposition ;
+		String dead;
 		try	{
 				if (O instanceof Message) {
 					
@@ -77,6 +78,12 @@ public class Client implements Communicateur {
 					Joueur joueur = (Joueur) O; //appel classe joueur
 					maposition = joueur.setPosition();
 					b.receive_pos_player(maposition);// on l'envoi à bomberbeach qui traitera la matrice pour afficher la map
+				}else if (PlayerDead.class.isInstance(O)) {
+					
+					System.out.println("Joueur mort recu : " + O);
+					PlayerDead p = (PlayerDead) O;
+					dead = p.check();
+					b.check_dead(dead);// on l'envoi à bomberbeach qui traitera la matrice pour afficher la map
 				}else {
 					
 					idClient = Integer.parseInt((String) O);

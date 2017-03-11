@@ -124,7 +124,13 @@ public class Server implements Communicateur, Runnable {
 
 			    	for (int i = 0; i <= lCli.size(); i ++) {
 			    		((Connexion)lCli.get(i)).Envoie((Object)j); //envoie de la position d'un joueur aux autres
-			    		System.out.println("envoi pos player au joueur "+(i+1));    	
+			    	}
+				}else if (PlayerDead.class.isInstance(O)) {
+					PlayerDead p = (PlayerDead) O;
+					System.out.println("JoueurDead recu : " + O);
+
+			    	for (int i = 0; i <= lCli.size(); i ++) {
+			    		((Connexion)lCli.get(i)).Envoie((Object)p); //envoie aux autres qu'un joueur est mort  	
 			    	}
 				}else {
 				

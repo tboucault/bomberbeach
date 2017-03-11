@@ -504,6 +504,8 @@ public class Bomberbeach{
 				frmBomberbeach.getContentPane().add(sprites_bom[0]); //affichage sur la fenêtre
 				bombe(0,Integer.parseInt(x), Integer.parseInt(y));
         	}
+        	player1_x = sprites_j[1].getX();
+        	player1_y = sprites_j[1].getY();
         }else if(joueur.equals("2")){
         	if(mvmt.equals("bas")){
 				sprites_j[20].setBounds(Integer.parseInt(x), Integer.parseInt(y), 32, 32);
@@ -522,7 +524,10 @@ public class Bomberbeach{
 				sprites_bom[1].setBounds(Integer.parseInt(x), Integer.parseInt(y), 32, 32); //position
 				frmBomberbeach.getContentPane().add(sprites_bom[1]); //affichage sur la fenêtre
 				bombe(1,Integer.parseInt(x), Integer.parseInt(y));
-        	}        	
+        	}    
+        	player2_x = sprites_j[20].getX();
+        	player2_y = sprites_j[20].getY();
+        	
         }
 	}
 	
@@ -565,20 +570,14 @@ public class Bomberbeach{
 		sprites_fire[6].setBounds(x, y+64, 32, 32); //position b
 		sprites_fire[7].setBounds(x-64, y, 32, 32); //position g
 		sprites_fire[8].setBounds(x+64, y, 32, 32); //position d
-		/*frmBomberbeach.getContentPane().add(sprites_fire[0]); //affichage sur la fenêtre
-		frmBomberbeach.getContentPane().add(sprites_fire[1]); //affichage sur la fenêtre
-		frmBomberbeach.getContentPane().add(sprites_fire[2]); //affichage sur la fenêtre
-		frmBomberbeach.getContentPane().add(sprites_fire[3]); //affichage sur la fenêtre
-		frmBomberbeach.getContentPane().add(sprites_fire[4]); //affichage sur la fenêtre
-		frmBomberbeach.getContentPane().add(sprites_fire[5]); //affichage sur la fenêtre
-		frmBomberbeach.getContentPane().add(sprites_fire[6]); //affichage sur la fenêtre
-		frmBomberbeach.getContentPane().add(sprites_fire[7]); //affichage sur la fenêtre
-		frmBomberbeach.getContentPane().add(sprites_fire[8]); //affichage sur la fenêtre */
 		  for(int i=0;i<9;i++){
 				frmBomberbeach.getContentPane().add(sprites_fire[i]); //affichage sur la fenêtre
 		  }
-			frmBomberbeach.getContentPane().repaint();
-	  
+		  
+		  moi.getCnx().Envoie((Object) (new PlayerDead(x,y,player1_x,player1_y,player2_x,player2_y)));
+		
+		frmBomberbeach.getContentPane().repaint();
+		
 		timer2.schedule(new TimerTask() {
 		  @Override
 		  public void run() {
@@ -591,7 +590,40 @@ public class Bomberbeach{
 		}, 1000); //1seconde 
 	}
 	
-	
+	public void check_dead(String string){
+        String[] parts = string.split("\\,");
+        int x = Integer.parseInt(parts[0]);;
+        int y = Integer.parseInt(parts[1]);;
+        int player1_x = Integer.parseInt(parts[2]);;
+        int player1_y = Integer.parseInt(parts[3]);;
+        int player2_x = Integer.parseInt(parts[4]);;
+        int player2_y = Integer.parseInt(parts[5]);;
+			
+			//TODO si objet= on le detruit / si  joueur= perdu
+		if( (player1_x == sprites_fire[0].getX()) && (player1_y == sprites_fire[0].getY()) ||
+			(player1_x == sprites_fire[1].getX()) && (player1_y == sprites_fire[1].getY()) ||
+		    (player1_x == sprites_fire[2].getX()) && (player1_y == sprites_fire[2].getY()) ||
+			(player1_x == sprites_fire[3].getX()) && (player1_y == sprites_fire[3].getY()) ||
+			(player1_x == sprites_fire[4].getX()) && (player1_y == sprites_fire[4].getY()) ||
+			(player1_x == sprites_fire[5].getX()) && (player1_y == sprites_fire[5].getY()) ||
+			(player1_x == sprites_fire[6].getX()) && (player1_y == sprites_fire[6].getY()) ||
+			(player1_x == sprites_fire[7].getX()) && (player1_y == sprites_fire[7].getY()) ||
+			(player1_x == sprites_fire[8].getX()) && (player1_y == sprites_fire[8].getY()) ){
+			sprites_j[1].hide(); //le joueur est mort
+			
+		}else if( (player2_x == sprites_fire[0].getX()) && (player2_y == sprites_fire[0].getY()) ||
+				(player2_x == sprites_fire[1].getX()) && (player2_y == sprites_fire[1].getY()) ||
+			    (player2_x == sprites_fire[2].getX()) && (player2_y == sprites_fire[2].getY()) ||
+				(player2_x == sprites_fire[3].getX()) && (player2_y == sprites_fire[3].getY()) ||
+				(player2_x == sprites_fire[4].getX()) && (player2_y == sprites_fire[4].getY()) ||
+				(player2_x == sprites_fire[5].getX()) && (player2_y == sprites_fire[5].getY()) ||
+				(player2_x == sprites_fire[6].getX()) && (player2_y == sprites_fire[6].getY()) ||
+				(player2_x == sprites_fire[7].getX()) && (player2_y == sprites_fire[7].getY()) ||
+				(player2_x == sprites_fire[8].getX()) && (player2_y == sprites_fire[8].getY()) ){
+			sprites_j[20].hide(); //le joueur est mort
+		}
+
+	}
 	public void receive_boost_player(int player,int id){
 		if(player==1){
 			sprites_bo[id].hide();
