@@ -16,6 +16,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -50,6 +53,7 @@ public class Bomberbeach{
 	ImageIcon icon_mur;
 	ImageIcon icon_boite;
 	ImageIcon icon_brique;
+	ImageIcon icon_bombe;
 	ImageIcon icon_portal;
 	ImageIcon icon_player;
 	ImageIcon icon_player2;
@@ -60,9 +64,11 @@ public class Bomberbeach{
 	private static JLabel[] sprites_b = new JLabel[200];
 	private static JLabel[] sprites_j = new JLabel[200];
 	private static JLabel[] sprites_bo = new JLabel[200];
+	private static JLabel[] sprites_bom = new JLabel[2];
 	boolean enable=true;
 	private static int player1_x,player2_x,player1_y,player2_y;
 	String joueur;
+	Boolean[] cansetbombe = new Boolean[2];
 	private static String ip;
 	private static int port;
 	private static boolean start_game = false;
@@ -74,7 +80,6 @@ public class Bomberbeach{
 	static Server s;
 	static Client c;
 	static Bomberbeach b;
-	//static Map m = new Map(getPanel_nogame(),getTchatfield(),getLbl_info(),getLbl_level(),isStart_game());
 	private static JButton btnJoin = new JButton("Rejoindre une partie");
 	private final static JTextField ipField = new JTextField();
 	private final static JTextField portField = new JTextField();
@@ -128,8 +133,10 @@ public class Bomberbeach{
 			InputStream player_is = new BufferedInputStream(this.getClass().getResourceAsStream("/player.png"));
 			InputStream player2_is = new BufferedInputStream(this.getClass().getResourceAsStream("/player2.png"));
 			InputStream boost_is = new BufferedInputStream(this.getClass().getResourceAsStream("/speed.png"));
+			InputStream bombe_is = new BufferedInputStream(this.getClass().getResourceAsStream("/bombe.png"));
 			Image mur_image = ImageIO.read(mur_is);
 			Image boite_image = ImageIO.read(boite_is);
+			Image bombe_image = ImageIO.read(bombe_is);
 			Image brique_image = ImageIO.read(brique_is);
 			Image portal_image = ImageIO.read(portal_is);
 			Image player_image = ImageIO.read(player_is);
@@ -137,6 +144,7 @@ public class Bomberbeach{
 			Image boost_image = ImageIO.read(boost_is);
 			icon_mur = new ImageIcon(mur_image);
 			icon_boite = new ImageIcon(boite_image);
+			icon_bombe = new ImageIcon(bombe_image);
 			icon_brique = new ImageIcon(brique_image);
 			icon_portal = new ImageIcon(portal_image);
 			icon_player = new ImageIcon(player_image);
@@ -243,6 +251,7 @@ public class Bomberbeach{
 		player1_y =1*32;
 		player2_x =20*32;
 		player2_y =14*32;
+		Arrays.fill(cansetbombe, Boolean.TRUE);
 		// ********************************************************************
 	}
 
@@ -364,6 +373,29 @@ public class Bomberbeach{
 					}
 				}
 			}
+
+			else if (e.getKeyCode()== KeyEvent.VK_SPACE) {
+				if(joueur.equals("1")){
+					if(cansetbombe[0]==true){
+						cansetbombe[0]=false; // le joueur 1 ne peut pas poser d'autres bombe avant que celle-ci explose
+						System.out.println("Joueur 1 a posé une bombe en "+player1_x+","+player1_y);
+						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bombe",player1_x,player1_y)));
+					}
+					else{
+						//on ne peut pas poser une autre bombe
+					}
+				}
+				else if(joueur.equals("2")){
+					if(cansetbombe[1]==true){
+						cansetbombe[1]=false; // le joueur 2 ne peut pas poser d'autres bombe avant que celle-ci explose
+						System.out.println("Joueur 2 a posé une bombe en "+player2_x+","+player2_y);
+						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bombe",player2_x,player2_y)));
+					}
+					else{
+						//on ne peut pas poser une autre bombe
+					}
+				}
+			}
 		}
 
 		/*les deux méthodes suivantes doivent être également écrites pour pouvoir réaliser l'interface KeyListener*/               
@@ -437,6 +469,12 @@ public class Bomberbeach{
         	else if(mvmt.equals("droite")){
 				sprites_j[1].setBounds(Integer.parseInt(x), Integer.parseInt(y), 32, 32);
         	}
+        	else if(mvmt.equals("bombe")){
+				sprites_bom[0] = new JLabel(icon_bombe); //import de l'image d'une bombe
+				sprites_bom[0].setBounds(Integer.parseInt(x), Integer.parseInt(y), 32, 32); //position
+				frmBomberbeach.getContentPane().add(sprites_bom[0]); //affichage sur la fenêtre
+				bombe(0,Integer.parseInt(x), Integer.parseInt(y));
+        	}
         }else if(joueur.equals("2")){
         	if(mvmt.equals("bas")){
 				sprites_j[20].setBounds(Integer.parseInt(x), Integer.parseInt(y), 32, 32);
@@ -449,11 +487,33 @@ public class Bomberbeach{
         	}
         	else if(mvmt.equals("droite")){
 				sprites_j[20].setBounds(Integer.parseInt(x), Integer.parseInt(y), 32, 32);
+        	}  
+        	else if(mvmt.equals("bombe")){
+				sprites_bom[1] = new JLabel(icon_bombe); //import de l'image d'une bombe
+				sprites_bom[1].setBounds(Integer.parseInt(x), Integer.parseInt(y), 32, 32); //position
+				frmBomberbeach.getContentPane().add(sprites_bom[1]); //affichage sur la fenêtre
+				bombe(1,Integer.parseInt(x), Integer.parseInt(y));
         	}        	
         }
 	}
 	
-
+	public void bombe(int id, int x, int y){
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+		  @Override
+		  public void run() {
+			  if(id==0){ //joueur 1
+				  cansetbombe[id]=true; //le joueur peut désormais reposer une bombe
+				  sprites_bom[id].hide();
+			  }else if(id==1){ // joueur 2
+				  cansetbombe[id]=true; //le joueur peut désormais reposer une bombe
+				  sprites_bom[id].hide();
+			  }
+		  }
+		}, 2000); //2secondes
+	}
+	
+	
 	public void receive_boost_player(int player,int id){
 		if(player==1){
 			sprites_bo[id].hide();
