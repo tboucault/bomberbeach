@@ -213,10 +213,6 @@ public class Bomberbeach{
 		// **********************
 		frmBomberbeach.addKeyListener(new KeyAction());
 
-		//frmBomberbeach.getContentPane().add(ipField);
-		//frmBomberbeach.getContentPane().add(portField);
-		// *************
-
 
 		// *** menu ***
 		JMenuBar menuBar = new JMenuBar();
@@ -257,20 +253,11 @@ public class Bomberbeach{
 		});
 		// *************
 
-		//Jbackground desktopPane = new Jbackground();
-		//frmBomberbeach.getContentPane().add(desktopPane, BorderLayout.CENTER);
-
-
-		// ********************************************************************
-		// *** Création texture lvl 1                                       ***
-		// ********************************************************************
-		// spawns + joueurs
 		player1_x =1*32;
 		player1_y =1*32;
 		player2_x =20*32;
 		player2_y =14*32;
 		Arrays.fill(cansetbombe, Boolean.TRUE);
-		// ********************************************************************
 	}
 
 
@@ -286,14 +273,6 @@ public class Bomberbeach{
 			myposy_j2 = sprites_j[20].getY();
 			
 			if(joueur ==null) return;
-			/*if(e.getSource() instanceof JTextField){
-				if(e.getSource().equals(getTchatfield())){//si click dans le tchatfield on ne redispatch pas et passe a la suite
-
-				}
-				else{//redispatch le keyevent si click dans le tchatarea
-					Bomberbeach.this.frmBomberbeach.getContentPane().requestFocus();
-				}
-			}*/
 
 			if (e.getKeyCode()== KeyEvent.VK_DOWN) {
 				if(joueur.equals("1")){
@@ -449,6 +428,9 @@ public class Bomberbeach{
 		System.exit(0);
 	}
 
+ 	// ************************************************************************
+ 	// *** Traitement gestion position des joueurs                          ***
+ 	// ************************************************************************
 
 	public void receive_pos_player(String maposition){
         String[] parts = maposition.split("\\,");
@@ -503,6 +485,22 @@ public class Bomberbeach{
         	
         }
 	}
+
+	public boolean can_walk(int joueur,int x,int y,String mvmt){
+		int myposx_j1 = sprites_j[1].getX();
+		int myposy_j1 = sprites_j[1].getY();
+		int myposx_j2 = sprites_j[20].getX();
+		int myposy_j2 = sprites_j[20].getY();
+		
+		
+		return true;
+	}
+ 	// ************************************************************************
+
+	
+ 	// ************************************************************************
+ 	// *** Traitement interraction lors de la pose d'une bombe et explosion ***
+ 	// ************************************************************************
 	
 	public void bombe(int id, int x, int y){
 		Timer timer = new Timer();
@@ -572,7 +570,7 @@ public class Bomberbeach{
         int player2_x = Integer.parseInt(parts[4]);;
         int player2_y = Integer.parseInt(parts[5]);;
 			
-			//TODO si objet= on le detruit / si  joueur= perdu
+			//TODO si objet= on le détruit
 		if( (player1_x == sprites_fire[0].getX()) && (player1_y == sprites_fire[0].getY()) ||
 			(player1_x == sprites_fire[1].getX()) && (player1_y == sprites_fire[1].getY()) ||
 		    (player1_x == sprites_fire[2].getX()) && (player1_y == sprites_fire[2].getY()) ||
@@ -586,7 +584,7 @@ public class Bomberbeach{
 			
 			if(joueur.equals("1")){
 				if(JOptionPane.showConfirmDialog(null, "Vous êtes mort! :( Voulez-vous refaire une partie?","Bomberbeach",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
-					//newParty();
+					//TODO newParty();
 				}
 				else
 					System.exit(0);
@@ -624,6 +622,13 @@ public class Bomberbeach{
 		}
 
 	}
+ 	// ************************************************************************
+	
+
+	
+ 	// ************************************************************************
+ 	// *** Traitement interraction lors d'un powerup activé                 ***
+ 	// ************************************************************************
 	public void receive_boost_player(int player,int id){
 		if(player==1){
 			sprites_bo[id].hide();
@@ -714,17 +719,7 @@ public class Bomberbeach{
 		
 		
 	}
-	
-	public boolean can_walk(int joueur,int x,int y,String mvmt){
-		int myposx_j1 = sprites_j[1].getX();
-		int myposy_j1 = sprites_j[1].getY();
-		int myposx_j2 = sprites_j[20].getX();
-		int myposy_j2 = sprites_j[20].getY();
-		
-		
-		return true;
-	}
-	
+ 	// ************************************************************************	
 	
  	// ********************************************************************
  	// *** Traitement et affichage de la carte de jeu                   ***
@@ -742,7 +737,6 @@ public class Bomberbeach{
 					sprites_p[row] = new JLabel(icon_brique);
 					sprites_p[row].setBounds(row*32, column*32, 32, 32);
 					frmBomberbeach.getContentPane().add(sprites_p[row]);
-
 				}
 				else if(mamap[row][column].equals("*")){//c'est une boite
 					sprites_b[row] = new JLabel(icon_boite);
@@ -762,8 +756,7 @@ public class Bomberbeach{
 				else if(mamap[row][column].equals("b")){//c'est un boost
 					sprites_bo[row] = new JLabel(icon_boost);
 					sprites_bo[row].setBounds(row*32, column*32, 32, 32);
-					frmBomberbeach.getContentPane().add(sprites_bo[row]);	
-					//System.out.println("boost:"+i +": X="+sprites_bo[i].getX()+" Y="+sprites_bo[i].getY());
+					frmBomberbeach.getContentPane().add(sprites_bo[row]);
 				}
 			}
 		}
@@ -772,9 +765,10 @@ public class Bomberbeach{
 	// ********************************************************************
 
 	
- 	// ********************************************************************
- 	// *** Lancement du lvl après connexion entre client et serveur     ***
- 	// ********************************************************************
+ 	// ************************************************************************************
+ 	// *** Lancement du lvl après connexion entre client et serveur                     ***
+	// *** Permettra une evolution du jeux pour choisir entre plusieurs map prédéfinies ***
+ 	// ************************************************************************************
 	public void setlevel(int level){
 		panel_nogame.setVisible(false); //on masque le panel vide pour afficher le jeu
 		start_game=true;
@@ -790,7 +784,7 @@ public class Bomberbeach{
 			/*Action*/;             
 		}
 	}
-	// ********************************************************************
+	// ************************************************************************************
 	
 	
 	public static Panel getPanel_nogame() {
