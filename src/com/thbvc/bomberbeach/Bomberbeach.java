@@ -54,6 +54,13 @@ public class Bomberbeach{
 	ImageIcon icon_boite;
 	ImageIcon icon_brique;
 	ImageIcon icon_bombe;
+	ImageIcon icon_fire;
+	ImageIcon icon_fire_x;
+	ImageIcon icon_fire_y;
+	ImageIcon icon_fire_d;
+	ImageIcon icon_fire_g;
+	ImageIcon icon_fire_b;
+	ImageIcon icon_fire_h;
 	ImageIcon icon_portal;
 	ImageIcon icon_player;
 	ImageIcon icon_player2;
@@ -65,6 +72,7 @@ public class Bomberbeach{
 	private static JLabel[] sprites_j = new JLabel[200];
 	private static JLabel[] sprites_bo = new JLabel[200];
 	private static JLabel[] sprites_bom = new JLabel[2];
+	private static JLabel[] sprites_fire = new JLabel[30];
 	boolean enable=true;
 	private static int player1_x,player2_x,player1_y,player2_y;
 	String joueur;
@@ -134,9 +142,23 @@ public class Bomberbeach{
 			InputStream player2_is = new BufferedInputStream(this.getClass().getResourceAsStream("/player2.png"));
 			InputStream boost_is = new BufferedInputStream(this.getClass().getResourceAsStream("/speed.png"));
 			InputStream bombe_is = new BufferedInputStream(this.getClass().getResourceAsStream("/bombe.png"));
+			InputStream fire_is = new BufferedInputStream(this.getClass().getResourceAsStream("/fire.png"));
+			InputStream fire_x_is = new BufferedInputStream(this.getClass().getResourceAsStream("/fire_x.png"));
+			InputStream fire_y_is = new BufferedInputStream(this.getClass().getResourceAsStream("/fire_y.png"));
+			InputStream fire_d_is = new BufferedInputStream(this.getClass().getResourceAsStream("/fire_end_d.png"));
+			InputStream fire_g_is = new BufferedInputStream(this.getClass().getResourceAsStream("/fire_end_g.png"));
+			InputStream fire_b_is = new BufferedInputStream(this.getClass().getResourceAsStream("/fire_end_b.png"));
+			InputStream fire_h_is = new BufferedInputStream(this.getClass().getResourceAsStream("/fire_end_h.png"));
 			Image mur_image = ImageIO.read(mur_is);
 			Image boite_image = ImageIO.read(boite_is);
 			Image bombe_image = ImageIO.read(bombe_is);
+			Image fire_image = ImageIO.read(fire_is);
+			Image fire_x_image = ImageIO.read(fire_x_is);
+			Image fire_y_image = ImageIO.read(fire_y_is);
+			Image fire_d_image = ImageIO.read(fire_d_is);
+			Image fire_g_image = ImageIO.read(fire_g_is);
+			Image fire_b_image = ImageIO.read(fire_b_is);
+			Image fire_h_image = ImageIO.read(fire_h_is);
 			Image brique_image = ImageIO.read(brique_is);
 			Image portal_image = ImageIO.read(portal_is);
 			Image player_image = ImageIO.read(player_is);
@@ -149,6 +171,13 @@ public class Bomberbeach{
 			icon_portal = new ImageIcon(portal_image);
 			icon_player = new ImageIcon(player_image);
 			icon_player2 = new ImageIcon(player2_image);
+			icon_fire = new ImageIcon(fire_image);
+			icon_fire_x = new ImageIcon(fire_x_image);
+			icon_fire_y = new ImageIcon(fire_y_image);
+			icon_fire_d = new ImageIcon(fire_d_image);
+			icon_fire_g = new ImageIcon(fire_g_image);
+			icon_fire_h = new ImageIcon(fire_h_image);
+			icon_fire_b = new ImageIcon(fire_b_image);
 			icon_boost = new ImageIcon(boost_image);
 			
 		}
@@ -505,12 +534,61 @@ public class Bomberbeach{
 			  if(id==0){ //joueur 1
 				  cansetbombe[id]=true; //le joueur peut désormais reposer une bombe
 				  sprites_bom[id].hide();
+				  explosion(x,y);
 			  }else if(id==1){ // joueur 2
 				  cansetbombe[id]=true; //le joueur peut désormais reposer une bombe
 				  sprites_bom[id].hide();
+				  explosion(x,y);
 			  }
 		  }
 		}, 2000); //2secondes
+	}
+	
+	public void explosion(int x,int y){
+		Timer timer2 = new Timer();
+
+		sprites_fire[0] = new JLabel(icon_fire);
+		sprites_fire[1] = new JLabel(icon_fire_x);
+		sprites_fire[2] = new JLabel(icon_fire_x);
+		sprites_fire[3] = new JLabel(icon_fire_y);
+		sprites_fire[4] = new JLabel(icon_fire_y);
+		sprites_fire[5] = new JLabel(icon_fire_h);
+		sprites_fire[6] = new JLabel(icon_fire_b);
+		sprites_fire[7] = new JLabel(icon_fire_g);
+		sprites_fire[8] = new JLabel(icon_fire_d);
+		sprites_fire[0].setBounds(x, y, 32, 32); //position centrale
+		sprites_fire[1].setBounds(x+32, y, 32, 32); //position x
+		sprites_fire[2].setBounds(x-32, y, 32, 32); //position x
+		sprites_fire[3].setBounds(x, y+32, 32, 32); //position y
+		sprites_fire[4].setBounds(x, y-32, 32, 32); //position y
+		sprites_fire[5].setBounds(x, y-64, 32, 32); //position h
+		sprites_fire[6].setBounds(x, y+64, 32, 32); //position b
+		sprites_fire[7].setBounds(x-64, y, 32, 32); //position g
+		sprites_fire[8].setBounds(x+64, y, 32, 32); //position d
+		/*frmBomberbeach.getContentPane().add(sprites_fire[0]); //affichage sur la fenêtre
+		frmBomberbeach.getContentPane().add(sprites_fire[1]); //affichage sur la fenêtre
+		frmBomberbeach.getContentPane().add(sprites_fire[2]); //affichage sur la fenêtre
+		frmBomberbeach.getContentPane().add(sprites_fire[3]); //affichage sur la fenêtre
+		frmBomberbeach.getContentPane().add(sprites_fire[4]); //affichage sur la fenêtre
+		frmBomberbeach.getContentPane().add(sprites_fire[5]); //affichage sur la fenêtre
+		frmBomberbeach.getContentPane().add(sprites_fire[6]); //affichage sur la fenêtre
+		frmBomberbeach.getContentPane().add(sprites_fire[7]); //affichage sur la fenêtre
+		frmBomberbeach.getContentPane().add(sprites_fire[8]); //affichage sur la fenêtre */
+		  for(int i=0;i<9;i++){
+				frmBomberbeach.getContentPane().add(sprites_fire[i]); //affichage sur la fenêtre
+		  }
+			frmBomberbeach.getContentPane().repaint();
+	  
+		timer2.schedule(new TimerTask() {
+		  @Override
+		  public void run() {
+			  for(int i=0;i<9;i++){
+				  sprites_fire[i].hide();
+			  }
+
+				frmBomberbeach.getContentPane().repaint();
+		  }
+		}, 1000); //1seconde 
 	}
 	
 	
