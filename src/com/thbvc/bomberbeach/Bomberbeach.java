@@ -283,31 +283,45 @@ public class Bomberbeach{
 				if(joueur.equals("1")){
 					mapos_x = player1_x/32; // on stock l'id de la colonne où le joueur est
 					mapos_y = player1_y/32; // on stock l'id de la ligne où le joueur est
-					if(can_walk(1,myposx_j1,myposy_j1,"bas")){ //je ne vais pas rencontrer un obstacle
-						traitement_powerup("bas");
-						System.out.println("<down key> : x="+player1_x+" y="+player1_y);
-						if (boost_speed==1){//boost de vitesse on avance 2 fois plus vite
-							player1_y=player1_y+64; // on bouge le personnage d'une case vers le bas (2 cases)
-						}else{
+					switch(can_walk("bas")){ // on regarde s'il y a un obstacle
+						case 1:
+							traitement_powerup("bas");
+							System.out.println("<down key> : x="+player1_x+" y="+player1_y);
 							player1_y=player1_y+32; // on bouge le personnage d'une case vers le bas
-						}
-						sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
-						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bas",player1_x,player1_y)));
+							sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bas",player1_x,player1_y)));
+							break;
+						case 2:
+							traitement_powerup("bas");
+							System.out.println("<down key> : x="+player1_x+" y="+player1_y);
+							player1_y=player1_y+64; // on bouge le personnage d'une case vers le bas (2 cases)
+							sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bas",player1_x,player1_y)));
+							break;
+						case 0:
+							break;
 					}
 				}
 				else if(joueur.equals("2")){
 					mapos_x = player2_x/32; // on stock l'id de la colonne où le joueur est
 					mapos_y = player2_y/32; // on stock l'id de la ligne où le joueur est
-					if(can_walk(2,myposx_j2,myposy_j2,"bas")){ //je ne vais pas rencontrer un obstacle
-						traitement_powerup("bas");
-						System.out.println("<down key> : x="+player2_x+" y="+player2_y);
-						if (boost_speed==1){//boost de vitesse on avance 2 fois plus vite
-							player2_y=player2_y+64; // on bouge le personnage d'une case vers le bas (2 cases)
-						}else{
+					switch(can_walk("bas")){ // on regarde s'il y a un obstacle
+						case 1:
+							traitement_powerup("bas");
+							System.out.println("<down key> : x="+player2_x+" y="+player2_y);
 							player2_y=player2_y+32; // on bouge le personnage d'une case vers le bas
-						}
-						sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
-						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bas",player2_x,player2_y)));
+							sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bas",player2_x,player2_y)));
+							break;
+						case 2:
+							traitement_powerup("bas");
+							System.out.println("<down key> : x="+player2_x+" y="+player2_y);
+							player2_y=player2_y+64; // on bouge le personnage d'une case vers le bas (2 cases)
+							sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bas",player2_x,player2_y)));
+							break;
+						case 0:
+							break;
 					}
 				}
 			}
@@ -315,31 +329,45 @@ public class Bomberbeach{
 				if(joueur.equals("1")){
 					mapos_x = player1_x/32; // on stock l'id de la colonne où le joueur est
 					mapos_y = player1_y/32; // on stock l'id de la ligne où le joueur est
-					if(can_walk(1,myposx_j1,myposy_j1,"haut")){ //je ne vais pas rencontrer un obstacle
-						traitement_powerup("haut");
-						System.out.println("<up key> : x="+player1_x+" y="+player1_y);
-						if (boost_speed==1){//boost de vitesse on avance 2 fois plus vite
-							player1_y=player1_y-64; // on bouge le personnage d'une case vers le bas (2 cases)
-						}else{
+					switch(can_walk("haut")){ // on regarde s'il y a un obstacle
+						case 1:
+							traitement_powerup("haut");
+							System.out.println("<up key> : x="+player1_x+" y="+player1_y);
 							player1_y=player1_y-32; // on bouge le personnage d'une case vers le bas
-						}
-						sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
-						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"haut",player1_x,player1_y)));
+							sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"haut",player1_x,player1_y)));
+							break;
+						case 2:
+							traitement_powerup("haut");
+							System.out.println("<up key> : x="+player1_x+" y="+player1_y);
+							player1_y=player1_y-64; // on bouge le personnage d'une case vers le bas (2 cases)
+							sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"haut",player1_x,player1_y)));
+							break;
+						case 0:
+							break;
 					}
 				}
 				else if(joueur.equals("2")){
 					mapos_x = player2_x/32; // on stock l'id de la colonne où le joueur est
 					mapos_y = player2_y/32; // on stock l'id de la ligne où le joueur est
-					if(can_walk(2,myposx_j2,myposy_j2,"haut")){ //je ne vais pas rencontrer un obstacle
-						traitement_powerup("haut");
-						System.out.println("<up key> : x="+player2_x+" y="+player2_y);
-						if (boost_speed==1){//boost de vitesse on avance 2 fois plus vite
-							player2_y=player2_y-64; // on bouge le personnage d'une case vers le haut (2 cases)
-						}else{
+					switch(can_walk("haut")){ // on regarde s'il y a un obstacle
+						case 1:
+							traitement_powerup("haut");
+							System.out.println("<up key> : x="+player2_x+" y="+player2_y);
 							player2_y=player2_y-32; // on bouge le personnage d'une case vers le haut
-						}
-						sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
-						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"haut",player2_x,player2_y)));
+							sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"haut",player2_x,player2_y)));
+							break;
+						case 2:
+							traitement_powerup("haut");
+							System.out.println("<up key> : x="+player2_x+" y="+player2_y);
+							player2_y=player2_y-64; // on bouge le personnage d'une case vers le haut (2 cases)
+							sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"haut",player2_x,player2_y)));
+							break;
+						case 0:
+							break;
 					}
 				}
 			}
@@ -347,31 +375,45 @@ public class Bomberbeach{
 				if(joueur.equals("1")){
 					mapos_x = player1_x/32; // on stock l'id de la colonne où le joueur est
 					mapos_y = player1_y/32; // on stock l'id de la ligne où le joueur est
-					if(can_walk(1,myposx_j1,myposy_j1,"droite")){ //je ne vais pas rencontrer un obstacle
-						traitement_powerup("droite");
-						System.out.println("<right key> : x="+player1_x+" y="+player1_y);
-						if (boost_speed==1){//boost de vitesse on avance 2 fois plus vite
-							player1_x=player1_x+64; // on bouge le personnage d'une case vers la droite (2 cases)
-						}else{
+					switch(can_walk("droite")){ // on regarde s'il y a un obstacle
+						case 1:
+							traitement_powerup("droite");
+							System.out.println("<right key> : x="+player1_x+" y="+player1_y);
 							player1_x=player1_x+32; // on bouge le personnage d'une case vers la droite
-						}
-						sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
-						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"droite",player1_x,player1_y)));
+							sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"droite",player1_x,player1_y)));
+							break;
+						case 2:
+							traitement_powerup("droite");
+							System.out.println("<right key> : x="+player1_x+" y="+player1_y);
+							player1_x=player1_x+64; // on bouge le personnage d'une case vers la droite (2 cases)
+							sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"droite",player1_x,player1_y)));
+							break;
+						case 0:
+							break;
 					}
 				}
 				else if(joueur.equals("2")){
 					mapos_x = player2_x/32; // on stock l'id de la colonne où le joueur est
 					mapos_y = player2_y/32; // on stock l'id de la ligne où le joueur est
-					if(can_walk(2,myposx_j2,myposy_j2,"droite")){ //je ne vais pas rencontrer un obstacle
-						traitement_powerup("droite");
-						System.out.println("<right key> : x="+player2_x+" y="+player2_y);
-						if (boost_speed==1){//boost de vitesse on avance 2 fois plus vite
-							player2_x=player2_x+64; // on bouge le personnage d'une case vers la droite (2 cases)
-						}else{
+						switch(can_walk("droite")){ // on regarde s'il y a un obstacle
+						case 1:
+							traitement_powerup("droite");
+							System.out.println("<right key> : x="+player2_x+" y="+player2_y);
 							player2_x=player2_x+32; // on bouge le personnage d'une case vers la droite
-						}
-						sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
-						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"droite",player2_x,player2_y)));
+							sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"droite",player2_x,player2_y)));
+							break;
+						case 2:
+							traitement_powerup("droite");
+							System.out.println("<right key> : x="+player2_x+" y="+player2_y);
+							player2_x=player2_x+64; // on bouge le personnage d'une case vers la droite (2 cases)
+							sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"droite",player2_x,player2_y)));
+							break;
+						case 0:
+							break;
 					}
 				}
 			}
@@ -379,31 +421,45 @@ public class Bomberbeach{
 				if(joueur.equals("1")){
 					mapos_x = player1_x/32; // on stock l'id de la colonne où le joueur est
 					mapos_y = player1_y/32; // on stock l'id de la ligne où le joueur est
-					if(can_walk(1,myposx_j1,myposy_j1,"gauche")){ //je ne vais pas rencontrer un obstacle
-						traitement_powerup("gauche");
-						System.out.println("<left key> : x="+player1_x+" y="+player1_y);
-						if (boost_speed==1){//boost de vitesse on avance 2 fois plus vite
-							player1_x=player1_x-64; // on bouge le personnage d'une case vers la gauche (2 cases)
-						}else{
+					switch(can_walk("gauche")){ // on regarde s'il y a un obstacle
+						case 1:
+							traitement_powerup("gauche");
+							System.out.println("<left key> : x="+player1_x+" y="+player1_y);
 							player1_x=player1_x-32; // on bouge le personnage d'une case vers la gauche
-						}
-						sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
-						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"gauche",player1_x,player1_y)));
+							sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"gauche",player1_x,player1_y)));
+							break;
+						case 2:
+							traitement_powerup("gauche");
+							System.out.println("<left key> : x="+player1_x+" y="+player1_y);
+							player1_x=player1_x-64; // on bouge le personnage d'une case vers la gauche (2 cases)
+							sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"gauche",player1_x,player1_y)));
+							break;
+						case 0:
+							break;
 					}
 				}
 				else if(joueur.equals("2")){
 					mapos_x = player2_x/32; // on stock l'id de la colonne où le joueur est
 					mapos_y = player2_y/32; // on stock l'id de la ligne où le joueur est
-					if(can_walk(2,myposx_j2,myposy_j2,"gauche")){ //je ne vais pas rencontrer un obstacle
-						traitement_powerup("gauche");
-						System.out.println("<left key> : x="+player2_x+" y="+player2_y);
-						if (boost_speed==1){//boost de vitesse on avance 2 fois plus vite
-							player2_x=player2_x-64; // on bouge le personnage d'une case vers la gauche (2 cases)
-						}else{
+						switch(can_walk("gauche")){ // on regarde s'il y a un obstacle
+						case 1:
+							traitement_powerup("gauche");
+							System.out.println("<left key> : x="+player2_x+" y="+player2_y);
 							player2_x=player2_x-32; // on bouge le personnage d'une case vers la gauche
-						}
-						sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
-						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"gauche",player2_x,player2_y)));
+							sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"gauche",player2_x,player2_y)));
+							break;
+						case 2:
+							traitement_powerup("gauche");
+							System.out.println("<left key> : x="+player2_x+" y="+player2_y);
+							player2_x=player2_x-64; // on bouge le personnage d'une case vers la gauche (2 cases)
+							sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"gauche",player2_x,player2_y)));
+							break;
+						case 0:
+							break;
 					}
 				}
 			}
@@ -542,39 +598,82 @@ public class Bomberbeach{
         }
 	}
 
-	public boolean can_walk(int joueur,int x,int y,String mvmt){
-		
-		//TODO relire la matrice map et si mur/pilier/caisse on ne peut pas avancer
-		//TODO pour faire ça : besoin de créer une matrice maposition[][] pour faire correspondre les id row/column...
-		
-		
+	public int can_walk(String mvmt){
 		switch(mvmt){
 			case "bas":
-				if(mymap[mapos_x][mapos_y+1].equals("#") || mymap[mapos_x][mapos_y+1].equals("@") || mymap[mapos_x][mapos_y+1].equals("*")){
-					return false;
+				if (boost_speed==1){
+					if(mymap[mapos_x][mapos_y+2].equals("#") || mymap[mapos_x][mapos_y+2].equals("@") || mymap[mapos_x][mapos_y+2].equals("*")){
+						if(mymap[mapos_x][mapos_y+1].equals("#") || mymap[mapos_x][mapos_y+1].equals("@") || mymap[mapos_x][mapos_y+1].equals("*")){
+							return 0;
+						}else{
+							return 1;
+						}
+					}else{
+						return 2;
+					}
 				}else{
-					return true;
+					if(mymap[mapos_x][mapos_y+1].equals("#") || mymap[mapos_x][mapos_y+1].equals("@") || mymap[mapos_x][mapos_y+1].equals("*")){
+						return 0;
+					}else{
+						return 1;
+					}
 				}
 			case "haut":
-				if(mymap[mapos_x][mapos_y-1].equals("#") || mymap[mapos_x][mapos_y-1].equals("@") || mymap[mapos_x][mapos_y-1].equals("*")){
-					return false;
+				if (boost_speed==1){
+					if(mymap[mapos_x][mapos_y-2].equals("#") || mymap[mapos_x][mapos_y-2].equals("@") || mymap[mapos_x][mapos_y-2].equals("*")){
+						if(mymap[mapos_x][mapos_y-1].equals("#") || mymap[mapos_x][mapos_y-1].equals("@") || mymap[mapos_x][mapos_y-1].equals("*")){
+							return 0;
+						}else{
+							return 1;
+						}
+					}else{
+						return 2;
+					}
 				}else{
-					return true;
-				}				
+					if(mymap[mapos_x][mapos_y-1].equals("#") || mymap[mapos_x][mapos_y-1].equals("@") || mymap[mapos_x][mapos_y-1].equals("*")){
+						return 0;
+					}else{
+						return 1;
+					}
+				}
 			case "gauche":
-				if(mymap[mapos_x-1][mapos_y].equals("#") || mymap[mapos_x-1][mapos_y].equals("@") || mymap[mapos_x-1][mapos_y].equals("*")){
-					return false;
+				if (boost_speed==1){
+					if(mymap[mapos_x-2][mapos_y].equals("#") || mymap[mapos_x-2][mapos_y].equals("@") || mymap[mapos_x-2][mapos_y].equals("*")){
+						if(mymap[mapos_x-1][mapos_y].equals("#") || mymap[mapos_x-1][mapos_y].equals("@") || mymap[mapos_x-1][mapos_y].equals("*")){
+							return 0;
+						}else{
+							return 1;
+						}
+					}else{
+						return 2;
+					}
 				}else{
-					return true;
-				}				
+					if(mymap[mapos_x-1][mapos_y].equals("#") || mymap[mapos_x-1][mapos_y].equals("@") || mymap[mapos_x-1][mapos_y].equals("*")){
+						return 0;
+					}else{
+						return 1;
+					}
+				}
 			case "droite":
-				if(mymap[mapos_x+1][mapos_y].equals("#") || mymap[mapos_x+1][mapos_y].equals("@") || mymap[mapos_x+1][mapos_y].equals("*")){
-					return false;
+				if (boost_speed==1){
+					if(mymap[mapos_x+2][mapos_y].equals("#") || mymap[mapos_x+2][mapos_y].equals("@") || mymap[mapos_x+2][mapos_y].equals("*")){
+						if(mymap[mapos_x+1][mapos_y].equals("#") || mymap[mapos_x+1][mapos_y].equals("@") || mymap[mapos_x+1][mapos_y].equals("*")){
+							return 0;
+						}else{
+							return 1;
+						}
+					}else{
+						return 2;
+					}
 				}else{
-					return true;
-				}				
+					if(mymap[mapos_x+1][mapos_y].equals("#") || mymap[mapos_x+1][mapos_y].equals("@") || mymap[mapos_x+1][mapos_y].equals("*")){
+						return 0;
+					}else{
+						return 1;
+					}
+				}
 			default:
-				return false;
+				return 0;
 		}		
 		
 	}
@@ -765,42 +864,37 @@ public class Bomberbeach{
 	}
 
 	public void traitement_powerup(String mvmt){
-		int myposx_j1 = sprites_j[1].getX();
-		int myposy_j1 = sprites_j[1].getY();
-		int myposx_j2 = sprites_j[20].getX();
-		int myposy_j2 = sprites_j[20].getY();
-
 		switch (mvmt) {
 		case "bas":
 			if(joueur.equals("1")){
-				if((myposx_j1==sprites_bo[10].getX() && myposy_j1==sprites_bo[10].getY()-32) ){
+				if((mapos_x*32==sprites_bo[10].getX() && mapos_y*32==sprites_bo[10].getY()-32) ){
 					System.out.println("Powerup BOOST activé");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));
 				}	
-				else if(myposx_j1==sprites_bo[16].getX() && myposy_j1==sprites_bo[16].getY()-32){
+				else if(mapos_x*32==sprites_bo[16].getX() && mapos_y*32==sprites_bo[16].getY()-32){
 					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));			
 				}
-				else if(myposx_j1==sprites_bo[4].getX() && myposy_j1==sprites_bo[4].getY()-32){
+				else if(mapos_x*32==sprites_bo[4].getX() && mapos_y*32==sprites_bo[4].getY()-32){
 					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));	
 				}
 			}	
 			else{
-				if((myposx_j2==sprites_bo[10].getX() && myposy_j2==sprites_bo[10].getY()-32) ){
+				if((mapos_x*32==sprites_bo[10].getX() && mapos_y*32==sprites_bo[10].getY()-32) ){
 					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));
 				}	
-				else if(myposx_j2==sprites_bo[16].getX() && myposy_j2==sprites_bo[16].getY()-32){
+				else if(mapos_x*32==sprites_bo[16].getX() && mapos_y*32==sprites_bo[16].getY()-32){
 					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));			
 				}
-				else if(myposx_j2==sprites_bo[4].getX() && myposy_j2==sprites_bo[4].getY()-32){
+				else if(mapos_x*32==sprites_bo[4].getX() && mapos_y*32==sprites_bo[4].getY()-32){
 					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));	
@@ -809,34 +903,34 @@ public class Bomberbeach{
 			}
 		case "haut":
 			if(joueur.equals("1")){
-				if((myposx_j1==sprites_bo[10].getX() && myposy_j1==sprites_bo[10].getY()+32) ){
+				if((mapos_x*32==sprites_bo[10].getX() && mapos_y*32==sprites_bo[10].getY()+32) ){
 					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));
 				}	
-				else if(myposx_j1==sprites_bo[16].getX() && myposy_j1==sprites_bo[16].getY()+32){
+				else if(mapos_x*32==sprites_bo[16].getX() && mapos_y*32==sprites_bo[16].getY()+32){
 					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));			
 				}
-				else if(myposx_j1==sprites_bo[4].getX() && myposy_j1==sprites_bo[4].getY()+32){
+				else if(mapos_x*32==sprites_bo[4].getX() && mapos_y*32==sprites_bo[4].getY()+32){
 					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));	
 				}
 			}	
 			else{
-				if((myposx_j2==sprites_bo[10].getX() && myposy_j2==sprites_bo[10].getY()+32) ){
+				if((mapos_x*32==sprites_bo[10].getX() && mapos_y*32==sprites_bo[10].getY()+32) ){
 					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));
 				}	
-				else if(myposx_j2==sprites_bo[16].getX() && myposy_j2==sprites_bo[16].getY()+32){
+				else if(mapos_x*32==sprites_bo[16].getX() && mapos_y*32==sprites_bo[16].getY()+32){
 					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));			
 				}
-				else if(myposx_j2==sprites_bo[4].getX() && myposy_j2==sprites_bo[4].getY()+32){
+				else if(mapos_x*32==sprites_bo[4].getX() && mapos_y*32==sprites_bo[4].getY()+32){
 					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));	
@@ -845,34 +939,34 @@ public class Bomberbeach{
 			}
 		case "droite":
 			if(joueur.equals("1")){
-				if((myposx_j1==sprites_bo[10].getX()-32 && myposy_j1==sprites_bo[10].getY()) ){
+				if((mapos_x*32==sprites_bo[10].getX()-32 && mapos_y*32==sprites_bo[10].getY()) ){
 					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));
 				}	
-				else if(myposx_j1==sprites_bo[16].getX()-32 && myposy_j1==sprites_bo[16].getY()){
+				else if(mapos_x*32==sprites_bo[16].getX()-32 && mapos_y*32==sprites_bo[16].getY()){
 					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));			
 				}
-				else if(myposx_j1==sprites_bo[4].getX()-32 && myposy_j1==sprites_bo[4].getY()){
+				else if(mapos_x*32==sprites_bo[4].getX()-32 && mapos_y*32==sprites_bo[4].getY()){
 					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));	
 				}
 			}	
 			else{
-				if((myposx_j2==sprites_bo[10].getX()-32 && myposy_j2==sprites_bo[10].getY()) ){
+				if((mapos_x*32==sprites_bo[10].getX()-32 && mapos_y*32==sprites_bo[10].getY()) ){
 					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));
 				}	
-				else if(myposx_j2==sprites_bo[16].getX()-32 && myposy_j2==sprites_bo[16].getY()){
+				else if(mapos_x*32==sprites_bo[16].getX()-32 && mapos_y*32==sprites_bo[16].getY()){
 					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));			
 				}
-				else if(myposx_j2==sprites_bo[4].getX()-32 && myposy_j2==sprites_bo[4].getY()){
+				else if(mapos_x*32==sprites_bo[4].getX()-32 && mapos_y*32==sprites_bo[4].getY()){
 					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));	
@@ -881,34 +975,34 @@ public class Bomberbeach{
 			}
 		case "gauche":
 			if(joueur.equals("1")){
-				if((myposx_j1==sprites_bo[10].getX()+32 && myposy_j1==sprites_bo[10].getY()) ){
+				if((mapos_x*32==sprites_bo[10].getX()+32 && mapos_y*32==sprites_bo[10].getY()) ){
 					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));
 				}	
-				else if(myposx_j1==sprites_bo[16].getX()+32 && myposy_j1==sprites_bo[16].getY()){
+				else if(mapos_x*32==sprites_bo[16].getX()+32 && mapos_y*32==sprites_bo[16].getY()){
 					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));			
 				}
-				else if(myposx_j1==sprites_bo[4].getX()+32 && myposy_j1==sprites_bo[4].getY()){
+				else if(mapos_x*32==sprites_bo[4].getX()+32 && mapos_y==sprites_bo[4].getY()){
 					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));	
 				}
 			}	
 			else{
-				if((myposx_j2==sprites_bo[10].getX()+32 && myposy_j2==sprites_bo[10].getY()) ){
+				if((mapos_x*32==sprites_bo[10].getX()+32 && mapos_y*32==sprites_bo[10].getY()) ){
 					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));
 				}	
-				else if(myposx_j2==sprites_bo[16].getX()+32 && myposy_j2==sprites_bo[16].getY()){
+				else if(mapos_x*32==sprites_bo[16].getX()+32 && mapos_y*32==sprites_bo[16].getY()){
 					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));			
 				}
-				else if(myposx_j2==sprites_bo[4].getX()+32 && myposy_j2==sprites_bo[4].getY()){
+				else if(mapos_x*32==sprites_bo[4].getX()+32 && mapos_y*32==sprites_bo[4].getY()){
 					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));	
