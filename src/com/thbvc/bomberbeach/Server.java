@@ -102,23 +102,7 @@ public class Server implements Communicateur, Runnable {
 	public synchronized void traiteMessage(Object O) {
 		String maposition;
 		try	{
-			if (O instanceof Message) {
-				System.out.println("Message recu : " + O);
-			}
-				
-	
-				// Si l'objet peut-�tre assign� � un message.
-
-				/*if (Class.forName("Message").isAssignableFrom(O.getClass())) {
-					
-					lMessages.addLast(O);
-					
-					for (int i = 0; i < lCli.size(); i ++) {
-					
-						((Connexion)lCli.get(i)).Envoie(O);	
-					}
-				
-				}*/ else if (Joueur.class.isInstance(O)) { //on reçoit un objet de type joueur
+				if (Joueur.class.isInstance(O)) { //on reçoit un objet de type joueur
 					Joueur j = (Joueur) O;
 					System.out.println("(server)Pos Joueur recue : " + O);
 
@@ -131,6 +115,13 @@ public class Server implements Communicateur, Runnable {
 
 			    	for (int i = 0; i <= lCli.size(); i ++) {
 			    		((Connexion)lCli.get(i)).Envoie((Object)p); //envoie aux autres qu'un joueur est mort  	
+			    	}
+				}else if (Boost.class.isInstance(O)) {
+					Boost b = (Boost) O;
+					System.out.println("Boost recu : " + O);
+
+			    	for (int i = 0; i <= lCli.size(); i ++) {
+			    		((Connexion)lCli.get(i)).Envoie((Object)b); //envoie aux autres qu'un joueur a pris un boost 	
 			    	}
 				}else {
 				
@@ -159,113 +150,5 @@ public class Server implements Communicateur, Runnable {
 			System.out.println("Objet recu non identifie !");	
 		}
 	}
-	
-	/*JTextPane chat;
-	JTextField chatfield;
-
-	 static Bomberbeach b;
-	 static Map m;
-	 private static int skt_port = 5000;
-	 static int level = 1;
-     private ServerSocket serveurSocket  ;
-     private Socket clientSocket ;
-     private BufferedReader in;
-     private PrintWriter out;
-     
-     public Server(JTextPane chat,JTextField chatfield, Bomberbeach b){
-    	 this.b = b;
-    	 this.m = new Map(b.getPanel_nogame(),b.getTchatfield(),b.getLbl_info(),b.getLbl_level(),b.isStart_game());
-     	 this.chat = chat;
-    	 this.chatfield = chatfield;
-      }
-
-     public void envoyer(String message){
-         SwingUtilities.invokeLater(new Runnable() {
-             @Override
-             public void run() {
-            	 if(message.charAt(0)!='*' && message.charAt(0)!='@'){ //ce n'est pas un message système donc on l'envoi dans le tchat
-            		 chat.setText(chat.getText() + "\nJoueur 1: "+message);
-            	 }
-             }
-         });
-         out.println(message);
-         out.flush();
-     }
-
-
-     public void traitement(String msg){
-		//String line = in.readLine();
-        //System.out.println(line); //debug
-        String[] parts = msg.split("\\|");
-        String x = parts[1];
-        String y = parts[2];
-        System.out.println("posX 2to1: "+x); //debug
-        System.out.println("posY 2to1: "+y); //debug
-		b.receive_pos_player(2,Integer.parseInt(x),Integer.parseInt(y));    
-     }
-
-     public void traitement_boost(String msg){
- 		  //String line = in.readLine();
-         //System.out.println(line); //debug
-         String[] parts = msg.split("\\|");
-         String type = parts[1];
-         String id = parts[2];
-         System.out.println(type+" 1to2: "+ id); //debug
- 		  b.receive_boost_player(1,Integer.parseInt(id));    
-     }
-         
-     
-     public void start(String ip, int port){
-     try {
-       serveurSocket = new ServerSocket(port);
-       clientSocket = serveurSocket.accept();
-       System.out.println("Serveur démarré\n###################");
-       m.setlevel(level);// chargement de la map
-       System.out.println("Joueur 1 rejoint la partie");
-       out = new PrintWriter(clientSocket.getOutputStream());
-       in = new BufferedReader (new InputStreamReader (clientSocket.getInputStream()));
-      
-   
-       Thread recevoir= new Thread(new Runnable() {
-          String msg ;
-          @Override
-          public void run() {
-             try {
-                msg = in.readLine();
-                //tant que le client est connecté
-                while(msg!=null){
-                   System.out.println("Client : "+msg);
-                   // update the label IN THE EDT!
-                   SwingUtilities.invokeLater(new Runnable() {
-                       @Override
-                       public void run() {
-                    	 if(msg.charAt(0)=='*'){//message système: on recoit la position du joueur 2 et la traite
-                    		 //todo: on lit le message et envoi la pos x et y
-                    		 traitement(msg);
-                      	 }
-                      	 else //message texte, on affiche le message du joueur 2 dans notre tchat
-                      		 chat.setText(chat.getText() +"\nJoueur 2: "+ msg);
-                       }
-                   });
-                   //traitement(msg,tableau);  
-                   msg = in.readLine();
-                }
-                //sortir de la boucle si le client a déconecté
-                System.out.println("Client déconecté");
-                b.player_leave("2");
-                //fermer le flux et la session socket
-                out.close();
-                clientSocket.close();
-                serveurSocket.close();
-             } catch (IOException e) {
-                  e.printStackTrace();
-             }
-         }
-      });
-      recevoir.start();
-      }catch (IOException e) {
-         e.printStackTrace();
-      }
-     }*/
 
 }
