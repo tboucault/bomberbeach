@@ -568,7 +568,7 @@ public class Bomberbeach{
 				frmBomberbeach.getContentPane().add(sprites_bom[0]); //affichage sur la fenêtre
 				bombe(0,Integer.parseInt(x), Integer.parseInt(y));
         	}
-        	else if(mvmt.equals("boost")){
+        	else if(mvmt.equals("speed")){
         		//TODO gestion boost
         	}
         	player1_x = sprites_j[1].getX();
@@ -602,14 +602,14 @@ public class Bomberbeach{
 		switch(mvmt){
 			case "bas":
 				if (boost_speed==1){
-					if(mymap[mapos_x][mapos_y+2].equals("#") || mymap[mapos_x][mapos_y+2].equals("@") || mymap[mapos_x][mapos_y+2].equals("*")){
-						if(mymap[mapos_x][mapos_y+1].equals("#") || mymap[mapos_x][mapos_y+1].equals("@") || mymap[mapos_x][mapos_y+1].equals("*")){
-							return 0;
-						}else{
-							return 1;
-						}
+					if(mymap[mapos_x][mapos_y+1].equals("#") || mymap[mapos_x][mapos_y+1].equals("@") || mymap[mapos_x][mapos_y+1].equals("*")){
+						return 0;
 					}else{
-						return 2;
+						if(mymap[mapos_x][mapos_y+2].equals("#") || mymap[mapos_x][mapos_y+2].equals("@") || mymap[mapos_x][mapos_y+2].equals("*")){
+							return 1;
+						}else{
+							return 2;
+						}
 					}
 				}else{
 					if(mymap[mapos_x][mapos_y+1].equals("#") || mymap[mapos_x][mapos_y+1].equals("@") || mymap[mapos_x][mapos_y+1].equals("*")){
@@ -620,14 +620,14 @@ public class Bomberbeach{
 				}
 			case "haut":
 				if (boost_speed==1){
-					if(mymap[mapos_x][mapos_y-2].equals("#") || mymap[mapos_x][mapos_y-2].equals("@") || mymap[mapos_x][mapos_y-2].equals("*")){
-						if(mymap[mapos_x][mapos_y-1].equals("#") || mymap[mapos_x][mapos_y-1].equals("@") || mymap[mapos_x][mapos_y-1].equals("*")){
-							return 0;
-						}else{
-							return 1;
-						}
+					if(mymap[mapos_x][mapos_y-1].equals("#") || mymap[mapos_x][mapos_y-1].equals("@") || mymap[mapos_x][mapos_y-1].equals("*")){
+						return 0;
 					}else{
-						return 2;
+						if(mymap[mapos_x][mapos_y-2].equals("#") || mymap[mapos_x][mapos_y-2].equals("@") || mymap[mapos_x][mapos_y-2].equals("*")){
+							return 1;
+						}else{
+							return 2;
+						}
 					}
 				}else{
 					if(mymap[mapos_x][mapos_y-1].equals("#") || mymap[mapos_x][mapos_y-1].equals("@") || mymap[mapos_x][mapos_y-1].equals("*")){
@@ -638,14 +638,14 @@ public class Bomberbeach{
 				}
 			case "gauche":
 				if (boost_speed==1){
-					if(mymap[mapos_x-2][mapos_y].equals("#") || mymap[mapos_x-2][mapos_y].equals("@") || mymap[mapos_x-2][mapos_y].equals("*")){
-						if(mymap[mapos_x-1][mapos_y].equals("#") || mymap[mapos_x-1][mapos_y].equals("@") || mymap[mapos_x-1][mapos_y].equals("*")){
-							return 0;
-						}else{
-							return 1;
-						}
+					if(mymap[mapos_x-1][mapos_y].equals("#") || mymap[mapos_x-1][mapos_y].equals("@") || mymap[mapos_x-1][mapos_y].equals("*")){
+						return 0;
 					}else{
-						return 2;
+						if(mymap[mapos_x-2][mapos_y].equals("#") || mymap[mapos_x-2][mapos_y].equals("@") || mymap[mapos_x-2][mapos_y].equals("*")){
+							return 1;
+						}else{
+							return 2;
+						}
 					}
 				}else{
 					if(mymap[mapos_x-1][mapos_y].equals("#") || mymap[mapos_x-1][mapos_y].equals("@") || mymap[mapos_x-1][mapos_y].equals("*")){
@@ -656,14 +656,14 @@ public class Bomberbeach{
 				}
 			case "droite":
 				if (boost_speed==1){
-					if(mymap[mapos_x+2][mapos_y].equals("#") || mymap[mapos_x+2][mapos_y].equals("@") || mymap[mapos_x+2][mapos_y].equals("*")){
-						if(mymap[mapos_x+1][mapos_y].equals("#") || mymap[mapos_x+1][mapos_y].equals("@") || mymap[mapos_x+1][mapos_y].equals("*")){
-							return 0;
-						}else{
-							return 1;
-						}
+					if(mymap[mapos_x+1][mapos_y].equals("#") || mymap[mapos_x+1][mapos_y].equals("@") || mymap[mapos_x+1][mapos_y].equals("*")){
+						return 0;
 					}else{
-						return 2;
+						if(mymap[mapos_x+2][mapos_y].equals("#") || mymap[mapos_x+2][mapos_y].equals("@") || mymap[mapos_x+2][mapos_y].equals("*")){
+							return 1;
+						}else{
+							return 2;
+						}
 					}
 				}else{
 					if(mymap[mapos_x+1][mapos_y].equals("#") || mymap[mapos_x+1][mapos_y].equals("@") || mymap[mapos_x+1][mapos_y].equals("*")){
@@ -831,7 +831,7 @@ public class Bomberbeach{
 							boost_speed=0;
 							System.out.println("boost plus actif");
 					  }
-					}, 5000); //le boost n'est plus actif apres 5secondes 
+					}, 3000); //le boost n'est plus actif apres 3secondes 
 					break;
 				default:
 						break;
@@ -847,7 +847,7 @@ public class Bomberbeach{
 		  @Override
 		  public void run() {
 			  
-			  	Random r1=new Random();
+			  /*	Random r1=new Random();
 			  	Random r2=new Random();
 				int r3=r1.nextInt(21);
 				int r4=r2.nextInt(15);
@@ -855,7 +855,7 @@ public class Bomberbeach{
 				int hasard_y []={32,64,96,128,160,192,224,256,288,320,352,384,416,448};
 				System.out.println("boost repop aléatoirement en "+hasard_x[r3]+","+hasard_x[r4]);
 				
-			    sprites_bo[id].setBounds(hasard_x[r3], hasard_y[r4], 32, 32); //on change de place le boost
+			    sprites_bo[id].setBounds(hasard_x[r3], hasard_y[r4], 32, 32); //on change de place le boost */
 				sprites_bo[id].show();
 				frmBomberbeach.getContentPane().repaint();
 		  }
