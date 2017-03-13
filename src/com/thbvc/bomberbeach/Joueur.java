@@ -17,10 +17,6 @@ public class Joueur implements Serializable{
 	}
 	
 	public String setPosition(){
-		//TODO traiter de quel joueur la position provient (en retour niveau client)
-		//TODO traiter le changement de position
-		//TODO renvoi aux clients de la position pour rappeler dans bomberbeach le changement d'affichage
-		
 		String val_retour = String.valueOf(joueur) + ","+ mvmt + "," + String.valueOf(position_joueur_x) + "," + String.valueOf(position_joueur_y);
 		System.out.println(val_retour);
 		return val_retour;

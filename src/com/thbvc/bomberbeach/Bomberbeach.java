@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -78,7 +79,11 @@ public class Bomberbeach{
 	boolean enable=true;
 	private static int player1_x,player2_x,player1_y,player2_y;
 	String joueur;
+	public static int boost_speed;
 	Boolean[] cansetbombe = new Boolean[2];
+	public static String[][] mymap = new String[22][16];
+	public static int mapos_x;
+	public static int mapos_y;
 	private static String ip;
 	private static int port;
 	private static boolean start_game = false;
@@ -276,81 +281,185 @@ public class Bomberbeach{
 
 			if (e.getKeyCode()== KeyEvent.VK_DOWN) {
 				if(joueur.equals("1")){
-					if(can_walk(1,myposx_j1,myposy_j1,"bas")){ //je ne vais pas rencontrer un obstacle
-						traitement_powerup("bas");
-						System.out.println("<down key> : x="+player1_x+" y="+player1_y);
-						player1_y=player1_y+32; // on bouge le personnage d'une case vers le bas
-						sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
-						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bas",player1_x,player1_y)));
+					mapos_x = player1_x/32; // on stock l'id de la colonne où le joueur est
+					mapos_y = player1_y/32; // on stock l'id de la ligne où le joueur est
+					switch(can_walk("bas")){ // on regarde s'il y a un obstacle
+						case 1:
+							traitement_powerup("bas");
+							System.out.println("<down key> : x="+player1_x+" y="+player1_y);
+							player1_y=player1_y+32; // on bouge le personnage d'une case vers le bas
+							sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bas",player1_x,player1_y)));
+							break;
+						case 2:
+							traitement_powerup("bas");
+							System.out.println("<down key> : x="+player1_x+" y="+player1_y);
+							player1_y=player1_y+64; // on bouge le personnage d'une case vers le bas (2 cases)
+							sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bas",player1_x,player1_y)));
+							break;
+						case 0:
+							break;
 					}
 				}
 				else if(joueur.equals("2")){
-					if(can_walk(2,myposx_j2,myposy_j2,"bas")){ //je ne vais pas rencontrer un obstacle
-						traitement_powerup("bas");
-						System.out.println("<down key> : x="+player2_x+" y="+player2_y);
-						player2_y=player2_y+32; // on bouge le personnage d'une case vers le bas
-						sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
-						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bas",player2_x,player2_y)));
+					mapos_x = player2_x/32; // on stock l'id de la colonne où le joueur est
+					mapos_y = player2_y/32; // on stock l'id de la ligne où le joueur est
+					switch(can_walk("bas")){ // on regarde s'il y a un obstacle
+						case 1:
+							traitement_powerup("bas");
+							System.out.println("<down key> : x="+player2_x+" y="+player2_y);
+							player2_y=player2_y+32; // on bouge le personnage d'une case vers le bas
+							sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bas",player2_x,player2_y)));
+							break;
+						case 2:
+							traitement_powerup("bas");
+							System.out.println("<down key> : x="+player2_x+" y="+player2_y);
+							player2_y=player2_y+64; // on bouge le personnage d'une case vers le bas (2 cases)
+							sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bas",player2_x,player2_y)));
+							break;
+						case 0:
+							break;
 					}
 				}
 			}
 			else if (e.getKeyCode()== KeyEvent.VK_UP) {
 				if(joueur.equals("1")){
-					if(can_walk(1,myposx_j1,myposy_j1,"haut")){ //je ne vais pas rencontrer un obstacle
-						traitement_powerup("haut");
-						System.out.println("<up key> : x="+player1_x+" y="+player1_y);
-						player1_y=player1_y-32; // on bouge le personnage d'une case vers le haut
-						sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
-						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"haut",player1_x,player1_y)));
+					mapos_x = player1_x/32; // on stock l'id de la colonne où le joueur est
+					mapos_y = player1_y/32; // on stock l'id de la ligne où le joueur est
+					switch(can_walk("haut")){ // on regarde s'il y a un obstacle
+						case 1:
+							traitement_powerup("haut");
+							System.out.println("<up key> : x="+player1_x+" y="+player1_y);
+							player1_y=player1_y-32; // on bouge le personnage d'une case vers le bas
+							sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"haut",player1_x,player1_y)));
+							break;
+						case 2:
+							traitement_powerup("haut");
+							System.out.println("<up key> : x="+player1_x+" y="+player1_y);
+							player1_y=player1_y-64; // on bouge le personnage d'une case vers le bas (2 cases)
+							sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"haut",player1_x,player1_y)));
+							break;
+						case 0:
+							break;
 					}
 				}
 				else if(joueur.equals("2")){
-					if(can_walk(2,myposx_j2,myposy_j2,"haut")){ //je ne vais pas rencontrer un obstacle
-						traitement_powerup("haut");
-						System.out.println("<up key> : x="+player2_x+" y="+player2_y);
-						player2_y=player2_y-32; // on bouge le personnage d'une case vers le haut
-						sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
-						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"haut",player2_x,player2_y)));
+					mapos_x = player2_x/32; // on stock l'id de la colonne où le joueur est
+					mapos_y = player2_y/32; // on stock l'id de la ligne où le joueur est
+					switch(can_walk("haut")){ // on regarde s'il y a un obstacle
+						case 1:
+							traitement_powerup("haut");
+							System.out.println("<up key> : x="+player2_x+" y="+player2_y);
+							player2_y=player2_y-32; // on bouge le personnage d'une case vers le haut
+							sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"haut",player2_x,player2_y)));
+							break;
+						case 2:
+							traitement_powerup("haut");
+							System.out.println("<up key> : x="+player2_x+" y="+player2_y);
+							player2_y=player2_y-64; // on bouge le personnage d'une case vers le haut (2 cases)
+							sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"haut",player2_x,player2_y)));
+							break;
+						case 0:
+							break;
 					}
 				}
 			}
 			else if (e.getKeyCode()== KeyEvent.VK_RIGHT) {
 				if(joueur.equals("1")){
-					if(can_walk(1,myposx_j1,myposy_j1,"droite")){ //je ne vais pas rencontrer un obstacle
-						traitement_powerup("droite");
-						System.out.println("<right key> : x="+player1_x+" y="+player1_y);
-						player1_x=player1_x+32; // on bouge le personnage d'une case vers la droite
-						sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
-						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"droite",player1_x,player1_y)));
+					mapos_x = player1_x/32; // on stock l'id de la colonne où le joueur est
+					mapos_y = player1_y/32; // on stock l'id de la ligne où le joueur est
+					switch(can_walk("droite")){ // on regarde s'il y a un obstacle
+						case 1:
+							traitement_powerup("droite");
+							System.out.println("<right key> : x="+player1_x+" y="+player1_y);
+							player1_x=player1_x+32; // on bouge le personnage d'une case vers la droite
+							sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"droite",player1_x,player1_y)));
+							break;
+						case 2:
+							traitement_powerup("droite");
+							System.out.println("<right key> : x="+player1_x+" y="+player1_y);
+							player1_x=player1_x+64; // on bouge le personnage d'une case vers la droite (2 cases)
+							sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"droite",player1_x,player1_y)));
+							break;
+						case 0:
+							break;
 					}
 				}
 				else if(joueur.equals("2")){
-					if(can_walk(2,myposx_j2,myposy_j2,"droite")){ //je ne vais pas rencontrer un obstacle
-						traitement_powerup("droite");
-						System.out.println("<right key> : x="+player2_x+" y="+player2_y);
-						player2_x=player2_x+32; // on bouge le personnage d'une case vers la droite
-						sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
-						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"droite",player2_x,player2_y)));
+					mapos_x = player2_x/32; // on stock l'id de la colonne où le joueur est
+					mapos_y = player2_y/32; // on stock l'id de la ligne où le joueur est
+						switch(can_walk("droite")){ // on regarde s'il y a un obstacle
+						case 1:
+							traitement_powerup("droite");
+							System.out.println("<right key> : x="+player2_x+" y="+player2_y);
+							player2_x=player2_x+32; // on bouge le personnage d'une case vers la droite
+							sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"droite",player2_x,player2_y)));
+							break;
+						case 2:
+							traitement_powerup("droite");
+							System.out.println("<right key> : x="+player2_x+" y="+player2_y);
+							player2_x=player2_x+64; // on bouge le personnage d'une case vers la droite (2 cases)
+							sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"droite",player2_x,player2_y)));
+							break;
+						case 0:
+							break;
 					}
 				}
 			}
 			else if (e.getKeyCode()== KeyEvent.VK_LEFT) {
 				if(joueur.equals("1")){
-					if(can_walk(1,myposx_j1,myposy_j1,"gauche")){ //je ne vais pas rencontrer un obstacle
-						traitement_powerup("gauche");
-						System.out.println("<left key> : x="+player1_x+" y="+player1_y);
-						player1_x=player1_x-32; // on bouge le personnage d'une case vers la gauche
-						sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
-						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"gauche",player1_x,player1_y)));
+					mapos_x = player1_x/32; // on stock l'id de la colonne où le joueur est
+					mapos_y = player1_y/32; // on stock l'id de la ligne où le joueur est
+					switch(can_walk("gauche")){ // on regarde s'il y a un obstacle
+						case 1:
+							traitement_powerup("gauche");
+							System.out.println("<left key> : x="+player1_x+" y="+player1_y);
+							player1_x=player1_x-32; // on bouge le personnage d'une case vers la gauche
+							sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"gauche",player1_x,player1_y)));
+							break;
+						case 2:
+							traitement_powerup("gauche");
+							System.out.println("<left key> : x="+player1_x+" y="+player1_y);
+							player1_x=player1_x-64; // on bouge le personnage d'une case vers la gauche (2 cases)
+							sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"gauche",player1_x,player1_y)));
+							break;
+						case 0:
+							break;
 					}
 				}
 				else if(joueur.equals("2")){
-					if(can_walk(2,myposx_j2,myposy_j2,"gauche")){ //je ne vais pas rencontrer un obstacle
-						traitement_powerup("gauche");
-						System.out.println("<left key> : x="+player2_x+" y="+player2_y);
-						player2_x=player2_x-32; // on bouge le personnage d'une case vers la gauche
-						sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
-						moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"gauche",player2_x,player2_y)));
+					mapos_x = player2_x/32; // on stock l'id de la colonne où le joueur est
+					mapos_y = player2_y/32; // on stock l'id de la ligne où le joueur est
+						switch(can_walk("gauche")){ // on regarde s'il y a un obstacle
+						case 1:
+							traitement_powerup("gauche");
+							System.out.println("<left key> : x="+player2_x+" y="+player2_y);
+							player2_x=player2_x-32; // on bouge le personnage d'une case vers la gauche
+							sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"gauche",player2_x,player2_y)));
+							break;
+						case 2:
+							traitement_powerup("gauche");
+							System.out.println("<left key> : x="+player2_x+" y="+player2_y);
+							player2_x=player2_x-64; // on bouge le personnage d'une case vers la gauche (2 cases)
+							sprites_j[20].setBounds(player2_x, player2_y, 32, 32);
+							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"gauche",player2_x,player2_y)));
+							break;
+						case 0:
+							break;
 					}
 				}
 			}
@@ -459,6 +568,9 @@ public class Bomberbeach{
 				frmBomberbeach.getContentPane().add(sprites_bom[0]); //affichage sur la fenêtre
 				bombe(0,Integer.parseInt(x), Integer.parseInt(y));
         	}
+        	else if(mvmt.equals("speed")){
+        		//TODO gestion boost
+        	}
         	player1_x = sprites_j[1].getX();
         	player1_y = sprites_j[1].getY();
         }else if(joueur.equals("2")){
@@ -486,14 +598,84 @@ public class Bomberbeach{
         }
 	}
 
-	public boolean can_walk(int joueur,int x,int y,String mvmt){
-		int myposx_j1 = sprites_j[1].getX();
-		int myposy_j1 = sprites_j[1].getY();
-		int myposx_j2 = sprites_j[20].getX();
-		int myposy_j2 = sprites_j[20].getY();
+	public int can_walk(String mvmt){
+		switch(mvmt){
+			case "bas":
+				if (boost_speed==1){
+					if(mymap[mapos_x][mapos_y+1].equals("#") || mymap[mapos_x][mapos_y+1].equals("@") || mymap[mapos_x][mapos_y+1].equals("*")){
+						return 0;
+					}else{
+						if(mymap[mapos_x][mapos_y+2].equals("#") || mymap[mapos_x][mapos_y+2].equals("@") || mymap[mapos_x][mapos_y+2].equals("*")){
+							return 1;
+						}else{
+							return 2;
+						}
+					}
+				}else{
+					if(mymap[mapos_x][mapos_y+1].equals("#") || mymap[mapos_x][mapos_y+1].equals("@") || mymap[mapos_x][mapos_y+1].equals("*")){
+						return 0;
+					}else{
+						return 1;
+					}
+				}
+			case "haut":
+				if (boost_speed==1){
+					if(mymap[mapos_x][mapos_y-1].equals("#") || mymap[mapos_x][mapos_y-1].equals("@") || mymap[mapos_x][mapos_y-1].equals("*")){
+						return 0;
+					}else{
+						if(mymap[mapos_x][mapos_y-2].equals("#") || mymap[mapos_x][mapos_y-2].equals("@") || mymap[mapos_x][mapos_y-2].equals("*")){
+							return 1;
+						}else{
+							return 2;
+						}
+					}
+				}else{
+					if(mymap[mapos_x][mapos_y-1].equals("#") || mymap[mapos_x][mapos_y-1].equals("@") || mymap[mapos_x][mapos_y-1].equals("*")){
+						return 0;
+					}else{
+						return 1;
+					}
+				}
+			case "gauche":
+				if (boost_speed==1){
+					if(mymap[mapos_x-1][mapos_y].equals("#") || mymap[mapos_x-1][mapos_y].equals("@") || mymap[mapos_x-1][mapos_y].equals("*")){
+						return 0;
+					}else{
+						if(mymap[mapos_x-2][mapos_y].equals("#") || mymap[mapos_x-2][mapos_y].equals("@") || mymap[mapos_x-2][mapos_y].equals("*")){
+							return 1;
+						}else{
+							return 2;
+						}
+					}
+				}else{
+					if(mymap[mapos_x-1][mapos_y].equals("#") || mymap[mapos_x-1][mapos_y].equals("@") || mymap[mapos_x-1][mapos_y].equals("*")){
+						return 0;
+					}else{
+						return 1;
+					}
+				}
+			case "droite":
+				if (boost_speed==1){
+					if(mymap[mapos_x+1][mapos_y].equals("#") || mymap[mapos_x+1][mapos_y].equals("@") || mymap[mapos_x+1][mapos_y].equals("*")){
+						return 0;
+					}else{
+						if(mymap[mapos_x+2][mapos_y].equals("#") || mymap[mapos_x+2][mapos_y].equals("@") || mymap[mapos_x+2][mapos_y].equals("*")){
+							return 1;
+						}else{
+							return 2;
+						}
+					}
+				}else{
+					if(mymap[mapos_x+1][mapos_y].equals("#") || mymap[mapos_x+1][mapos_y].equals("@") || mymap[mapos_x+1][mapos_y].equals("*")){
+						return 0;
+					}else{
+						return 1;
+					}
+				}
+			default:
+				return 0;
+		}		
 		
-		
-		return true;
 	}
  	// ************************************************************************
 
@@ -624,93 +806,207 @@ public class Bomberbeach{
 	}
  	// ************************************************************************
 	
+	public void receive_boost_player(String string){
+		String[] parts = string.split("\\,");
+        int myjoueur = Integer.parseInt(parts[0]);;
+        String type = parts[1];
+        int id = Integer.parseInt(parts[2]);;
+        int pos_x = Integer.parseInt(parts[3]);;
+        int pos_y = Integer.parseInt(parts[4]);;
+        
 
-	
- 	// ************************************************************************
- 	// *** Traitement interraction lors d'un powerup activé                 ***
- 	// ************************************************************************
-	public void receive_boost_player(int player,int id){
-		if(player==1){
-			sprites_bo[id].hide();
-		}
-		else if(player==2){
-			sprites_bo[id].hide();
+		sprites_bo[id].hide(); //on cache le boost de la map
+		frmBomberbeach.getContentPane().repaint(); //redraw de la map
+		
+		if(parts[0].equals(joueur)){//je suis bien le joueur qui a pris un boost
+			switch (type) {
+				case "speed":
 
+					boost_speed=1;
+					
+					Timer timer3 = new Timer();
+					timer3.schedule(new TimerTask() {
+					  @Override
+					  public void run() {
+							boost_speed=0;
+							System.out.println("boost plus actif");
+					  }
+					}, 3000); //le boost n'est plus actif apres 3secondes 
+					break;
+				default:
+						break;
+			}
 		}
+		
+		
+		//TODO le boost doit respawn aux memes valeurs entre tout les joueurs (envoi au serveur et set la pos apres!!)
+		
+
+		Timer timer4 = new Timer();
+		timer4.schedule(new TimerTask() {
+		  @Override
+		  public void run() {
+			  
+			  /*	Random r1=new Random();
+			  	Random r2=new Random();
+				int r3=r1.nextInt(21);
+				int r4=r2.nextInt(15);
+				int hasard_x []={32,64,96,128,160,192,224,256,288,320,352,384,416,448,480,512,544,576,608,640};
+				int hasard_y []={32,64,96,128,160,192,224,256,288,320,352,384,416,448};
+				System.out.println("boost repop aléatoirement en "+hasard_x[r3]+","+hasard_x[r4]);
+				
+			    sprites_bo[id].setBounds(hasard_x[r3], hasard_y[r4], 32, 32); //on change de place le boost */
+				sprites_bo[id].show();
+				frmBomberbeach.getContentPane().repaint();
+		  }
+		}, 15000); //le boost respawn apres 15 secondes
+        
 	}
 
 	public void traitement_powerup(String mvmt){
-		int myposx_j1 = sprites_j[1].getX();
-		int myposy_j1 = sprites_j[1].getY();
-		int myposx_j2 = sprites_j[20].getX();
-		int myposy_j2 = sprites_j[20].getY();
-
 		switch (mvmt) {
 		case "bas":
-			if(joueur=="1"){
-				if((myposx_j1==sprites_bo[10].getX() && myposy_j1==sprites_bo[10].getY()-32) ){
-					System.out.println("BOOOOOOOOST");
-					sprites_bo[10].hide();
-					//s.envoyer("@|boost|10");
+			if(joueur.equals("1")){
+				if((mapos_x*32==sprites_bo[10].getX() && mapos_y*32==sprites_bo[10].getY()-32) ){
+					System.out.println("Powerup BOOST activé");
+					int id = 10; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));
 				}	
-				else if(myposx_j1==sprites_bo[16].getX() && myposy_j1==sprites_bo[16].getY()-32){
+				else if(mapos_x*32==sprites_bo[16].getX() && mapos_y*32==sprites_bo[16].getY()-32){
 					System.out.println("BOOOOOOOOST");
-					sprites_bo[16].hide();
-					//s.envoyer("@|boost|16");					
+					int id = 16; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));			
 				}
-				else if(myposx_j1==sprites_bo[4].getX() && myposy_j1==sprites_bo[4].getY()-32){
+				else if(mapos_x*32==sprites_bo[4].getX() && mapos_y*32==sprites_bo[4].getY()-32){
 					System.out.println("BOOOOOOOOST");
-					sprites_bo[4].hide();
-					//s.envoyer("@|boost|4");
+					int id = 4; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));	
 				}
 			}	
 			else{
-				if(myposx_j2==sprites_bo[10].getX() && myposy_j2==sprites_bo[10].getY()-32){
+				if((mapos_x*32==sprites_bo[10].getX() && mapos_y*32==sprites_bo[10].getY()-32) ){
 					System.out.println("BOOOOOOOOST");
-					sprites_bo[10].hide();
-				}		
+					int id = 10; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));
+				}	
+				else if(mapos_x*32==sprites_bo[16].getX() && mapos_y*32==sprites_bo[16].getY()-32){
+					System.out.println("BOOOOOOOOST");
+					int id = 16; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));			
+				}
+				else if(mapos_x*32==sprites_bo[4].getX() && mapos_y*32==sprites_bo[4].getY()-32){
+					System.out.println("BOOOOOOOOST");
+					int id = 4; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));	
+				}	
 				
 			}
 		case "haut":
-			if(joueur=="1"){
-				if(myposx_j1==sprites_bo[10].getX() && myposy_j1==sprites_bo[10].getY()+32){
+			if(joueur.equals("1")){
+				if((mapos_x*32==sprites_bo[10].getX() && mapos_y*32==sprites_bo[10].getY()+32) ){
 					System.out.println("BOOOOOOOOST");
-					sprites_bo[10].hide();
-				}				
-			}		
+					int id = 10; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));
+				}	
+				else if(mapos_x*32==sprites_bo[16].getX() && mapos_y*32==sprites_bo[16].getY()+32){
+					System.out.println("BOOOOOOOOST");
+					int id = 16; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));			
+				}
+				else if(mapos_x*32==sprites_bo[4].getX() && mapos_y*32==sprites_bo[4].getY()+32){
+					System.out.println("BOOOOOOOOST");
+					int id = 4; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));	
+				}
+			}	
 			else{
-				if(myposx_j2==sprites_bo[10].getX() && myposy_j2==sprites_bo[10].getY()+32){
+				if((mapos_x*32==sprites_bo[10].getX() && mapos_y*32==sprites_bo[10].getY()+32) ){
 					System.out.println("BOOOOOOOOST");
-					sprites_bo[10].hide();
-				}		
+					int id = 10; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));
+				}	
+				else if(mapos_x*32==sprites_bo[16].getX() && mapos_y*32==sprites_bo[16].getY()+32){
+					System.out.println("BOOOOOOOOST");
+					int id = 16; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));			
+				}
+				else if(mapos_x*32==sprites_bo[4].getX() && mapos_y*32==sprites_bo[4].getY()+32){
+					System.out.println("BOOOOOOOOST");
+					int id = 4; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));	
+				}	
 				
 			}
 		case "droite":
-			if(joueur=="1"){
-				if(myposx_j1==sprites_bo[10].getX()-32 && myposy_j1==sprites_bo[10].getY()){
+			if(joueur.equals("1")){
+				if((mapos_x*32==sprites_bo[10].getX()-32 && mapos_y*32==sprites_bo[10].getY()) ){
 					System.out.println("BOOOOOOOOST");
-					sprites_bo[10].hide();
-				}				
+					int id = 10; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));
+				}	
+				else if(mapos_x*32==sprites_bo[16].getX()-32 && mapos_y*32==sprites_bo[16].getY()){
+					System.out.println("BOOOOOOOOST");
+					int id = 16; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));			
+				}
+				else if(mapos_x*32==sprites_bo[4].getX()-32 && mapos_y*32==sprites_bo[4].getY()){
+					System.out.println("BOOOOOOOOST");
+					int id = 4; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));	
+				}
 			}	
 			else{
-				if(myposx_j2==sprites_bo[10].getX()-32 && myposy_j2==sprites_bo[10].getY()){
+				if((mapos_x*32==sprites_bo[10].getX()-32 && mapos_y*32==sprites_bo[10].getY()) ){
 					System.out.println("BOOOOOOOOST");
-					sprites_bo[10].hide();
-				}		
+					int id = 10; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));
+				}	
+				else if(mapos_x*32==sprites_bo[16].getX()-32 && mapos_y*32==sprites_bo[16].getY()){
+					System.out.println("BOOOOOOOOST");
+					int id = 16; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));			
+				}
+				else if(mapos_x*32==sprites_bo[4].getX()-32 && mapos_y*32==sprites_bo[4].getY()){
+					System.out.println("BOOOOOOOOST");
+					int id = 4; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));	
+				}	
 				
 			}
 		case "gauche":
-			if(joueur=="1"){
-				if(myposx_j1==sprites_bo[10].getX()+32 && myposy_j1==sprites_bo[10].getY()){
+			if(joueur.equals("1")){
+				if((mapos_x*32==sprites_bo[10].getX()+32 && mapos_y*32==sprites_bo[10].getY()) ){
 					System.out.println("BOOOOOOOOST");
-					sprites_bo[10].hide();
-				}				
-			}		
+					int id = 10; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));
+				}	
+				else if(mapos_x*32==sprites_bo[16].getX()+32 && mapos_y*32==sprites_bo[16].getY()){
+					System.out.println("BOOOOOOOOST");
+					int id = 16; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));			
+				}
+				else if(mapos_x*32==sprites_bo[4].getX()+32 && mapos_y==sprites_bo[4].getY()){
+					System.out.println("BOOOOOOOOST");
+					int id = 4; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));	
+				}
+			}	
 			else{
-				if(myposx_j2==sprites_bo[10].getX()+32 && myposy_j2==sprites_bo[10].getY()){
+				if((mapos_x*32==sprites_bo[10].getX()+32 && mapos_y*32==sprites_bo[10].getY()) ){
 					System.out.println("BOOOOOOOOST");
-					sprites_bo[10].hide();
-				}		
+					int id = 10; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));
+				}	
+				else if(mapos_x*32==sprites_bo[16].getX()+32 && mapos_y*32==sprites_bo[16].getY()){
+					System.out.println("BOOOOOOOOST");
+					int id = 16; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));			
+				}
+				else if(mapos_x*32==sprites_bo[4].getX()+32 && mapos_y*32==sprites_bo[4].getY()){
+					System.out.println("BOOOOOOOOST");
+					int id = 4; //id du boost
+					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));	
+				}	
 				
 			}
 		default:
@@ -725,6 +1021,7 @@ public class Bomberbeach{
  	// *** Traitement et affichage de la carte de jeu                   ***
  	// ********************************************************************
 	public void create_map(String[][] mamap,int level){
+		mymap = mamap; // on stock la matrice de la map dans une variable globale pour traiter la gestion de colision + tard
 		for(int column=0;column<mamap[0].length;column++){
 
 			for(int row=0;row<mamap.length;row++){
