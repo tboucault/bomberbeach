@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Timer;
@@ -71,7 +72,7 @@ public class Bomberbeach{
 	String FILE_PATH_lvl1 = "/level1.txt";
 	private static JLabel[] sprites_m = new JLabel[200];
 	private static JLabel[] sprites_p = new JLabel[200];
-	private static JLabel[] sprites_b = new JLabel[200];
+	private static JLabel[] sprites_b = new JLabel[1000];
 	private static JLabel[] sprites_j = new JLabel[200];
 	private static JLabel[] sprites_bo = new JLabel[200];
 	private static JLabel[] sprites_bom = new JLabel[2];
@@ -103,6 +104,9 @@ public class Bomberbeach{
 	private static int myposy_j2 ;
 	
 	private Client moi;
+	
+
+	public ArrayList<Integer> nombres= new ArrayList<Integer>();
 	
 	/**
 	 * Launch the application.
@@ -743,14 +747,126 @@ public class Bomberbeach{
 		}, 1000); //1seconde 
 	}
 	
+
+	public void check_destroy(String string){
+        String[] parts = string.split("\\,");
+        int x_bombe = Integer.parseInt(parts[0]);
+        int y_bombe = Integer.parseInt(parts[1]);
+			
+        /*if(mymap[(x_bombe/32)+1][(y_bombe/32)].equals("*")
+        		|| mymap[(x_bombe/32)+2][(y_bombe/32)].equals("*") || mymap[(x_bombe/32)-1][(y_bombe/32)].equals("*") 
+        		|| mymap[(x_bombe/32)-2][(y_bombe/32)].equals("*") || mymap[(x_bombe/32)][(y_bombe/32)+1].equals("*") 
+        		|| mymap[(x_bombe/32)][(y_bombe/32)+2].equals("*") || mymap[(x_bombe/32)][(y_bombe/32)-1].equals("*")
+        		|| mymap[(x_bombe/32)][(y_bombe/32)-2].equals("*")){*/
+        if(mymap[(x_bombe/32)+1][(y_bombe/32)].equals("*")){
+        	mymap[(x_bombe/32)+1][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+        	for(int i=0;i<sprites_b.length;i++){
+        		if(sprites_b[i]==null){
+        			//pas de caisse
+        		}else{//caisse
+            		if((sprites_b[i].getX()==(x_bombe+32)) && (sprites_b[i].getY()==y_bombe)){
+                    	sprites_b[i].hide();
+                    }
+        		}
+        	}
+		}
+        if(mymap[(x_bombe/32)+2][(y_bombe/32)].equals("*")){
+        	mymap[(x_bombe/32)+2][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+        	for(int i=0;i<sprites_b.length;i++){
+        		if(sprites_b[i]==null){
+        			//pas de caisse
+        		}else{//caisse
+            		if((sprites_b[i].getX()==(x_bombe+64)) && (sprites_b[i].getY()==y_bombe)){
+                    	sprites_b[i].hide();
+                    }
+        		}
+        	}
+		}
+        if(mymap[(x_bombe/32)-1][(y_bombe/32)].equals("*")){
+        	mymap[(x_bombe/32)-1][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+        	for(int i=0;i<sprites_b.length;i++){
+        		if(sprites_b[i]==null){
+        			//pas de caisse
+        		}else{//caisse
+            		if((sprites_b[i].getX()==(x_bombe-32)) && (sprites_b[i].getY()==y_bombe)){
+                    	sprites_b[i].hide();
+                    }
+        		}
+        	}
+		}
+        if(mymap[(x_bombe/32)-2][(y_bombe/32)].equals("*")){
+        	mymap[(x_bombe/32)-2][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+        	for(int i=0;i<sprites_b.length;i++){
+        		if(sprites_b[i]==null){
+        			//pas de caisse
+        		}else{//caisse
+            		if((sprites_b[i].getX()==(x_bombe-64)) && (sprites_b[i].getY()==y_bombe)){
+                    	sprites_b[i].hide();
+                    }
+        		}
+        	}
+		}
+        if(mymap[(x_bombe/32)][(y_bombe/32)+1].equals("*")){
+        	mymap[(x_bombe/32)][(y_bombe/32)+1]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+        	for(int i=0;i<sprites_b.length;i++){
+        		if(sprites_b[i]==null){
+        			//pas de caisse
+        		}else{//caisse
+            		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe+32))){
+                    	sprites_b[i].hide();
+                    }
+        		}
+        	}
+		}
+        if(mymap[(x_bombe/32)][(y_bombe/32)+2].equals("*")){
+        	mymap[(x_bombe/32)][(y_bombe/32)+2]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+        	for(int i=0;i<sprites_b.length;i++){
+        		if(sprites_b[i]==null){
+        			//pas de caisse
+        		}else{//caisse
+            		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe+64))){
+                    	sprites_b[i].hide();
+                    }
+        		}
+        	}
+		}
+        if(mymap[(x_bombe/32)][(y_bombe/32)-1].equals("*")){
+        	mymap[(x_bombe/32)][(y_bombe/32)-1]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+        	for(int i=0;i<sprites_b.length;i++){
+        		if(sprites_b[i]==null){
+        			//pas de caisse
+        		}else{//caisse
+            		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe-32))){
+                    	sprites_b[i].hide();
+                    }
+        		}
+        	}
+		}
+        if(mymap[(x_bombe/32)][(y_bombe/32)-2].equals("*")){
+        	mymap[(x_bombe/32)][(y_bombe/32)-2]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+        	for(int i=0;i<sprites_b.length;i++){
+        		if(sprites_b[i]==null){
+        			//pas de caisse
+        		}else{//caisse
+            		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe-64))){
+                    	sprites_b[i].hide();
+                    }
+        		}
+        	}
+		}
+
+		frmBomberbeach.getContentPane().repaint();
+	}
+ 	// ************************************************************************
+	
 	public void check_dead(String string){
         String[] parts = string.split("\\,");
-        int x = Integer.parseInt(parts[0]);;
-        int y = Integer.parseInt(parts[1]);;
-        int player1_x = Integer.parseInt(parts[2]);;
-        int player1_y = Integer.parseInt(parts[3]);;
-        int player2_x = Integer.parseInt(parts[4]);;
-        int player2_y = Integer.parseInt(parts[5]);;
+        int x = Integer.parseInt(parts[0]);
+        int y = Integer.parseInt(parts[1]);
+        int player1_x = Integer.parseInt(parts[2]);
+        int player1_y = Integer.parseInt(parts[3]);
+        int player2_x = Integer.parseInt(parts[4]);
+        int player2_y = Integer.parseInt(parts[5]);
 			
 			//TODO si objet= on le détruit
 		if( (player1_x == sprites_fire[0].getX()) && (player1_y == sprites_fire[0].getY()) ||
@@ -1016,6 +1132,34 @@ public class Bomberbeach{
 		
 	}
  	// ************************************************************************	
+
+	private void setTableau()
+	{
+		// On rempli le tableau "nombres" de 1 à nb
+		for(int i=1;i<=200;i++) {
+			nombres.add(i);	
+		}
+	}
+		// Méthode pour ne pas tirer au sort les même nombres plusieurs fois de suite :
+		// 1) on tire un nombre au hasard parmi ceux présents dans la liste
+		// 2) on retire ce nombre de la liste
+		//    ainsi, à chaque tirage, la liste comprend n-1 éléments et on piochera parmi n-1 élements
+		// 3) si la liste est vide, on peut éventuellement la réinitialiser
+	public Integer getPif()
+		{
+		if(nombres.size()==0) {
+			setTableau();
+		} // (3)
+		int i=pif(0,nombres.size()-1); // (1)
+		int retour=nombres.get(i);
+		nombres.remove(i); // (2)
+		return retour;
+	}
+	 private static int pif(int min,int max)
+	 	{
+	 	Random rand=new Random();    	
+	 	return rand.nextInt((max - min) + 1) + min;
+ 	}
 	
  	// ********************************************************************
  	// *** Traitement et affichage de la carte de jeu                   ***
@@ -1036,9 +1180,18 @@ public class Bomberbeach{
 					frmBomberbeach.getContentPane().add(sprites_p[row]);
 				}
 				else if(mamap[row][column].equals("*")){//c'est une boite
-					sprites_b[row] = new JLabel(icon_boite);
-					sprites_b[row].setBounds(row*32, column*32, 32, 32);
-					frmBomberbeach.getContentPane().add(sprites_b[row]);            	
+					/*if(sprites_b[row]!=null){
+						sprites_b[row+200] = new JLabel(icon_boite);
+						sprites_b[row+200].setBounds(row*32, column*32, 32, 32);
+						frmBomberbeach.getContentPane().add(sprites_b[row+200]);   
+						System.out.println("caisse n"+(row+200)+" en x: "+row*32+" y: "+column*32);
+					}else{*/
+						int val=pif(1,200);
+						sprites_b[val] = new JLabel(icon_boite);
+						sprites_b[val].setBounds(row*32, column*32, 32, 32);
+						frmBomberbeach.getContentPane().add(sprites_b[val]);   
+						System.out.println("caisse n"+val+" en x: "+row*32+" y: "+column*32);
+					//}
 				}
 				else if(mamap[row][column].equals("1")){//c'est un joueur
 					sprites_j[row] = new JLabel(icon_player);

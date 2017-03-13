@@ -61,6 +61,7 @@ public class Client implements Communicateur {
 		String[][] mamap = new String[22][16];
 		String maposition ;
 		String dead;
+		String destroy;
 		String boost;
 		try	{
 				if (Map.class.isInstance(O)) { //on reçoit un objet de type map
@@ -77,10 +78,12 @@ public class Client implements Communicateur {
 					b.receive_pos_player(maposition);// on l'envoi à bomberbeach qui traitera la matrice pour afficher la map
 				}else if (PlayerDead.class.isInstance(O)) {
 					
-					System.out.println("Joueur mort recu : " + O);
+					System.out.println("Explosion: " + O);
 					PlayerDead p = (PlayerDead) O;
 					dead = p.check();
-					b.check_dead(dead);// on l'envoi à bomberbeach qui traitera la matrice pour afficher la map
+					destroy = p.destroy();
+					b.check_dead(dead);
+					b.check_destroy(destroy);
 				}else if (Boost.class.isInstance(O)) {
 					Boost bo = (Boost) O;
 					System.out.println("Boost recu : " + O);

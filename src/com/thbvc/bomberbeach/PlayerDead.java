@@ -27,4 +27,12 @@ public class PlayerDead implements Serializable{
 		return val_retour;
 		
 	}
+	
+	public String destroy(){
+		
+		String val_retour = String.valueOf(x) + ","+ String.valueOf(y);
+		System.out.println(val_retour);
+		return val_retour;
+		
+	}
 }

@@ -111,10 +111,10 @@ public class Server implements Communicateur, Runnable {
 			    	}
 				}else if (PlayerDead.class.isInstance(O)) {
 					PlayerDead p = (PlayerDead) O;
-					System.out.println("JoueurDead recu : " + O);
+					System.out.println("Explosion : " + O);
 
 			    	for (int i = 0; i <= lCli.size(); i ++) {
-			    		((Connexion)lCli.get(i)).Envoie((Object)p); //envoie aux autres qu'un joueur est mort  	
+			    		((Connexion)lCli.get(i)).Envoie((Object)p); //envoie aux autres qu'il y a explosion  	
 			    	}
 				}else if (Boost.class.isInstance(O)) {
 					Boost b = (Boost) O;
