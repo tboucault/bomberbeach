@@ -44,6 +44,9 @@ import java.awt.Event;
 import java.awt.Panel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+
+import Sounds.Sound;
+
 import javax.swing.JSeparator;
 
 public class Bomberbeach{
@@ -113,6 +116,7 @@ public class Bomberbeach{
 				try {
 					Bomberbeach jframe = new Bomberbeach();
 					jframe.frmBomberbeach.setVisible(true);
+					Sound.playTempSound("/>res/music2.mid");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -728,7 +732,7 @@ public class Bomberbeach{
 		  }
 		  
 		  moi.getCnx().Envoie((Object) (new PlayerDead(x,y,player1_x,player1_y,player2_x,player2_y)));
-		
+		Sound.playTempSound("/>res/EXPLODE1.WAV");
 		frmBomberbeach.getContentPane().repaint();
 		
 		timer2.schedule(new TimerTask() {
