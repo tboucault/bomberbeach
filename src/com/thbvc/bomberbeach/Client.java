@@ -63,6 +63,7 @@ public class Client implements Communicateur {
 		String dead;
 		String destroy;
 		String boost;
+		int leaver;
 		try	{
 				if (Map.class.isInstance(O)) { //on reçoit un objet de type map
 					
@@ -89,6 +90,12 @@ public class Client implements Communicateur {
 					System.out.println("Boost recu : " + O);
 					boost = bo.check();
 					b.receive_boost_player(boost);// on l'envoi à bomberbeach qui traitera la matrice pour afficher la map
+
+				}else if (Player_leave.class.isInstance(O)) {
+					Player_leave pl = (Player_leave) O;
+					System.out.println("Un joueur s'est déconnecté : " + O);
+					leaver = pl.check();
+					b.receive_leaver(leaver);// on l'envoi à bomberbeach qui traitera la matrice pour afficher la map
 
 				}else {
 					

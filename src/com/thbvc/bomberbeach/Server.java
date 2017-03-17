@@ -129,20 +129,23 @@ public class Server implements Communicateur, Runnable {
 					// La liste.
 					
 					int rang = Integer.parseInt((String) O);
-					
-					lCli.remove(rang);
+					//lCli.remove(rang);
 					
 					System.out.println("Le client " + rang + " s'est deconnecte ...");
+					
+					for (int i = 0; i < (lCli.size())+1; i ++) {
+						((Connexion)lCli.get(i)).Envoie((Object)  (new Player_leave(rang)));
+						//envoie aux autres que le joueur est parti, fin du jeux
+					}
 					
 					// Nous r�-indexons ensuite la liste des client en leur
 					// Envoyant un nouvel identifiant.
 					
-					for (int i = 0; i < lCli.size(); i ++) {
-					
+					/*for (int i = 0; i < (lCli.size())+1; i ++) {
 						((Connexion)lCli.get(i)).Envoie((Object) (new Integer (i).toString()));	
 					}
 					
-					System.out.println("Re-indexation des client ...");					 			
+					System.out.println("Re-indexation des client ...");	*/				 			
 				}
 						
 		} catch (Exception e) {
