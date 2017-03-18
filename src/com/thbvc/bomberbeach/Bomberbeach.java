@@ -260,7 +260,8 @@ public class Bomberbeach{
 
 		mntmQuitter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//TODO envoyer aux autres joueurs que le joueur a quitté la partie
+				moi.getCnx().Envoie((Object)(new Integer(moi.getIdClient()).toString()));
+				//moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bas",player1_x,player1_y)));
 				System.exit(0);	
 			}
 		});
@@ -494,6 +495,7 @@ public class Bomberbeach{
 					}
 				}
 			}
+			frmBomberbeach.getContentPane().repaint(); //redraw de la map
 		}
 
 		/*les deux méthodes suivantes doivent être également écrites pour pouvoir réaliser l'interface KeyListener*/               
@@ -575,9 +577,6 @@ public class Bomberbeach{
 				sprites_bom[0].setBounds(Integer.parseInt(x), Integer.parseInt(y), 32, 32); //position
 				frmBomberbeach.getContentPane().add(sprites_bom[0]); //affichage sur la fenêtre
 				bombe(0,Integer.parseInt(x), Integer.parseInt(y));
-        	}
-        	else if(mvmt.equals("speed")){
-        		//TODO gestion boost
         	}
         	player1_x = sprites_j[1].getX();
         	player1_y = sprites_j[1].getY();
@@ -757,108 +756,409 @@ public class Bomberbeach{
         String[] parts = string.split("\\,");
         int x_bombe = Integer.parseInt(parts[0]);
         int y_bombe = Integer.parseInt(parts[1]);
-			
-        /*if(mymap[(x_bombe/32)+1][(y_bombe/32)].equals("*")
-        		|| mymap[(x_bombe/32)+2][(y_bombe/32)].equals("*") || mymap[(x_bombe/32)-1][(y_bombe/32)].equals("*") 
-        		|| mymap[(x_bombe/32)-2][(y_bombe/32)].equals("*") || mymap[(x_bombe/32)][(y_bombe/32)+1].equals("*") 
-        		|| mymap[(x_bombe/32)][(y_bombe/32)+2].equals("*") || mymap[(x_bombe/32)][(y_bombe/32)-1].equals("*")
-        		|| mymap[(x_bombe/32)][(y_bombe/32)-2].equals("*")){*/
-        if(mymap[(x_bombe/32)+1][(y_bombe/32)].equals("*")){
-        	mymap[(x_bombe/32)+1][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
-        	for(int i=0;i<sprites_b.length;i++){
-        		if(sprites_b[i]==null){
-        			//pas de caisse
-        		}else{//caisse
-            		if((sprites_b[i].getX()==(x_bombe+32)) && (sprites_b[i].getY()==y_bombe)){
-                    	sprites_b[i].hide();
-                    }
-        		}
-        	}
-		}
-        if(mymap[(x_bombe/32)+2][(y_bombe/32)].equals("*")){
-        	mymap[(x_bombe/32)+2][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
-        	for(int i=0;i<sprites_b.length;i++){
-        		if(sprites_b[i]==null){
-        			//pas de caisse
-        		}else{//caisse
-            		if((sprites_b[i].getX()==(x_bombe+64)) && (sprites_b[i].getY()==y_bombe)){
-                    	sprites_b[i].hide();
-                    }
-        		}
-        	}
-		}
-        if(mymap[(x_bombe/32)-1][(y_bombe/32)].equals("*")){
-        	mymap[(x_bombe/32)-1][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
-        	for(int i=0;i<sprites_b.length;i++){
-        		if(sprites_b[i]==null){
-        			//pas de caisse
-        		}else{//caisse
-            		if((sprites_b[i].getX()==(x_bombe-32)) && (sprites_b[i].getY()==y_bombe)){
-                    	sprites_b[i].hide();
-                    }
-        		}
-        	}
-		}
-        if(mymap[(x_bombe/32)-2][(y_bombe/32)].equals("*")){
-        	mymap[(x_bombe/32)-2][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
-        	for(int i=0;i<sprites_b.length;i++){
-        		if(sprites_b[i]==null){
-        			//pas de caisse
-        		}else{//caisse
-            		if((sprites_b[i].getX()==(x_bombe-64)) && (sprites_b[i].getY()==y_bombe)){
-                    	sprites_b[i].hide();
-                    }
-        		}
-        	}
-		}
-        if(mymap[(x_bombe/32)][(y_bombe/32)+1].equals("*")){
-        	mymap[(x_bombe/32)][(y_bombe/32)+1]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
-        	for(int i=0;i<sprites_b.length;i++){
-        		if(sprites_b[i]==null){
-        			//pas de caisse
-        		}else{//caisse
-            		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe+32))){
-                    	sprites_b[i].hide();
-                    }
-        		}
-        	}
-		}
-        if(mymap[(x_bombe/32)][(y_bombe/32)+2].equals("*")){
-        	mymap[(x_bombe/32)][(y_bombe/32)+2]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
-        	for(int i=0;i<sprites_b.length;i++){
-        		if(sprites_b[i]==null){
-        			//pas de caisse
-        		}else{//caisse
-            		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe+64))){
-                    	sprites_b[i].hide();
-                    }
-        		}
-        	}
-		}
-        if(mymap[(x_bombe/32)][(y_bombe/32)-1].equals("*")){
-        	mymap[(x_bombe/32)][(y_bombe/32)-1]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
-        	for(int i=0;i<sprites_b.length;i++){
-        		if(sprites_b[i]==null){
-        			//pas de caisse
-        		}else{//caisse
-            		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe-32))){
-                    	sprites_b[i].hide();
-                    }
-        		}
-        	}
-		}
-        if(mymap[(x_bombe/32)][(y_bombe/32)-2].equals("*")){
-        	mymap[(x_bombe/32)][(y_bombe/32)-2]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
-        	for(int i=0;i<sprites_b.length;i++){
-        		if(sprites_b[i]==null){
-        			//pas de caisse
-        		}else{//caisse
-            		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe-64))){
-                    	sprites_b[i].hide();
-                    }
-        		}
-        	}
-		}
+		
+        if(mapos_x==1){//je suis aux frontières gauche de la map
+
+            if(mymap[(x_bombe/32)+1][(y_bombe/32)].equals("*")){
+            	mymap[(x_bombe/32)+1][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==(x_bombe+32)) && (sprites_b[i].getY()==y_bombe)){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)+2][(y_bombe/32)].equals("*")){
+            	mymap[(x_bombe/32)+2][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==(x_bombe+64)) && (sprites_b[i].getY()==y_bombe)){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)][(y_bombe/32)+1].equals("*")){
+            	mymap[(x_bombe/32)][(y_bombe/32)+1]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe+32))){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)][(y_bombe/32)+2].equals("*")){
+            	mymap[(x_bombe/32)][(y_bombe/32)+2]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe+64))){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)][(y_bombe/32)-1].equals("*")){
+            	mymap[(x_bombe/32)][(y_bombe/32)-1]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe-32))){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)][(y_bombe/32)-2].equals("*")){
+            	mymap[(x_bombe/32)][(y_bombe/32)-2]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe-64))){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+        }
+        else if(mapos_x==20){//je suis aux frontières droite de la map
+
+            if(mymap[(x_bombe/32)-1][(y_bombe/32)].equals("*")){
+            	mymap[(x_bombe/32)-1][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==(x_bombe-32)) && (sprites_b[i].getY()==y_bombe)){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)][(y_bombe/32)+1].equals("*")){
+            	mymap[(x_bombe/32)][(y_bombe/32)+1]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe+32))){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)][(y_bombe/32)+2].equals("*")){
+            	mymap[(x_bombe/32)][(y_bombe/32)+2]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe+64))){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)][(y_bombe/32)-1].equals("*")){
+            	mymap[(x_bombe/32)][(y_bombe/32)-1]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe-32))){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)][(y_bombe/32)-2].equals("*")){
+            	mymap[(x_bombe/32)][(y_bombe/32)-2]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe-64))){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)-2][(y_bombe/32)].equals("*")){
+            	mymap[(x_bombe/32)-2][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==(x_bombe-64)) && (sprites_b[i].getY()==y_bombe)){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+        }
+        else if(mapos_y==1){//je suis aux frontières nord de la map
+
+            if(mymap[(x_bombe/32)+1][(y_bombe/32)].equals("*")){
+            	mymap[(x_bombe/32)+1][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==(x_bombe+32)) && (sprites_b[i].getY()==y_bombe)){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)-1][(y_bombe/32)].equals("*")){
+            	mymap[(x_bombe/32)-1][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==(x_bombe-32)) && (sprites_b[i].getY()==y_bombe)){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)][(y_bombe/32)+1].equals("*")){
+            	mymap[(x_bombe/32)][(y_bombe/32)+1]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe+32))){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)][(y_bombe/32)+2].equals("*")){
+            	mymap[(x_bombe/32)][(y_bombe/32)+2]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe+64))){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)-2][(y_bombe/32)].equals("*")){
+            	mymap[(x_bombe/32)-2][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==(x_bombe-64)) && (sprites_b[i].getY()==y_bombe)){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)+2][(y_bombe/32)].equals("*")){
+            	mymap[(x_bombe/32)+2][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==(x_bombe+64)) && (sprites_b[i].getY()==y_bombe)){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+        }
+        else if(mapos_y==14){// je suis aux frontières sud de la map
+
+            if(mymap[(x_bombe/32)+1][(y_bombe/32)].equals("*")){
+            	mymap[(x_bombe/32)+1][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==(x_bombe+32)) && (sprites_b[i].getY()==y_bombe)){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)-1][(y_bombe/32)].equals("*")){
+            	mymap[(x_bombe/32)-1][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==(x_bombe-32)) && (sprites_b[i].getY()==y_bombe)){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)][(y_bombe/32)-1].equals("*")){
+            	mymap[(x_bombe/32)][(y_bombe/32)-1]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe-32))){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)-2][(y_bombe/32)].equals("*")){
+            	mymap[(x_bombe/32)-2][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==(x_bombe-64)) && (sprites_b[i].getY()==y_bombe)){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)+2][(y_bombe/32)].equals("*")){
+            	mymap[(x_bombe/32)+2][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==(x_bombe+64)) && (sprites_b[i].getY()==y_bombe)){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)][(y_bombe/32)-2].equals("*")){
+            	mymap[(x_bombe/32)][(y_bombe/32)-2]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe-64))){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+        }
+        else{//je ne suis pas à une frontière de la map
+
+            if(mymap[(x_bombe/32)+1][(y_bombe/32)].equals("*")){
+            	mymap[(x_bombe/32)+1][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==(x_bombe+32)) && (sprites_b[i].getY()==y_bombe)){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)-1][(y_bombe/32)].equals("*")){
+            	mymap[(x_bombe/32)-1][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==(x_bombe-32)) && (sprites_b[i].getY()==y_bombe)){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)][(y_bombe/32)-1].equals("*")){
+            	mymap[(x_bombe/32)][(y_bombe/32)-1]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe-32))){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)-2][(y_bombe/32)].equals("*")){
+            	mymap[(x_bombe/32)-2][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==(x_bombe-64)) && (sprites_b[i].getY()==y_bombe)){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)+2][(y_bombe/32)].equals("*")){
+            	mymap[(x_bombe/32)+2][(y_bombe/32)]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==(x_bombe+64)) && (sprites_b[i].getY()==y_bombe)){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)][(y_bombe/32)-2].equals("*")){
+            	mymap[(x_bombe/32)][(y_bombe/32)-2]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe-64))){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)][(y_bombe/32)+1].equals("*")){
+            	mymap[(x_bombe/32)][(y_bombe/32)+1]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe-+32))){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+            if(mymap[(x_bombe/32)][(y_bombe/32)+2].equals("*")){
+            	mymap[(x_bombe/32)][(y_bombe/32)+2]=" ";//on supprime la caisse du fichier texte pour ne plus avoir la collision
+            	for(int i=0;i<sprites_b.length;i++){
+            		if(sprites_b[i]==null){
+            			//pas de caisse
+            		}else{//caisse
+                		if((sprites_b[i].getX()==x_bombe) && (sprites_b[i].getY()==(y_bombe+64))){
+                        	sprites_b[i].hide();
+                        }
+            		}
+            	}
+    		}
+        }
+        
+
+        
 
 		frmBomberbeach.getContentPane().repaint();
 	}
@@ -874,7 +1174,6 @@ public class Bomberbeach{
         int player2_y = Integer.parseInt(parts[5]);
         int new_Party;
 			
-			//TODO si objet= on le détruit
 		if( (player1_x == sprites_fire[0].getX()) && (player1_y == sprites_fire[0].getY()) ||
 			(player1_x == sprites_fire[1].getX()) && (player1_y == sprites_fire[1].getY()) ||
 		    (player1_x == sprites_fire[2].getX()) && (player1_y == sprites_fire[2].getY()) ||
@@ -1247,6 +1546,11 @@ public class Bomberbeach{
 	}
 	// ************************************************************************************
 	
+	public void receive_leaver(int joueur){
+		JOptionPane.showMessageDialog(null, "Fin du jeux","Le joueur "+joueur + " est parti",
+			    JOptionPane.PLAIN_MESSAGE);
+		System.exit(0);
+	}
 	
 	public static Panel getPanel_nogame() {
 		return panel_nogame;
