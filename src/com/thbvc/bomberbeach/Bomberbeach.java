@@ -97,7 +97,7 @@ public class Bomberbeach{
 	private static JButton btnJoin = new JButton("Rejoindre une partie");
 	private final static JTextField ipField = new JTextField();
 	private final static JTextField portField = new JTextField();
-
+	
 	private static int myposx_j1 ;
 	private static int myposy_j1 ;
 	private static int myposx_j2 ;
@@ -117,9 +117,11 @@ public class Bomberbeach{
 				try {
 					Bomberbeach jframe = new Bomberbeach();
 					jframe.frmBomberbeach.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				
 			}
 		});
 	}
@@ -186,6 +188,8 @@ public class Bomberbeach{
 			icon_fire_h = new ImageIcon(fire_h_image);
 			icon_fire_b = new ImageIcon(fire_b_image);
 			icon_boost = new ImageIcon(boost_image);
+			
+			//TODO music
 			
 		}
 		catch(Exception e){
@@ -734,6 +738,7 @@ public class Bomberbeach{
 		  moi.getCnx().Envoie((Object) (new PlayerDead(x,y,player1_x,player1_y,player2_x,player2_y)));
 		
 		frmBomberbeach.getContentPane().repaint();
+		//TODO son explose
 		
 		timer2.schedule(new TimerTask() {
 		  @Override
@@ -867,6 +872,7 @@ public class Bomberbeach{
         int player1_y = Integer.parseInt(parts[3]);
         int player2_x = Integer.parseInt(parts[4]);
         int player2_y = Integer.parseInt(parts[5]);
+        int new_Party;
 			
 			//TODO si objet= on le détruit
 		if( (player1_x == sprites_fire[0].getX()) && (player1_y == sprites_fire[0].getY()) ||
@@ -882,7 +888,6 @@ public class Bomberbeach{
 			
 			if(joueur.equals("1")){
 				if(JOptionPane.showConfirmDialog(null, "Vous êtes mort! :( Voulez-vous refaire une partie?","Bomberbeach",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
-					//TODO newParty();
 				}
 				else
 					System.exit(0);
