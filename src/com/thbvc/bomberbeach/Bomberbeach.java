@@ -888,6 +888,7 @@ public class Bomberbeach{
 			
 			if(joueur.equals("1")){
 				if(JOptionPane.showConfirmDialog(null, "Vous êtes mort! :( Voulez-vous refaire une partie?","Bomberbeach",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+					
 				}
 				else
 					System.exit(0);
@@ -925,7 +926,12 @@ public class Bomberbeach{
 		}
 
 	}
- 	// ************************************************************************
+ 	private void newParty() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	// ************************************************************************
 	
 	public void receive_boost_player(String string){
 		String[] parts = string.split("\\,");
