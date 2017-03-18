@@ -19,7 +19,7 @@ public class Client implements Communicateur {
 	private int port;
 	private Connexion cnx;
 	private int idClient;	
-
+	
 /********************************************** Declaration du constructeur : */
 
 
@@ -63,6 +63,8 @@ public class Client implements Communicateur {
 		String dead;
 		String destroy;
 		String boost;
+		String monmessage;
+		
 		int leaver;
 		try	{
 				if (Map.class.isInstance(O)) { //on reçoit un objet de type map
@@ -91,6 +93,13 @@ public class Client implements Communicateur {
 					boost = bo.check();
 					b.receive_boost_player(boost);// on l'envoi à bomberbeach qui traitera la matrice pour afficher la map
 
+				}else if (Message.class.isInstance(O)) { //on reçoit un objet de type message
+					
+					System.out.println("Message reçu : " + O);
+					Message message = (Message) O; //appel classe message
+					monmessage = message.traitement();
+					b.receive_message(monmessage);// on l'envoi à bomberbeach 
+					
 				}else if (Player_leave.class.isInstance(O)) {
 					Player_leave pl = (Player_leave) O;
 					System.out.println("Un joueur s'est déconnecté : " + O);

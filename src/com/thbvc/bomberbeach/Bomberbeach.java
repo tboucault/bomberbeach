@@ -36,13 +36,17 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.AbstractButton;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Event;
 import java.awt.Panel;
+import java.awt.Window;
+
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.JSeparator;
@@ -70,6 +74,9 @@ public class Bomberbeach{
 	ImageIcon icon_player2;
 	ImageIcon icon_boost;
 	String FILE_PATH_lvl1 = "/level1.txt";
+	public static JTextPane tchatarea = new JTextPane();
+	public static JTextField tchatfield = new JTextField();
+	public static JLabel lbl_level = new JLabel();
 	private static JLabel[] sprites_m = new JLabel[200];
 	private static JLabel[] sprites_p = new JLabel[200];
 	private static JLabel[] sprites_b = new JLabel[1000];
@@ -132,8 +139,9 @@ public class Bomberbeach{
 	public Bomberbeach() {
 		initialize();
 		this.s = new Server(port, 0);
+		//this.c = new Client(tchatarea,getTchatfield(), this);
 		this. b = this;
-		
+		//this.c = new Client(ip, port,tchatarea,getTchatfield(), this);
 	}
 
 	/**
@@ -205,7 +213,7 @@ public class Bomberbeach{
 		//frmBomberbeach.setUndecorated(true); //on masque la barre de titre
 		frmBomberbeach.getContentPane().setBackground(new Color(46, 139, 87)); //fond couleur verte
 		frmBomberbeach.getContentPane().setLayout(null);
-		frmBomberbeach.setBounds(100, 100, 703, 564);
+		frmBomberbeach.setBounds(100, 100, 992, 564);
 
 		getPanel_nogame().setBackground(new Color(46, 139, 87));
 		getPanel_nogame().setBounds(0, 0, 708, 512);
@@ -215,7 +223,7 @@ public class Bomberbeach{
 		getLbl_info().setText("En attente d'un concurrent...");
 		getPanel_nogame().add(getLbl_info());
 		getPanel_nogame().setVisible(true);
-
+		
 		// *** client/serveur ***
 		getportField().setBounds(851, 62, 130, 26);
 		getportField().setColumns(10);
@@ -226,6 +234,24 @@ public class Bomberbeach{
 		// **********************
 		frmBomberbeach.addKeyListener(new KeyAction());
 
+		// *** chat ***
+			final JScrollPane scrollPane = new JScrollPane(tchatarea);
+			scrollPane.setBounds(714, 119, 267, 342);
+			frmBomberbeach.getContentPane().add(scrollPane);
+			tchatarea.setEditable(false);				tchatarea.setSize(200, 200);
+			tchatarea.setBackground(new Color(211, 211, 211));
+			tchatarea.addKeyListener(new KeyAction());
+
+			setTchatfield(new JTextField());
+			getTchatfield().setBackground(new Color(211, 211, 211));
+			getTchatfield().setBounds(712, 466, 271, 30);
+			frmBomberbeach.getContentPane().add(getTchatfield());
+			((JTextField) getTchatfield()).setColumns(10);
+
+			frmBomberbeach.getContentPane().add(ipField);
+
+			frmBomberbeach.getContentPane().add(portField);
+			getTchatfield().addKeyListener(new KeyAction());
 
 		// *** menu ***
 		JMenuBar menuBar = new JMenuBar();
@@ -275,6 +301,8 @@ public class Bomberbeach{
 	}
 
 
+
+
 	// ********************************************************************
 	// *** Event lors d'appui touche clavier                            ***
 	// ********************************************************************
@@ -288,7 +316,14 @@ public class Bomberbeach{
 			
 			if(joueur ==null) return;
 
-			if (e.getKeyCode()== KeyEvent.VK_DOWN) {
+			if (e.getKeyCode()== KeyEvent.VK_ENTER) { // si appui sur touche entrer
+				if(getTchatfield().getText().length()>0){
+					moi.getCnx().Envoie((Object) (new Message(joueur, tchatfield.getText())));
+					tchatarea.setCaretPosition(tchatarea.getDocument().getLength());
+					getTchatfield().setText(""); //on vide le champ
+				}
+			}
+			else if (e.getKeyCode()== KeyEvent.VK_DOWN) {
 				if(joueur.equals("1")){
 					mapos_x = player1_x/32; // on stock l'id de la colonne où le joueur est
 					mapos_y = player1_y/32; // on stock l'id de la ligne où le joueur est
@@ -497,6 +532,7 @@ public class Bomberbeach{
 			}
 			frmBomberbeach.getContentPane().repaint(); //redraw de la map
 		}
+
 
 		/*les deux méthodes suivantes doivent être également écrites pour pouvoir réaliser l'interface KeyListener*/               
 		public void keyReleased(KeyEvent e){}
@@ -1529,9 +1565,11 @@ public class Bomberbeach{
  	// *** Lancement du lvl après connexion entre client et serveur                     ***
 	// *** Permettra une evolution du jeux pour choisir entre plusieurs map prédéfinies ***
  	// ************************************************************************************
+	@SuppressWarnings("deprecation")
 	public void setlevel(int level){
 		panel_nogame.setVisible(false); //on masque le panel vide pour afficher le jeu
 		start_game=true;
+		tchatfield.enable();
 		lbl_info.setVisible(false);
 
 		switch (level)
@@ -1544,7 +1582,17 @@ public class Bomberbeach{
 			/*Action*/;             
 		}
 	}
-	// ************************************************************************************
+	// ****************************************************************************************
+	// ****************************************************************************************
+	 	// *** Message entre clients                                                        ***
+		// *** Affichage dans la fenetre chat                                               ***
+	// ****************************************************************************************
+		
+		public void receive_message(String Mess) {
+			tchatarea.setText(tchatarea.getText()+"\n"+Mess);
+			tchatarea.setCaretPosition(tchatarea.getDocument().getLength());//Se positionne a la dernier ligne de caractere envoyé
+		}
+		// ************************************************************************************
 	
 	public void receive_leaver(int joueur){
 		JOptionPane.showMessageDialog(null, "Fin du jeux","Le joueur "+joueur + " est parti",
@@ -1592,4 +1640,13 @@ public class Bomberbeach{
 	public static void setStart_game(boolean start_game) {
 		Bomberbeach.start_game = start_game;
 	}
+	
+	public static JTextField getTchatfield() {
+		return tchatfield;
+	}
+
+	public static void setTchatfield(JTextField tchatfield) {
+		Bomberbeach.tchatfield = tchatfield;
+	}
+
 }

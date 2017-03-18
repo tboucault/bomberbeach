@@ -123,6 +123,14 @@ public class Server implements Communicateur, Runnable {
 			    	for (int i = 0; i <= lCli.size(); i ++) {
 			    		((Connexion)lCli.get(i)).Envoie((Object)b); //envoie aux autres qu'un joueur a pris un boost 	
 			    	}
+				}else if (Message.class.isInstance(O)) {
+						Message m = (Message) O;
+						System.out.println("Message reçu : " + O);
+
+				    	for (int i = 0; i <= lCli.size(); i ++) {
+				    		((Connexion)lCli.get(i)).Envoie((Object)m); //envoie aux autres qu'il y a explosion  	
+				    	}
+			    	
 				}else {
 				
 					// Sinon, c'est un String, nous enlevons alors le client de

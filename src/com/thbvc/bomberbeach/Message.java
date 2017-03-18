@@ -17,15 +17,12 @@ public class Message implements Serializable
 
 /* Methodes *******************************************************************/
 	
-	public int ecrisMoi(Graphics g, int absc, int ordo) {
+	public String traitement(){
+		String val_retour = chateur + ":"+ mes;
+		System.out.println(val_retour);
+		return val_retour;
 		
-		g.drawString((chateur + " : " + mes), absc, ordo);
-		
-		
-		FontMetrics fm = g.getFontMetrics();
-		return fm.stringWidth ((chateur + " : " + mes));
-	}	
-	
+	}
 	
 /* Variables ******************************************************************/
 

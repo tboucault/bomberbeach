@@ -60,6 +60,7 @@ public class Map implements Serializable{
 				rows++;
 			}
 			System.out.println("Fichier lv1 lu, matrice créée");
+			show_map_debug();
 			//show_map_debug(); //appel de la fonction pour l'afficher en debug
 			return map; //retour de la matrice map au client
 		} catch (IOException e) {
