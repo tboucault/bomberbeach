@@ -8,6 +8,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -22,6 +26,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.plaf.synth.SynthSeparatorUI;
 import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -113,7 +118,7 @@ public class Bomberbeach{
 		initialize();
 		this.s = new Server(port, 0);
 		this. b = this;
-		
+		connexion();
 	}
 
 	/**
@@ -173,7 +178,6 @@ public class Bomberbeach{
 		catch(Exception e){
 			System.out.println("Erreur lors du chargement d'un fichier de texture");
 		}
-		//
 
 		// ********************************************************************
 		// *** Création de l'interface                                      ***
@@ -264,6 +268,53 @@ public class Bomberbeach{
 		player2_y =14*32;
 		Arrays.fill(cansetbombe, Boolean.TRUE);
 	}
+
+
+	public void connexion(){
+		/* Chargement du driver JDBC pour MySQL */
+		try {
+		    Class.forName( "com.mysql.jdbc.Driver" );
+	    	System.out.println("driver mysql chargé");
+		} catch ( ClassNotFoundException e ) {
+	    	System.out.println(e);
+		}
+	}
+
+
+	// ********************************************************************
+	// *** sauvegarde du score en BDD mysql                             ***
+	// ********************************************************************
+	public void save_score(){
+		String adversaire = null;
+		/* Connexion à la base de données */
+		String url = "jdbc:mysql://localhost:3306/bomberbeach";
+		String utilisateur = "root";
+		String motDePasse = "root";
+		Connection connexion = null;
+		try {
+		    connexion = DriverManager.getConnection( url, utilisateur, motDePasse );
+		    System.out.println("connexion bdd ok");
+		    /* Exécution d'une requête d'écriture */
+		    Statement statement = connexion.createStatement();
+		    if(joueur.equals("1")){
+		    	adversaire="2";
+		    }else if(joueur.equals("2")){
+		    	adversaire="1";
+		    }
+		    int statut = statement.executeUpdate( "INSERT INTO scores (joueur, adversaire, score, timestamp) VALUES ("+joueur+", "+adversaire+", 1, NOW());" );
+		    	
+		} catch ( SQLException e ) {
+	    	System.out.println(e);
+		} finally {
+		    if ( connexion != null )
+		        try {
+		            /* Fermeture de la connexion */
+		            connexion.close();
+		        } catch ( SQLException ignore ) {
+		        }
+		}
+	}
+	// ********************************************************************
 
 
 	// ********************************************************************
@@ -1141,10 +1192,11 @@ public class Bomberbeach{
 			sprites_j[1].hide(); //le joueur est mort
 			
 			if(joueur.equals("1")){
-
+				//TODO requette affichage du score
 				JOptionPane.showMessageDialog(null, "Vous êtes mort! :(","Bomberbeach | Fin du jeu",JOptionPane.PLAIN_MESSAGE);
 				System.exit(0);
 			}else if(joueur.equals("2")){
+				save_score(); //on sauvegarde le score du gagnant en bdd
 				JOptionPane.showMessageDialog(null, "Vous avez gagné :)","Bomberbeach | Fin du jeu",JOptionPane.PLAIN_MESSAGE);
 				System.exit(0);				
 			}
@@ -1160,9 +1212,11 @@ public class Bomberbeach{
 				(player2_x == sprites_fire[8].getX()) && (player2_y == sprites_fire[8].getY()) ){
 			sprites_j[20].hide(); //le joueur est mort
 			if(joueur.equals("1")){
+				save_score(); //on sauvegarde le score du gagnant en bdd
 				JOptionPane.showMessageDialog(null, "Vous avez gagné :)","Bomberbeach | Fin du jeu",JOptionPane.PLAIN_MESSAGE);
 				System.exit(0);
 			}else if(joueur.equals("2")){	
+				//TODO requette affichage du score
 				JOptionPane.showMessageDialog(null, "Vous êtes mort! :(","Bomberbeach | Fin du jeu",JOptionPane.PLAIN_MESSAGE);
 				System.exit(0);
 			}
@@ -1170,7 +1224,6 @@ public class Bomberbeach{
 
 	}
  	// ************************************************************************
-
 
 	// ********************************************************************
 	// *** Traitement boost                                             ***
