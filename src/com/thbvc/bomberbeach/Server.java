@@ -10,7 +10,7 @@ public class Server implements Communicateur, Runnable {
 
 	
 	
-/************************************************ D�claration des variables : */
+/************************************************ Declaration des variables : */
 
 	static Bomberbeach b;
 	private int port;
@@ -21,7 +21,7 @@ public class Server implements Communicateur, Runnable {
 	private LinkedList lMessages;
 	
 
-/********************************************** D�claration du constructeur : */
+/********************************************** Declaration du constructeur : */
 
 
 	public Server(int port, int nbCli) {
@@ -33,7 +33,7 @@ public class Server implements Communicateur, Runnable {
 	}	
 	
 	
-/************************************************* D�claration des methodes : */
+/************************************************* Declaration des methodes : */
 
 	
 	public void creationServeur() {
@@ -90,11 +90,10 @@ public class Server implements Communicateur, Runnable {
 	}
 
     public void envoyer_position(int pos_x, String mvmt, int pos_y, int joueur){
-    	//TODO probleme: la liste est vide... impossible d'envoyer a tt les joueurs...
-		System.out.println("lol: "+lCli.size());
+    
     	for (int i = 1; i <= lCli.size(); i ++) {
     		((Connexion)lCli.get(i)).Envoie((Object)  (new Joueur(joueur,mvmt,pos_x,pos_y))); //envoie de la position d'un joueur aux autres
-    		System.out.println("test2");    	
+   	
     	}
     }
 
@@ -123,10 +122,20 @@ public class Server implements Communicateur, Runnable {
 			    	for (int i = 0; i <= lCli.size(); i ++) {
 			    		((Connexion)lCli.get(i)).Envoie((Object)b); //envoie aux autres qu'un joueur a pris un boost 	
 			    	}
+				}else if (Map.class.isInstance(O)) {
+					Map m = (Map) O;
+			    	for (int i = 0; i <= lCli.size(); i ++) {
+			    		((Connexion)lCli.get(i)).Envoie((Object)m); //resset de la map aux paramètres d'origine 	
+			    	}
+				}else if (Message.class.isInstance(O)) {
+					Message m = (Message) O;
+					System.out.println("Message reçu : " + O);
+					for (int i = 0; i <= lCli.size(); i ++) {
+						((Connexion)lCli.get(i)).Envoie((Object)m); //envoie aux client d'un nouveau message 	
+					}
 				}else {
 				
-					// Sinon, c'est un String, nous enlevons alors le client de
-					// La liste.
+					// Sinon, c'est un String, nous enlevons alors le client de La liste.
 					
 					int rang = Integer.parseInt((String) O);
 					//lCli.remove(rang);
@@ -138,8 +147,7 @@ public class Server implements Communicateur, Runnable {
 						//envoie aux autres que le joueur est parti, fin du jeux
 					}
 					
-					// Nous r�-indexons ensuite la liste des client en leur
-					// Envoyant un nouvel identifiant.
+					// réindexing de la liste des clients
 					
 					/*for (int i = 0; i < (lCli.size())+1; i ++) {
 						((Connexion)lCli.get(i)).Envoie((Object) (new Integer (i).toString()));	

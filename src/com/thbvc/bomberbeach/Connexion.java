@@ -6,7 +6,7 @@ import java.lang.Runnable;
 
 public class Connexion implements Runnable {
 
-/********************************************** D�claration du constructeur : */
+/********************************************** Déclaration du constructeur : */
 
 
 	public Connexion(Socket client, Communicateur server) {
@@ -27,7 +27,7 @@ public class Connexion implements Runnable {
 	}	
 	
 	
-/************************************************* D�claration des m�thodes : */
+/************************************************* Déclaration des méthodes : */
 
 
 	public void run() {
@@ -58,7 +58,7 @@ public class Connexion implements Runnable {
 	}
 		
 
-/************************************************ D�claration des variables : */
+/************************************************ Déclaration des variables : */
 	
 	
 	private Communicateur server;

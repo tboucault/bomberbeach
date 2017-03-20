@@ -1,21 +1,13 @@
 package com.thbvc.bomberbeach;
 
 import java.awt.EventQueue;
-import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -31,21 +23,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.imageio.ImageIO;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import java.awt.Color;
-import java.awt.Event;
 import java.awt.Panel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.JSeparator;
 
 public class Bomberbeach{
 
@@ -631,82 +614,9 @@ public class Bomberbeach{
 	// *** Gestion de collision                                         ***
 	// ********************************************************************
 	public int can_walk(String mvmt){
-		switch(mvmt){
-			case "bas":
-				if (boost_speed==1){
-					if(mymap[mapos_x][mapos_y+1].equals("#") || mymap[mapos_x][mapos_y+1].equals("@") || mymap[mapos_x][mapos_y+1].equals("*")){
-						return 0;
-					}else{
-						if(mymap[mapos_x][mapos_y+2].equals("#") || mymap[mapos_x][mapos_y+2].equals("@") || mymap[mapos_x][mapos_y+2].equals("*")){
-							return 1;
-						}else{
-							return 2;
-						}
-					}
-				}else{
-					if(mymap[mapos_x][mapos_y+1].equals("#") || mymap[mapos_x][mapos_y+1].equals("@") || mymap[mapos_x][mapos_y+1].equals("*")){
-						return 0;
-					}else{
-						return 1;
-					}
-				}
-			case "haut":
-				if (boost_speed==1){
-					if(mymap[mapos_x][mapos_y-1].equals("#") || mymap[mapos_x][mapos_y-1].equals("@") || mymap[mapos_x][mapos_y-1].equals("*")){
-						return 0;
-					}else{
-						if(mymap[mapos_x][mapos_y-2].equals("#") || mymap[mapos_x][mapos_y-2].equals("@") || mymap[mapos_x][mapos_y-2].equals("*")){
-							return 1;
-						}else{
-							return 2;
-						}
-					}
-				}else{
-					if(mymap[mapos_x][mapos_y-1].equals("#") || mymap[mapos_x][mapos_y-1].equals("@") || mymap[mapos_x][mapos_y-1].equals("*")){
-						return 0;
-					}else{
-						return 1;
-					}
-				}
-			case "gauche":
-				if (boost_speed==1){
-					if(mymap[mapos_x-1][mapos_y].equals("#") || mymap[mapos_x-1][mapos_y].equals("@") || mymap[mapos_x-1][mapos_y].equals("*")){
-						return 0;
-					}else{
-						if(mymap[mapos_x-2][mapos_y].equals("#") || mymap[mapos_x-2][mapos_y].equals("@") || mymap[mapos_x-2][mapos_y].equals("*")){
-							return 1;
-						}else{
-							return 2;
-						}
-					}
-				}else{
-					if(mymap[mapos_x-1][mapos_y].equals("#") || mymap[mapos_x-1][mapos_y].equals("@") || mymap[mapos_x-1][mapos_y].equals("*")){
-						return 0;
-					}else{
-						return 1;
-					}
-				}
-			case "droite":
-				if (boost_speed==1){
-					if(mymap[mapos_x+1][mapos_y].equals("#") || mymap[mapos_x+1][mapos_y].equals("@") || mymap[mapos_x+1][mapos_y].equals("*")){
-						return 0;
-					}else{
-						if(mymap[mapos_x+2][mapos_y].equals("#") || mymap[mapos_x+2][mapos_y].equals("@") || mymap[mapos_x+2][mapos_y].equals("*")){
-							return 1;
-						}else{
-							return 2;
-						}
-					}
-				}else{
-					if(mymap[mapos_x+1][mapos_y].equals("#") || mymap[mapos_x+1][mapos_y].equals("@") || mymap[mapos_x+1][mapos_y].equals("*")){
-						return 0;
-					}else{
-						return 1;
-					}
-				}
-			default:
-				return 0;
-		}		
+
+		Canwalk cw = new Canwalk(boost_speed,mymap,mapos_x,mapos_y);
+		return cw.can_walk(mvmt);//appel classe can_walk
 		
 	}
  	// ************************************************************************
@@ -746,7 +656,6 @@ public class Bomberbeach{
 	public void explosion(int x,int y){
 		Timer timer2 = new Timer();
 		Boolean[] fire = new Boolean[9];
-		Arrays.fill(fire, Boolean.TRUE);
 		
 		sprites_fire[0] = new JLabel(icon_fire);
 		sprites_fire[1] = new JLabel(icon_fire_x);
@@ -767,565 +676,28 @@ public class Bomberbeach{
 		sprites_fire[7].setBounds(x-64, y, 32, 32); //position g
 		sprites_fire[8].setBounds(x+64, y, 32, 32); //position d
 		
-		//TODO si un mur on ne met pas les flammes
-
-        if(p_x==1){//je suis aux frontières gauche de la map
-            if(p_y==1){//je suis aussi aux frontières nord de la map
-        		if(mymap[(x/32)+2][y/32].equals("#") || mymap[(x/32)+2][y/32].equals("@")){// x+
-
-        			if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-        				fire[1]=false;
-        				fire[8]=false;
-        			}else{//on cache seulement les flammes en x+2
-        				fire[8]=false;
-        			}
-        		}else if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-        			fire[1]=false;
-        			fire[8]=false;
-        		}
-        		
-        		if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-        			fire[2]=false;
-        			fire[7]=false;
-        		}
-        		
-        		if(mymap[x/32][(y/32)+2].equals("#") || mymap[x/32][(y/32)+2].equals("@")){// y+
-
-        			if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-        				fire[3]=false;
-        				fire[6]=false;
-        			}else{//on cache seulement les flammes en y+2
-        				fire[6]=false;
-        			}
-        		}else if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-        			fire[3]=false;
-        			fire[6]=false;
-        		}
-
-        		if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-        			fire[4]=false;
-        			fire[5]=false;
-        		}
-            }else if(p_y==14){//je suis aussi aux frontières sud de la map
-            	//TODO
-            	if(mymap[(x/32)+2][y/32].equals("#") || mymap[(x/32)+2][y/32].equals("@")){// x+
-
-        			if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-        				fire[1]=false;
-        				fire[8]=false;
-        			}else{//on cache seulement les flammes en x+2
-        				fire[8]=false;
-        			}
-        		}else if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-        			fire[1]=false;
-        			fire[8]=false;
-        		}
-
-        		if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-        			fire[2]=false;
-        			fire[7]=false;
-        		}
-        		
-        		if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-        			fire[3]=false;
-        			fire[6]=false;
-        		}
-
-        		if(mymap[x/32][(y/32)-2].equals("#") || mymap[x/32][(y/32)-2].equals("@")){// y-
-
-        			if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-        				fire[4]=false;
-        				fire[5]=false;
-        			}else{//on cache seulement les flammes en y+2
-        				fire[5]=false;
-        			}
-        		}else if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-        			fire[4]=false;
-        			fire[5]=false;
-        		}
-            	
-            }else{
-        		if(mymap[(x/32)+2][y/32].equals("#") || mymap[(x/32)+2][y/32].equals("@")){// x+
-
-        			if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-        				fire[1]=false;
-        				fire[8]=false;
-        			}else{//on cache seulement les flammes en x+2
-        				fire[8]=false;
-        			}
-        		}else if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-        			fire[1]=false;
-        			fire[8]=false;
-        		}
-        		
-        		if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-        			fire[2]=false;
-        			fire[7]=false;
-        		}
-        		
-        		if(mymap[x/32][(y/32)+2].equals("#") || mymap[x/32][(y/32)+2].equals("@")){// y+
-
-        			if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-        				fire[3]=false;
-        				fire[6]=false;
-        			}else{//on cache seulement les flammes en y+2
-        				fire[6]=false;
-        			}
-        		}else if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-        			fire[3]=false;
-        			fire[6]=false;
-        		}
-
-        		if(mymap[x/32][(y/32)-2].equals("#") || mymap[x/32][(y/32)-2].equals("@")){// y-
-
-        			if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-        				fire[4]=false;
-        				fire[5]=false;
-        			}else{//on cache seulement les flammes en y+2
-        				fire[5]=false;
-        			}
-        		}else if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-        			fire[4]=false;
-        			fire[5]=false;
-        		}
-            }
-
-    				
-        }
-        if(p_x==20){//je suis aux frontières droite de la map
-        	if(p_y==1){//je suis aussi aux frontières nord de la map
-        		if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-        			fire[1]=false;
-        			fire[8]=false;
-        		}
-        		
-        		if(mymap[(x/32)-2][y/32].equals("#") || mymap[(x/32)-2][y/32].equals("@")){// x-
-
-        			if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-        				fire[2]=false;
-        				fire[7]=false;
-        			}else{//on cache seulement les flammes en x-2
-        				fire[7]=false;
-        			}
-        		}else if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-        			fire[2]=false;
-        			fire[7]=false;
-        		}
-        		
-        		if(mymap[x/32][(y/32)+2].equals("#") || mymap[x/32][(y/32)+2].equals("@")){// y+
-
-        			if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-        				fire[3]=false;
-        				fire[6]=false;
-        			}else{//on cache seulement les flammes en y+2
-        				fire[6]=false;
-        			}
-        		}else if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-        			fire[3]=false;
-        			fire[6]=false;
-        		}
-
-        		if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-        			fire[4]=false;
-        			fire[5]=false;
-        		}
-        	}else if(p_y==14){//je suis aussi aux frontières sud de la map
-            		if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-            			fire[1]=false;
-            			fire[8]=false;
-            		}
-            		
-            		if(mymap[(x/32)-2][y/32].equals("#") || mymap[(x/32)-2][y/32].equals("@")){// x-
-
-            			if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-            				fire[2]=false;
-            				fire[7]=false;
-            			}else{//on cache seulement les flammes en x-2
-            				fire[7]=false;
-            			}
-            		}else if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-            			fire[2]=false;
-            			fire[7]=false;
-            		}
-            		
-            		if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-            			fire[3]=false;
-            			fire[6]=false;
-            		}
-            		if(mymap[x/32][(y/32)-2].equals("#") || mymap[x/32][(y/32)-2].equals("@")){// y-
-            			
-    	    			if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-    	    				fire[4]=false;
-    	    				fire[5]=false;
-    	    			}else{//on cache seulement les flammes en y+2
-    	    				fire[5]=false;
-    	    			}
-    	    		}else if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-    	    			fire[4]=false;
-    	    			fire[5]=false;
-    	    		}
-            	}else{
-        		if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-        			fire[1]=false;
-        			fire[8]=false;
-        		}
-        		
-        		if(mymap[(x/32)-2][y/32].equals("#") || mymap[(x/32)-2][y/32].equals("@")){// x-
-
-        			if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-        				fire[2]=false;
-        				fire[7]=false;
-        			}else{//on cache seulement les flammes en x-2
-        				fire[7]=false;
-        			}
-        		}else if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-        			fire[2]=false;
-        			fire[7]=false;
-        		}
-        		
-        		if(mymap[x/32][(y/32)+2].equals("#") || mymap[x/32][(y/32)+2].equals("@")){// y+
-
-        			if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-        				fire[3]=false;
-        				fire[6]=false;
-        			}else{//on cache seulement les flammes en y+2
-        				fire[6]=false;
-        			}
-        		}else if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-        			fire[3]=false;
-        			fire[6]=false;
-        		}
-
-        		if(mymap[x/32][(y/32)-2].equals("#") || mymap[x/32][(y/32)-2].equals("@")){// y-
-
-        			if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-        				fire[4]=false;
-        				fire[5]=false;
-        			}else{//on cache seulement les flammes en y+2
-        				fire[5]=false;
-        			}
-        		}else if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-        			fire[4]=false;
-        			fire[5]=false;
-        		}
-        	}
-    				
-        }
-        if(p_y==1){//je suis aux frontières nord de la map
-
-            if(p_x==1){//je suis aussi aux frontières gauche de la map
-
-        		if(mymap[(x/32)+2][y/32].equals("#") || mymap[(x/32)+2][y/32].equals("@")){// x+
-
-        			if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-        				fire[1]=false;
-        				fire[8]=false;
-        			}else{//on cache seulement les flammes en x+2
-        				fire[8]=false;
-        			}
-        		}else if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-        			fire[1]=false;
-        			fire[8]=false;
-        		}
-        		
-        		if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-        			fire[2]=false;
-        			fire[7]=false;
-        		}
-        		
-        		if(mymap[x/32][(y/32)+2].equals("#") || mymap[x/32][(y/32)+2].equals("@")){// y+
-
-        			if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-        				fire[3]=false;
-        				fire[6]=false;
-        			}else{//on cache seulement les flammes en y+2
-        				fire[6]=false;
-        			}
-        		}else if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-        			fire[3]=false;
-        			fire[6]=false;
-        		}
-
-        		if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-        			fire[4]=false;
-        			fire[5]=false;
-        		}
-            }else if(p_x==20){//je suis aux frontières droite de la map
-            	//TODO
-        		if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-        			fire[1]=false;
-        			fire[8]=false;
-        		}
-        		
-        		if(mymap[(x/32)-2][y/32].equals("#") || mymap[(x/32)-2][y/32].equals("@")){// x-
-
-        			if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-        				fire[2]=false;
-        				fire[7]=false;
-        			}else{//on cache seulement les flammes en x-2
-        				fire[7]=false;
-        			}
-        		}else if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-        			fire[2]=false;
-        			fire[7]=false;
-        		}
-        		
-        		if(mymap[x/32][(y/32)+2].equals("#") || mymap[x/32][(y/32)+2].equals("@")){// y+
-
-        			if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-        				fire[3]=false;
-        				fire[6]=false;
-        			}else{//on cache seulement les flammes en y+2
-        				fire[6]=false;
-        			}
-        		}else if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-        			fire[3]=false;
-        			fire[6]=false;
-        		}
-
-        		if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-        			fire[4]=false;
-        			fire[5]=false;
-        		}
-            }else{
-        		if(mymap[(x/32)+2][y/32].equals("#") || mymap[(x/32)+2][y/32].equals("@")){// x+
-
-        			if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-        				fire[1]=false;
-        				fire[8]=false;
-        			}else{//on cache seulement les flammes en x+2
-        				fire[8]=false;
-        			}
-        		}else if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-        			fire[1]=false;
-        			fire[8]=false;
-        		}
-        		
-        		if(mymap[(x/32)-2][y/32].equals("#") || mymap[(x/32)-2][y/32].equals("@")){// x-
-
-        			if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-        				fire[2]=false;
-        				fire[7]=false;
-        			}else{//on cache seulement les flammes en x-2
-        				fire[7]=false;
-        			}
-        		}else if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-        			fire[2]=false;
-        			fire[7]=false;
-        		}
-        		
-        		if(mymap[x/32][(y/32)+2].equals("#") || mymap[x/32][(y/32)+2].equals("@")){// y+
-
-        			if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-        				fire[3]=false;
-        				fire[6]=false;
-        			}else{//on cache seulement les flammes en y+2
-        				fire[6]=false;
-        			}
-        		}else if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-        			fire[3]=false;
-        			fire[6]=false;
-        		}
-
-        		if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-        			fire[4]=false;
-        			fire[5]=false;
-        		}
-            }
-    				
-        }
-        if(p_y==14){//je suis aux frontières sud de la map
-
-            if(p_x==1){//je suis aussi aux frontières gauche de la map
-
-	    		if(mymap[(x/32)+2][y/32].equals("#") || mymap[(x/32)+2][y/32].equals("@")){// x+
-	
-	    			if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-	    				fire[1]=false;
-	    				fire[8]=false;
-	    			}else{//on cache seulement les flammes en x+2
-	    				fire[8]=false;
-	    			}
-	    		}else if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-	    			fire[1]=false;
-	    			fire[8]=false;
-	    		}
-	    		
-	    		if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-	    			fire[2]=false;
-	    			fire[7]=false;
-	    		}
-	    		
-	    		if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-	    			fire[3]=false;
-	    			fire[6]=false;
-	    		}
-	
-	    		if(mymap[x/32][(y/32)-2].equals("#") || mymap[x/32][(y/32)-2].equals("@")){// y-
-	
-	    			if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-	    				fire[4]=false;
-	    				fire[5]=false;
-	    			}else{//on cache seulement les flammes en y+2
-	    				fire[5]=false;
-	    			}
-	    		}else if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-	    			fire[4]=false;
-	    			fire[5]=false;
-	    		}
-            }else if(p_x==20){
-
-        		if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-        			fire[1]=false;
-        			fire[8]=false;
-        		}
-        		
-        		if(mymap[(x/32)-2][y/32].equals("#") || mymap[(x/32)-2][y/32].equals("@")){// x-
-
-        			if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-        				fire[2]=false;
-        				fire[7]=false;
-        			}else{//on cache seulement les flammes en x-2
-        				fire[7]=false;
-        			}
-        		}else if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-        			fire[2]=false;
-        			fire[7]=false;
-        		}
-        		
-        		if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-        			fire[3]=false;
-        			fire[6]=false;
-        		}
-        		if(mymap[x/32][(y/32)-2].equals("#") || mymap[x/32][(y/32)-2].equals("@")){// y-
-        			
-	    			if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-	    				fire[4]=false;
-	    				fire[5]=false;
-	    			}else{//on cache seulement les flammes en y+2
-	    				fire[5]=false;
-	    			}
-	    		}else if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-	    			fire[4]=false;
-	    			fire[5]=false;
-	    		}
-            }else{
-	    		if(mymap[(x/32)+2][y/32].equals("#") || mymap[(x/32)+2][y/32].equals("@")){// x+
-	
-	    			if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-	    				fire[1]=false;
-	    				fire[8]=false;
-	    			}else{//on cache seulement les flammes en x+2
-	    				fire[8]=false;
-	    			}
-	    		}else if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-	    			fire[1]=false;
-	    			fire[8]=false;
-	    		}
-	    		
-	    		if(mymap[(x/32)-2][y/32].equals("#") || mymap[(x/32)-2][y/32].equals("@")){// x-
-	
-	    			if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-	    				fire[2]=false;
-	    				fire[7]=false;
-	    			}else{//on cache seulement les flammes en x-2
-	    				fire[7]=false;
-	    			}
-	    		}else if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-	    			fire[2]=false;
-	    			fire[7]=false;
-	    		}
-	    		
-	    		if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-	    			fire[3]=false;
-	    			fire[6]=false;
-	    		}
-	
-	    		if(mymap[x/32][(y/32)-2].equals("#") || mymap[x/32][(y/32)-2].equals("@")){// y-
-	
-	    			if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-	    				fire[4]=false;
-	    				fire[5]=false;
-	    			}else{//on cache seulement les flammes en y+2
-	    				fire[5]=false;
-	    			}
-	    		}else if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-	    			fire[4]=false;
-	    			fire[5]=false;
-	    		}
-            }
-    				
-        }else if(p_x!=1 && p_x!=20 && p_y!=1 && p_y!=14){
-        		if(mymap[(x/32)+2][y/32].equals("#") || mymap[(x/32)+2][y/32].equals("@")){// x+
-
-        			if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-        				fire[1]=false;
-        				fire[8]=false;
-        			}else{//on cache seulement les flammes en x+2
-        				fire[8]=false;
-        			}
-        		}else if(mymap[(x/32)+1][y/32].equals("#") || mymap[(x/32)+1][y/32].equals("@")){//on cache les flammes en x+2 et x+1
-        			fire[1]=false;
-        			fire[8]=false;
-        		}
-        		
-        		if(mymap[(x/32)-2][y/32].equals("#") || mymap[(x/32)-2][y/32].equals("@")){// x-
-
-        			if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-        				fire[2]=false;
-        				fire[7]=false;
-        			}else{//on cache seulement les flammes en x-2
-        				fire[7]=false;
-        			}
-        		}else if(mymap[(x/32)-1][y/32].equals("#") || mymap[(x/32)-1][y/32].equals("@")){//on cache les flammes en x-2 et x-1
-        			fire[2]=false;
-        			fire[7]=false;
-        		}
-        		
-        		if(mymap[x/32][(y/32)+2].equals("#") || mymap[x/32][(y/32)+2].equals("@")){// y+
-
-        			if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-        				fire[3]=false;
-        				fire[6]=false;
-        			}else{//on cache seulement les flammes en y+2
-        				fire[6]=false;
-        			}
-        		}else if(mymap[x/32][(y/32)+1].equals("#") || mymap[x/32][(y/32)+1].equals("@")){//on cache les flammes en y+2 et y+1
-        			fire[3]=false;
-        			fire[6]=false;
-        		}
-
-        		if(mymap[x/32][(y/32)-2].equals("#") || mymap[x/32][(y/32)-2].equals("@")){// y-
-
-        			if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-        				fire[4]=false;
-        				fire[5]=false;
-        			}else{//on cache seulement les flammes en y+2
-        				fire[5]=false;
-        			}
-        		}else if(mymap[x/32][(y/32)-1].equals("#") || mymap[x/32][(y/32)-1].equals("@")){//on cache les flammes en y-2 et y-1
-        			fire[4]=false;
-        			fire[5]=false;
-        		}
-        }
-
-		frmBomberbeach.getContentPane().add(sprites_fire[0]); //affichage sur la fenêtre
+		Explosion explose = new Explosion(mymap,p_x,p_y,x,y);
+		fire=explose.explosion();//appel classe explosion
 		
+		//affichage des flammes
+		frmBomberbeach.getContentPane().add(sprites_fire[0]); //affichage sur la fenêtre
 		for(int i=1;i<9;i++){ //on affiche seulement les flammes qu'il faut
 			if(fire[i].equals(true)){
 				frmBomberbeach.getContentPane().add(sprites_fire[i]); //affichage sur la fenêtre
 			}
 		}
+		// ******************************
 		
-		  moi.getCnx().Envoie((Object) (new PlayerDead(x,y,player1_x,player1_y,player2_x,player2_y)));
+		//envoi au serveur de la présence d'une explosion
+		moi.getCnx().Envoie((Object) (new PlayerDead(x,y,player1_x,player1_y,player2_x,player2_y)));
 		
-		frmBomberbeach.getContentPane().repaint();
+		frmBomberbeach.getContentPane().repaint();//rafraichissement de la map
 		
 		timer2.schedule(new TimerTask() {
 		  @Override
 		  public void run() {
 			  for(int i=0;i<9;i++){
-				  sprites_fire[i].hide();
+				  sprites_fire[i].hide(); //on masque les flammes 1 seconde après l'explosion
 			  }
 
 				frmBomberbeach.getContentPane().repaint();
@@ -1339,6 +711,7 @@ public class Bomberbeach{
         String[] parts = string.split("\\,");
         int x_bombe = Integer.parseInt(parts[0]);
         int y_bombe = Integer.parseInt(parts[1]);
+		
 		
         if(mapos_x==1){//je suis aux frontières gauche de la map
 
@@ -1804,11 +1177,8 @@ public class Bomberbeach{
 	// ********************************************************************
 	public void receive_boost_player(String string){
 		String[] parts = string.split("\\,");
-        int myjoueur = Integer.parseInt(parts[0]);;
         String type = parts[1];
         int id = Integer.parseInt(parts[2]);;
-        int pos_x = Integer.parseInt(parts[3]);;
-        int pos_y = Integer.parseInt(parts[4]);;
         
 
 		sprites_bo[id].hide(); //on cache le boost de la map
@@ -1834,9 +1204,6 @@ public class Bomberbeach{
 						break;
 			}
 		}
-		
-		
-		//TODO le boost doit respawn aux memes valeurs entre tout les joueurs (envoi au serveur et set la pos apres!!)
 		
 
 		Timer timer4 = new Timer();
@@ -1866,34 +1233,28 @@ public class Bomberbeach{
 		case "bas":
 			if(joueur.equals("1")){
 				if((mapos_x*32==sprites_bo[10].getX() && mapos_y*32==sprites_bo[10].getY()-32) ){
-					System.out.println("Powerup BOOST activé");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));
 				}	
 				else if(mapos_x*32==sprites_bo[16].getX() && mapos_y*32==sprites_bo[16].getY()-32){
-					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));			
 				}
 				else if(mapos_x*32==sprites_bo[4].getX() && mapos_y*32==sprites_bo[4].getY()-32){
-					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));	
 				}
 			}	
 			else{
 				if((mapos_x*32==sprites_bo[10].getX() && mapos_y*32==sprites_bo[10].getY()-32) ){
-					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));
 				}	
 				else if(mapos_x*32==sprites_bo[16].getX() && mapos_y*32==sprites_bo[16].getY()-32){
-					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));			
 				}
 				else if(mapos_x*32==sprites_bo[4].getX() && mapos_y*32==sprites_bo[4].getY()-32){
-					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));	
 				}	
@@ -1902,34 +1263,28 @@ public class Bomberbeach{
 		case "haut":
 			if(joueur.equals("1")){
 				if((mapos_x*32==sprites_bo[10].getX() && mapos_y*32==sprites_bo[10].getY()+32) ){
-					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));
 				}	
 				else if(mapos_x*32==sprites_bo[16].getX() && mapos_y*32==sprites_bo[16].getY()+32){
-					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));			
 				}
 				else if(mapos_x*32==sprites_bo[4].getX() && mapos_y*32==sprites_bo[4].getY()+32){
-					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));	
 				}
 			}	
 			else{
 				if((mapos_x*32==sprites_bo[10].getX() && mapos_y*32==sprites_bo[10].getY()+32) ){
-					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));
 				}	
 				else if(mapos_x*32==sprites_bo[16].getX() && mapos_y*32==sprites_bo[16].getY()+32){
-					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));			
 				}
 				else if(mapos_x*32==sprites_bo[4].getX() && mapos_y*32==sprites_bo[4].getY()+32){
-					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));	
 				}	
@@ -1938,34 +1293,28 @@ public class Bomberbeach{
 		case "droite":
 			if(joueur.equals("1")){
 				if((mapos_x*32==sprites_bo[10].getX()-32 && mapos_y*32==sprites_bo[10].getY()) ){
-					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));
 				}	
 				else if(mapos_x*32==sprites_bo[16].getX()-32 && mapos_y*32==sprites_bo[16].getY()){
-					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));			
 				}
 				else if(mapos_x*32==sprites_bo[4].getX()-32 && mapos_y*32==sprites_bo[4].getY()){
-					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));	
 				}
 			}	
 			else{
 				if((mapos_x*32==sprites_bo[10].getX()-32 && mapos_y*32==sprites_bo[10].getY()) ){
-					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));
 				}	
 				else if(mapos_x*32==sprites_bo[16].getX()-32 && mapos_y*32==sprites_bo[16].getY()){
-					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));			
 				}
 				else if(mapos_x*32==sprites_bo[4].getX()-32 && mapos_y*32==sprites_bo[4].getY()){
-					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));	
 				}	
@@ -1974,34 +1323,28 @@ public class Bomberbeach{
 		case "gauche":
 			if(joueur.equals("1")){
 				if((mapos_x*32==sprites_bo[10].getX()+32 && mapos_y*32==sprites_bo[10].getY()) ){
-					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));
 				}	
 				else if(mapos_x*32==sprites_bo[16].getX()+32 && mapos_y*32==sprites_bo[16].getY()){
-					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));			
 				}
 				else if(mapos_x*32==sprites_bo[4].getX()+32 && mapos_y==sprites_bo[4].getY()){
-					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));	
 				}
 			}	
 			else{
 				if((mapos_x*32==sprites_bo[10].getX()+32 && mapos_y*32==sprites_bo[10].getY()) ){
-					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));
 				}	
 				else if(mapos_x*32==sprites_bo[16].getX()+32 && mapos_y*32==sprites_bo[16].getY()){
-					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));			
 				}
 				else if(mapos_x*32==sprites_bo[4].getX()+32 && mapos_y*32==sprites_bo[4].getY()){
-					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));	
 				}	
@@ -2010,6 +1353,7 @@ public class Bomberbeach{
 		default:
 			break;
 		}
+		System.out.println("Powerup BOOST activé");
 		
 	}
  	// ************************************************************************	
@@ -2021,7 +1365,7 @@ public class Bomberbeach{
 			nombres.add(i);	
 		}
 	}
-		// Méthode pour ne pas tirer au sort les même nombres plusieurs fois de suite :
+		// Méthode pour ne pas tirer au sort les mêmes nombres plusieurs fois de suite :
 		// 1) on tire un nombre au hasard parmi ceux présents dans la liste
 		// 2) on retire ce nombre de la liste
 		//    ainsi, à chaque tirage, la liste comprend n-1 éléments et on piochera parmi n-1 élements
