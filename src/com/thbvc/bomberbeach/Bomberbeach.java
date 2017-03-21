@@ -1,6 +1,7 @@
 package com.thbvc.bomberbeach;
 
 import java.awt.EventQueue;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +11,7 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -17,22 +19,28 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
 import javax.swing.plaf.synth.SynthSeparatorUI;
 import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Panel;
 
 public class Bomberbeach{
@@ -57,6 +65,10 @@ public class Bomberbeach{
 	ImageIcon icon_player2;
 	ImageIcon icon_boost;
 	String FILE_PATH_lvl1 = "/level1.txt";
+	public static String mypseudo;
+	public static String mynewpseudo;
+	public static String pseudo_from_BDD;
+	public static String token;
 	public static JTextPane tchatarea = new JTextPane();
 	public static JTextField tchatfield = new JTextField();
 	private static JLabel[] sprites_m = new JLabel[200];
@@ -230,7 +242,12 @@ public class Bomberbeach{
 		JMenu mnMenu = new JMenu("Menu");
 		menuBar.add(mnMenu);
 
-		JMenuItem mntmPrfrences = new JMenuItem("Preferences");
+		JMenuItem mntmPrfrences = new JMenuItem("Changer de pseudo");
+		mntmPrfrences.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showChangePseudo(frmBomberbeach);
+			}
+		});
 		mnMenu.add(mntmPrfrences);
 
 		JMenuItem mntmQuitter = new JMenuItem("Quitter");
@@ -282,10 +299,15 @@ public class Bomberbeach{
 
 
 	// ********************************************************************
-	// *** sauvegarde du score en BDD mysql                             ***
+	// *** sauvegarde du pseudo en BDD mysql                            ***
 	// ********************************************************************
-	public void save_score(){
-		String adversaire = null;
+	public void save_pseudo(){
+
+		//creation d'un token unique pour chaque utilisateur
+		token = UUID.randomUUID().toString();
+		
+		moi = new Client(ip,port,b);  // lancement d'une instance Client
+		
 		/* Connexion à la base de données */
 		String url = "jdbc:mysql://localhost:3306/bomberbeach";
 		String utilisateur = "root";
@@ -296,13 +318,8 @@ public class Bomberbeach{
 		    System.out.println("connexion bdd ok");
 		    /* Exécution d'une requête d'écriture */
 		    Statement statement = connexion.createStatement();
-		    if(joueur.equals("1")){
-		    	adversaire="2";
-		    }else if(joueur.equals("2")){
-		    	adversaire="1";
-		    }
-		    int statut = statement.executeUpdate( "INSERT INTO scores (joueur, adversaire, score, timestamp) VALUES ("+joueur+", "+adversaire+", 1, NOW());" );
-		    	
+		   int statut = statement.executeUpdate( "INSERT INTO joueurs (joueur, pseudo, token, timestamp) VALUES ('"+joueur+"','"+mypseudo+"','"+token+"', NOW());" );
+		    System.out.println("sauvegarde du pseudo en bdd");
 		} catch ( SQLException e ) {
 	    	System.out.println(e);
 		} finally {
@@ -318,6 +335,69 @@ public class Bomberbeach{
 
 
 	// ********************************************************************
+	// *** récupération du pseudo en BDD mysql                          ***
+	// ********************************************************************
+	public void query_pseudo(){
+		/* Connexion à la base de données */
+		String url = "jdbc:mysql://localhost:3306/bomberbeach";
+		String utilisateur = "root";
+		String motDePasse = "root";
+		Connection connexion = null;
+		try {
+		    connexion = DriverManager.getConnection( url, utilisateur, motDePasse );
+		    System.out.println("connexion bdd ok");
+		    /* Exécution d'une requête d'écriture */
+		    Statement statement = connexion.createStatement();
+		    ResultSet resultat = statement.executeQuery( "SELECT pseudo  FROM joueurs WHERE joueur='"+joueur+"' and token='"+token+"';" );
+		    resultat.next(); 
+		    pseudo_from_BDD = resultat.getString( "pseudo" );
+		} catch ( SQLException e ) {
+	    	System.out.println(e);
+		} finally {
+		    if ( connexion != null )
+		        try {
+		            /* Fermeture de la connexion */
+		            connexion.close();
+		        } catch ( SQLException ignore ) {
+		        }
+		}
+	}
+	// ********************************************************************
+
+	// ********************************************************************
+	// *** changement du pseudo en BDD mysql                            ***
+	// ********************************************************************
+	public void change_pseudo(){
+		/* Connexion à la base de données */
+		String url = "jdbc:mysql://localhost:3306/bomberbeach";
+		String utilisateur = "root";
+		String motDePasse = "root";
+		Connection connexion = null;
+		try {
+		    connexion = DriverManager.getConnection( url, utilisateur, motDePasse );
+		    System.out.println("connexion bdd ok");
+		    
+		    String updateTableSQL = "UPDATE joueurs SET pseudo = '"+mynewpseudo+"' WHERE token = '"+token+"'";
+				// execute update SQL stetement
+
+		    Statement statement = connexion.createStatement();
+			statement.execute(updateTableSQL);
+			System.out.println("changement du pseudo en bdd");
+			query_pseudo(); //on recharge le pseudo de la bdd pour l'afficher
+		} catch ( SQLException e ) {
+	    	System.out.println(e);
+		} finally {
+		    if ( connexion != null )
+		        try {
+		            /* Fermeture de la connexion */
+		            connexion.close();
+		        } catch ( SQLException ignore ) {
+		        }
+		}
+	}
+	// ********************************************************************
+	
+	// ********************************************************************
 	// *** Event lors d'appui touche clavier                            ***
 	// ********************************************************************
 	class KeyAction implements KeyListener{
@@ -332,7 +412,7 @@ public class Bomberbeach{
 			
 			if (e.getKeyCode()== KeyEvent.VK_ENTER) { // si appui sur touche entrer
 				if(getTchatfield().getText().length()>0){
-					moi.getCnx().Envoie((Object) (new Message(joueur, tchatfield.getText())));
+					moi.getCnx().Envoie((Object) (new Message(mypseudo, tchatfield.getText())));
 					tchatarea.setCaretPosition(tchatarea.getDocument().getLength());
 					getTchatfield().setText(""); //on vide le champ
 				}
@@ -552,6 +632,56 @@ public class Bomberbeach{
 	}  
 	// ********************************************************************
 
+
+	// ********************************************************************
+	// *** Popup de création du pseudo joueur + lancement new game      ***
+	// ********************************************************************
+	    private void showLogin(JFrame frame) {
+	        JPanel p = new JPanel(new BorderLayout(5,5));
+
+	        JPanel labels = new JPanel();
+	        labels.add(new JLabel("Pseudo: ", SwingConstants.RIGHT));
+	        p.add(labels, BorderLayout.WEST);
+
+	        JPanel controls = new JPanel();
+	        JTextField username = new JTextField("");
+	        username.setPreferredSize( new Dimension( 150, 24 ) );
+	        controls.add(username);
+	        p.add(controls, BorderLayout.CENTER);
+	        JOptionPane.showMessageDialog(
+	            frame, p, "Rejoindre la partie", JOptionPane.QUESTION_MESSAGE);
+	        mypseudo=username.getText(); //on stocke le pseudo tapé par l'utilisateur dans la variable globale pseudo
+			//TODO faire la requette bdd pour afficher le pseudo
+			//TODO change pseudo
+			save_pseudo(); //sauvegarde du pseudo en bdd
+			query_pseudo(); //récupération du pseudo en bdd
+			getLbl_player().setText("Bienvenue "+ pseudo_from_BDD);
+	    }
+	// ********************************************************************
+
+	// ********************************************************************
+	// *** Popup de changement du pseudo                                ***
+	// ********************************************************************
+	    private void showChangePseudo(JFrame frame) {
+	        JPanel p = new JPanel(new BorderLayout(5,5));
+
+	        JPanel labels = new JPanel();
+	        labels.add(new JLabel("Nouveau pseudo: ", SwingConstants.RIGHT));
+	        p.add(labels, BorderLayout.WEST);
+
+	        JPanel controls = new JPanel();
+	        JTextField newusername = new JTextField("");
+	        newusername.setPreferredSize( new Dimension( 150, 24 ) );
+	        controls.add(newusername);
+	        p.add(controls, BorderLayout.CENTER);
+	        JOptionPane.showMessageDialog(
+	            frame, p, "Changement de pseudo", JOptionPane.QUESTION_MESSAGE);
+	        mynewpseudo=newusername.getText(); //on stocke le pseudo tapé par l'utilisateur dans la variable globale pseudo
+	        mypseudo=mynewpseudo;
+			change_pseudo(); //appel requete mysql pour changer le pseudo dans la BDD
+	    }
+		// ********************************************************************
+	    
 	// ********************************************************************
 	// *** Event lors d'appui clic souris                               ***
 	// ********************************************************************
@@ -565,7 +695,8 @@ public class Bomberbeach{
 				else{
 					ip=ipField.getText();
 					port=Integer.parseInt(portField.getText());
-					moi = new Client(ip,port,b);  // lancement d'une instance Client
+			       showLogin(frmBomberbeach);
+			       
 					/*
 					if (isStart_game()==true){
 						//ipField.disable();
@@ -1196,7 +1327,6 @@ public class Bomberbeach{
 				JOptionPane.showMessageDialog(null, "Vous êtes mort! :(","Bomberbeach | Fin du jeu",JOptionPane.PLAIN_MESSAGE);
 				System.exit(0);
 			}else if(joueur.equals("2")){
-				save_score(); //on sauvegarde le score du gagnant en bdd
 				JOptionPane.showMessageDialog(null, "Vous avez gagné :)","Bomberbeach | Fin du jeu",JOptionPane.PLAIN_MESSAGE);
 				System.exit(0);				
 			}
@@ -1212,7 +1342,6 @@ public class Bomberbeach{
 				(player2_x == sprites_fire[8].getX()) && (player2_y == sprites_fire[8].getY()) ){
 			sprites_j[20].hide(); //le joueur est mort
 			if(joueur.equals("1")){
-				save_score(); //on sauvegarde le score du gagnant en bdd
 				JOptionPane.showMessageDialog(null, "Vous avez gagné :)","Bomberbeach | Fin du jeu",JOptionPane.PLAIN_MESSAGE);
 				System.exit(0);
 			}else if(joueur.equals("2")){	

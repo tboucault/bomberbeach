@@ -63,7 +63,9 @@ public class Client implements Communicateur {
 		String dead;
 		String destroy;
 		String boost;
+		String monmessage;
 		int leaver;
+		
 		try	{
 				if (Map.class.isInstance(O)) { //on reçoit un objet de type map
 					
@@ -95,14 +97,18 @@ public class Client implements Communicateur {
 					Player_leave pl = (Player_leave) O;
 					System.out.println("Un joueur s'est déconnecté : " + O);
 					leaver = pl.check();
-					b.receive_leaver(leaver);// on l'envoi à bomberbeach qui traitera la matrice pour afficher la map
+					b.player_leave(leaver);// on l'envoi à bomberbeach qui traitera la matrice pour afficher la map
 
+				}else if (Message.class.isInstance(O)) { //on reçoit un objet de type message
+					System.out.println("Message reçu : " + O);
+					Message message = (Message) O; //appel classe message
+					monmessage = message.traitement();
+					b.receive_message(monmessage);// on l'envoi à bomberbeach
 				}else {
 					
 					idClient = Integer.parseInt((String) O);
 					
 					System.out.println("Le serveur vous attribue l'identifiant " + idClient + ".");
-					b.getLbl_player().setText("Vous êtes le joueur "+ idClient);
 					b.getbtnJoin().setEnabled(false);
 					b.getipField().setEnabled(false);
 					b.getportField().setEnabled(false);
