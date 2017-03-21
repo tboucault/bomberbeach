@@ -1,21 +1,17 @@
 package com.thbvc.bomberbeach;
 
 import java.awt.EventQueue;
-import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -30,18 +26,23 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.plaf.synth.SynthSeparatorUI;
 import javax.imageio.ImageIO;
+<<<<<<< HEAD
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.AbstractButton;
+=======
+>>>>>>> refs/remotes/origin/multiple_client
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import java.awt.Color;
+<<<<<<< HEAD
 import java.awt.Component;
 import java.awt.Event;
 import java.awt.Panel;
@@ -50,13 +51,15 @@ import java.awt.Window;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.JSeparator;
+=======
+import java.awt.Panel;
+>>>>>>> refs/remotes/origin/multiple_client
 
 public class Bomberbeach{
 
 	// ********************************************************************
 	// *** Déclaration variables globales                               ***
 	// ********************************************************************
-
 	private JFrame frmBomberbeach;
 	ImageIcon icon_mur;
 	ImageIcon icon_boite;
@@ -76,7 +79,10 @@ public class Bomberbeach{
 	String FILE_PATH_lvl1 = "/level1.txt";
 	public static JTextPane tchatarea = new JTextPane();
 	public static JTextField tchatfield = new JTextField();
+<<<<<<< HEAD
 	public static JLabel lbl_level = new JLabel();
+=======
+>>>>>>> refs/remotes/origin/multiple_client
 	private static JLabel[] sprites_m = new JLabel[200];
 	private static JLabel[] sprites_p = new JLabel[200];
 	private static JLabel[] sprites_b = new JLabel[1000];
@@ -86,6 +92,8 @@ public class Bomberbeach{
 	private static JLabel[] sprites_fire = new JLabel[30];
 	boolean enable=true;
 	private static int player1_x,player2_x,player1_y,player2_y;
+	public static int p_x;
+	public static int p_y;
 	String joueur;
 	public static int boost_speed;
 	Boolean[] cansetbombe = new Boolean[2];
@@ -104,15 +112,15 @@ public class Bomberbeach{
 	private static JButton btnJoin = new JButton("Rejoindre une partie");
 	private final static JTextField ipField = new JTextField();
 	private final static JTextField portField = new JTextField();
+<<<<<<< HEAD
 	
+=======
+>>>>>>> refs/remotes/origin/multiple_client
 	private static int myposx_j1 ;
 	private static int myposy_j1 ;
 	private static int myposx_j2 ;
 	private static int myposy_j2 ;
-	
 	private Client moi;
-	
-
 	public ArrayList<Integer> nombres= new ArrayList<Integer>();
 	
 	/**
@@ -141,7 +149,11 @@ public class Bomberbeach{
 		this.s = new Server(port, 0);
 		//this.c = new Client(tchatarea,getTchatfield(), this);
 		this. b = this;
+<<<<<<< HEAD
 		//this.c = new Client(ip, port,tchatarea,getTchatfield(), this);
+=======
+		connexion();
+>>>>>>> refs/remotes/origin/multiple_client
 	}
 
 	/**
@@ -203,7 +215,6 @@ public class Bomberbeach{
 		catch(Exception e){
 			System.out.println("Erreur lors du chargement d'un fichier de texture");
 		}
-		//
 
 		// ********************************************************************
 		// *** Création de l'interface                                      ***
@@ -235,6 +246,7 @@ public class Bomberbeach{
 		frmBomberbeach.addKeyListener(new KeyAction());
 
 		// *** chat ***
+<<<<<<< HEAD
 			final JScrollPane scrollPane = new JScrollPane(tchatarea);
 			scrollPane.setBounds(714, 119, 267, 342);
 			frmBomberbeach.getContentPane().add(scrollPane);
@@ -253,6 +265,22 @@ public class Bomberbeach{
 			frmBomberbeach.getContentPane().add(portField);
 			getTchatfield().addKeyListener(new KeyAction());
 
+=======
+		final JScrollPane scrollPane = new JScrollPane(tchatarea);
+		scrollPane.setBounds(714, 19, 267, 442);
+		frmBomberbeach.getContentPane().add(scrollPane);
+		tchatarea.setEditable(false);
+		tchatarea.setSize(200, 200);
+		tchatarea.setBackground(new Color(211, 211, 211));
+		tchatarea.addKeyListener(new KeyAction());
+		setTchatfield(new JTextField());
+		getTchatfield().setBackground(new Color(211, 211, 211));
+		getTchatfield().setBounds(712, 466, 271, 30);
+		frmBomberbeach.getContentPane().add(getTchatfield());
+		((JTextField) getTchatfield()).setColumns(10);
+		getTchatfield().addKeyListener(new KeyAction());
+		
+>>>>>>> refs/remotes/origin/multiple_client
 		// *** menu ***
 		JMenuBar menuBar = new JMenuBar();
 		frmBomberbeach.setJMenuBar(menuBar);
@@ -287,7 +315,6 @@ public class Bomberbeach{
 		mntmQuitter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				moi.getCnx().Envoie((Object)(new Integer(moi.getIdClient()).toString()));
-				//moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bas",player1_x,player1_y)));
 				System.exit(0);	
 			}
 		});
@@ -301,6 +328,54 @@ public class Bomberbeach{
 	}
 
 
+<<<<<<< HEAD
+=======
+	public void connexion(){
+		/* Chargement du driver JDBC pour MySQL */
+		try {
+		    Class.forName( "com.mysql.jdbc.Driver" );
+	    	System.out.println("driver mysql chargé");
+		} catch ( ClassNotFoundException e ) {
+	    	System.out.println(e);
+		}
+	}
+
+
+	// ********************************************************************
+	// *** sauvegarde du score en BDD mysql                             ***
+	// ********************************************************************
+	public void save_score(){
+		String adversaire = null;
+		/* Connexion à la base de données */
+		String url = "jdbc:mysql://localhost:3306/bomberbeach";
+		String utilisateur = "root";
+		String motDePasse = "root";
+		Connection connexion = null;
+		try {
+		    connexion = DriverManager.getConnection( url, utilisateur, motDePasse );
+		    System.out.println("connexion bdd ok");
+		    /* Exécution d'une requête d'écriture */
+		    Statement statement = connexion.createStatement();
+		    if(joueur.equals("1")){
+		    	adversaire="2";
+		    }else if(joueur.equals("2")){
+		    	adversaire="1";
+		    }
+		    int statut = statement.executeUpdate( "INSERT INTO scores (joueur, adversaire, score, timestamp) VALUES ("+joueur+", "+adversaire+", 1, NOW());" );
+		    	
+		} catch ( SQLException e ) {
+	    	System.out.println(e);
+		} finally {
+		    if ( connexion != null )
+		        try {
+		            /* Fermeture de la connexion */
+		            connexion.close();
+		        } catch ( SQLException ignore ) {
+		        }
+		}
+	}
+	// ********************************************************************
+>>>>>>> refs/remotes/origin/multiple_client
 
 
 	// ********************************************************************
@@ -315,15 +390,23 @@ public class Bomberbeach{
 			myposy_j2 = sprites_j[20].getY();
 			
 			if(joueur ==null) return;
+<<<<<<< HEAD
 
+=======
+			
+>>>>>>> refs/remotes/origin/multiple_client
 			if (e.getKeyCode()== KeyEvent.VK_ENTER) { // si appui sur touche entrer
 				if(getTchatfield().getText().length()>0){
 					moi.getCnx().Envoie((Object) (new Message(joueur, tchatfield.getText())));
 					tchatarea.setCaretPosition(tchatarea.getDocument().getLength());
 					getTchatfield().setText(""); //on vide le champ
 				}
+<<<<<<< HEAD
 			}
 			else if (e.getKeyCode()== KeyEvent.VK_DOWN) {
+=======
+			}else if (e.getKeyCode()== KeyEvent.VK_DOWN) {
+>>>>>>> refs/remotes/origin/multiple_client
 				if(joueur.equals("1")){
 					mapos_x = player1_x/32; // on stock l'id de la colonne où le joueur est
 					mapos_y = player1_y/32; // on stock l'id de la ligne où le joueur est
@@ -339,7 +422,7 @@ public class Bomberbeach{
 							traitement_powerup("bas");
 							System.out.println("<down key> : x="+player1_x+" y="+player1_y);
 							player1_y=player1_y+64; // on bouge le personnage d'une case vers le bas (2 cases)
-							sprites_j[1].setBounds(player1_x, player1_y, 32, 32);
+							sprites_j[1].setBounds(player1_x, player1_y, 32, 32);						
 							moi.getCnx().Envoie((Object) (new Joueur(Integer.parseInt(joueur),"bas",player1_x,player1_y)));
 							break;
 						case 0:
@@ -574,14 +657,20 @@ public class Bomberbeach{
 		}
 	};
 
-	public void player_leave(String joueur){
+
+	// ********************************************************************
+	// *** Fin du jeu lorsque l'adversaire s'est déconnecté             ***
+	// ********************************************************************
+	public void player_leave(int joueur){
 		System.out.println("joueur "+ joueur +" a quitté le jeux");
 		getPanel_nogame().setVisible(true); //un joueur est parti on stop le jeux
 		getLbl_info().setVisible(true);
 		getLbl_info().setText("Votre concurrent est parti");
 		JOptionPane.showMessageDialog(null, "Votre concurrent est parti","Bomberbeach | Fin du jeu",JOptionPane.PLAIN_MESSAGE);
+		moi.getCnx().Envoie((Object)(new Integer(moi.getIdClient()).toString())); // on se retire de la liste client aussi
 		System.exit(0);
 	}
+	// ********************************************************************
 
  	// ************************************************************************
  	// *** Traitement gestion position des joueurs                          ***
@@ -640,84 +729,16 @@ public class Bomberbeach{
         	
         }
 	}
+	// ********************************************************************
 
+
+	// ********************************************************************
+	// *** Gestion de collision                                         ***
+	// ********************************************************************
 	public int can_walk(String mvmt){
-		switch(mvmt){
-			case "bas":
-				if (boost_speed==1){
-					if(mymap[mapos_x][mapos_y+1].equals("#") || mymap[mapos_x][mapos_y+1].equals("@") || mymap[mapos_x][mapos_y+1].equals("*")){
-						return 0;
-					}else{
-						if(mymap[mapos_x][mapos_y+2].equals("#") || mymap[mapos_x][mapos_y+2].equals("@") || mymap[mapos_x][mapos_y+2].equals("*")){
-							return 1;
-						}else{
-							return 2;
-						}
-					}
-				}else{
-					if(mymap[mapos_x][mapos_y+1].equals("#") || mymap[mapos_x][mapos_y+1].equals("@") || mymap[mapos_x][mapos_y+1].equals("*")){
-						return 0;
-					}else{
-						return 1;
-					}
-				}
-			case "haut":
-				if (boost_speed==1){
-					if(mymap[mapos_x][mapos_y-1].equals("#") || mymap[mapos_x][mapos_y-1].equals("@") || mymap[mapos_x][mapos_y-1].equals("*")){
-						return 0;
-					}else{
-						if(mymap[mapos_x][mapos_y-2].equals("#") || mymap[mapos_x][mapos_y-2].equals("@") || mymap[mapos_x][mapos_y-2].equals("*")){
-							return 1;
-						}else{
-							return 2;
-						}
-					}
-				}else{
-					if(mymap[mapos_x][mapos_y-1].equals("#") || mymap[mapos_x][mapos_y-1].equals("@") || mymap[mapos_x][mapos_y-1].equals("*")){
-						return 0;
-					}else{
-						return 1;
-					}
-				}
-			case "gauche":
-				if (boost_speed==1){
-					if(mymap[mapos_x-1][mapos_y].equals("#") || mymap[mapos_x-1][mapos_y].equals("@") || mymap[mapos_x-1][mapos_y].equals("*")){
-						return 0;
-					}else{
-						if(mymap[mapos_x-2][mapos_y].equals("#") || mymap[mapos_x-2][mapos_y].equals("@") || mymap[mapos_x-2][mapos_y].equals("*")){
-							return 1;
-						}else{
-							return 2;
-						}
-					}
-				}else{
-					if(mymap[mapos_x-1][mapos_y].equals("#") || mymap[mapos_x-1][mapos_y].equals("@") || mymap[mapos_x-1][mapos_y].equals("*")){
-						return 0;
-					}else{
-						return 1;
-					}
-				}
-			case "droite":
-				if (boost_speed==1){
-					if(mymap[mapos_x+1][mapos_y].equals("#") || mymap[mapos_x+1][mapos_y].equals("@") || mymap[mapos_x+1][mapos_y].equals("*")){
-						return 0;
-					}else{
-						if(mymap[mapos_x+2][mapos_y].equals("#") || mymap[mapos_x+2][mapos_y].equals("@") || mymap[mapos_x+2][mapos_y].equals("*")){
-							return 1;
-						}else{
-							return 2;
-						}
-					}
-				}else{
-					if(mymap[mapos_x+1][mapos_y].equals("#") || mymap[mapos_x+1][mapos_y].equals("@") || mymap[mapos_x+1][mapos_y].equals("*")){
-						return 0;
-					}else{
-						return 1;
-					}
-				}
-			default:
-				return 0;
-		}		
+
+		Canwalk cw = new Canwalk(boost_speed,mymap,mapos_x,mapos_y);
+		return cw.can_walk(mvmt);//appel classe can_walk
 		
 	}
  	// ************************************************************************
@@ -728,6 +749,14 @@ public class Bomberbeach{
  	// ************************************************************************
 	
 	public void bombe(int id, int x, int y){
+		if(id==0){
+			p_x=(sprites_j[1].getX()/32);
+			p_y=(sprites_j[1].getY()/32);
+		}else if(id==1){
+			p_x=(sprites_j[20].getX()/32);
+			p_y=(sprites_j[20].getY()/32);
+		}
+		
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 		  @Override
@@ -741,13 +770,15 @@ public class Bomberbeach{
 				  sprites_bom[id].hide();
 				  explosion(x,y);
 			  }
+				timer.cancel();
 		  }
 		}, 2000); //2secondes
 	}
 	
 	public void explosion(int x,int y){
 		Timer timer2 = new Timer();
-
+		Boolean[] fire = new Boolean[9];
+		
 		sprites_fire[0] = new JLabel(icon_fire);
 		sprites_fire[1] = new JLabel(icon_fire_x);
 		sprites_fire[2] = new JLabel(icon_fire_x);
@@ -766,23 +797,38 @@ public class Bomberbeach{
 		sprites_fire[6].setBounds(x, y+64, 32, 32); //position b
 		sprites_fire[7].setBounds(x-64, y, 32, 32); //position g
 		sprites_fire[8].setBounds(x+64, y, 32, 32); //position d
-		  for(int i=0;i<9;i++){
-				frmBomberbeach.getContentPane().add(sprites_fire[i]); //affichage sur la fenêtre
-		  }
-		  
-		  moi.getCnx().Envoie((Object) (new PlayerDead(x,y,player1_x,player1_y,player2_x,player2_y)));
 		
+		Explosion explose = new Explosion(mymap,p_x,p_y,x,y);
+		fire=explose.explosion();//appel classe explosion
+		
+		//affichage des flammes
+		frmBomberbeach.getContentPane().add(sprites_fire[0]); //affichage sur la fenêtre
+		for(int i=1;i<9;i++){ //on affiche seulement les flammes qu'il faut
+			if(fire[i].equals(true)){
+				frmBomberbeach.getContentPane().add(sprites_fire[i]); //affichage sur la fenêtre
+			}
+		}
+		// ******************************
+		
+<<<<<<< HEAD
 		frmBomberbeach.getContentPane().repaint();
 		//TODO son explose
+=======
+		//envoi au serveur de la présence d'une explosion
+		moi.getCnx().Envoie((Object) (new PlayerDead(x,y,player1_x,player1_y,player2_x,player2_y)));
+		
+		frmBomberbeach.getContentPane().repaint();//rafraichissement de la map
+>>>>>>> refs/remotes/origin/multiple_client
 		
 		timer2.schedule(new TimerTask() {
 		  @Override
 		  public void run() {
 			  for(int i=0;i<9;i++){
-				  sprites_fire[i].hide();
+				  sprites_fire[i].hide(); //on masque les flammes 1 seconde après l'explosion
 			  }
 
 				frmBomberbeach.getContentPane().repaint();
+				timer2.cancel();
 		  }
 		}, 1000); //1seconde 
 	}
@@ -792,6 +838,7 @@ public class Bomberbeach{
         String[] parts = string.split("\\,");
         int x_bombe = Integer.parseInt(parts[0]);
         int y_bombe = Integer.parseInt(parts[1]);
+		
 		
         if(mapos_x==1){//je suis aux frontières gauche de la map
 
@@ -1192,14 +1239,14 @@ public class Bomberbeach{
             	}
     		}
         }
-        
-
-        
-
 		frmBomberbeach.getContentPane().repaint();
 	}
  	// ************************************************************************
-	
+
+
+	// ********************************************************************
+	// *** Détection mort de l'adversaire                               ***
+	// ********************************************************************
 	public void check_dead(String string){
         String[] parts = string.split("\\,");
         int x = Integer.parseInt(parts[0]);
@@ -1222,17 +1269,21 @@ public class Bomberbeach{
 			sprites_j[1].hide(); //le joueur est mort
 			
 			if(joueur.equals("1")){
+<<<<<<< HEAD
 				if(JOptionPane.showConfirmDialog(null, "Vous êtes mort! :( Voulez-vous refaire une partie?","Bomberbeach",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
 					
 				}
 				else
 					System.exit(0);
+=======
+				//TODO requette affichage du score
+				JOptionPane.showMessageDialog(null, "Vous êtes mort! :(","Bomberbeach | Fin du jeu",JOptionPane.PLAIN_MESSAGE);
+				System.exit(0);
+>>>>>>> refs/remotes/origin/multiple_client
 			}else if(joueur.equals("2")){
-				if(JOptionPane.showConfirmDialog(null, "Vous avez gagné !:) Voulez-vous refaire une partie?","Bomberbeach",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
-					//newParty();
-				}
-				else
-					System.exit(0);				
+				save_score(); //on sauvegarde le score du gagnant en bdd
+				JOptionPane.showMessageDialog(null, "Vous avez gagné :)","Bomberbeach | Fin du jeu",JOptionPane.PLAIN_MESSAGE);
+				System.exit(0);				
 			}
 			
 		}else if( (player2_x == sprites_fire[0].getX()) && (player2_y == sprites_fire[0].getY()) ||
@@ -1246,21 +1297,18 @@ public class Bomberbeach{
 				(player2_x == sprites_fire[8].getX()) && (player2_y == sprites_fire[8].getY()) ){
 			sprites_j[20].hide(); //le joueur est mort
 			if(joueur.equals("1")){
-				if(JOptionPane.showConfirmDialog(null, "Vous avez gagné !:) Voulez-vous refaire une partie?","Bomberbeach",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
-					//newParty();
-				}
-				else
-					System.exit(0);	
-			}else if(joueur.equals("2")){			
-				if(JOptionPane.showConfirmDialog(null, "Vous êtes mort! :( Voulez-vous refaire une partie?","Bomberbeach",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
-					//newParty();
-				}
-				else
-					System.exit(0);
+				save_score(); //on sauvegarde le score du gagnant en bdd
+				JOptionPane.showMessageDialog(null, "Vous avez gagné :)","Bomberbeach | Fin du jeu",JOptionPane.PLAIN_MESSAGE);
+				System.exit(0);
+			}else if(joueur.equals("2")){	
+				//TODO requette affichage du score
+				JOptionPane.showMessageDialog(null, "Vous êtes mort! :(","Bomberbeach | Fin du jeu",JOptionPane.PLAIN_MESSAGE);
+				System.exit(0);
 			}
 		}
 
 	}
+<<<<<<< HEAD
  	private void newParty() {
 		// TODO Auto-generated method stub
 		
@@ -1268,13 +1316,17 @@ public class Bomberbeach{
 
 	// ************************************************************************
 	
+=======
+ 	// ************************************************************************
+
+	// ********************************************************************
+	// *** Traitement boost                                             ***
+	// ********************************************************************
+>>>>>>> refs/remotes/origin/multiple_client
 	public void receive_boost_player(String string){
 		String[] parts = string.split("\\,");
-        int myjoueur = Integer.parseInt(parts[0]);;
         String type = parts[1];
         int id = Integer.parseInt(parts[2]);;
-        int pos_x = Integer.parseInt(parts[3]);;
-        int pos_y = Integer.parseInt(parts[4]);;
         
 
 		sprites_bo[id].hide(); //on cache le boost de la map
@@ -1292,6 +1344,7 @@ public class Bomberbeach{
 					  public void run() {
 							boost_speed=0;
 							System.out.println("boost plus actif");
+							timer3.cancel();
 					  }
 					}, 3000); //le boost n'est plus actif apres 3secondes 
 					break;
@@ -1299,9 +1352,6 @@ public class Bomberbeach{
 						break;
 			}
 		}
-		
-		
-		//TODO le boost doit respawn aux memes valeurs entre tout les joueurs (envoi au serveur et set la pos apres!!)
 		
 
 		Timer timer4 = new Timer();
@@ -1320,6 +1370,7 @@ public class Bomberbeach{
 			    sprites_bo[id].setBounds(hasard_x[r3], hasard_y[r4], 32, 32); //on change de place le boost */
 				sprites_bo[id].show();
 				frmBomberbeach.getContentPane().repaint();
+				timer4.cancel();
 		  }
 		}, 15000); //le boost respawn apres 15 secondes
         
@@ -1330,34 +1381,28 @@ public class Bomberbeach{
 		case "bas":
 			if(joueur.equals("1")){
 				if((mapos_x*32==sprites_bo[10].getX() && mapos_y*32==sprites_bo[10].getY()-32) ){
-					System.out.println("Powerup BOOST activé");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));
 				}	
 				else if(mapos_x*32==sprites_bo[16].getX() && mapos_y*32==sprites_bo[16].getY()-32){
-					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));			
 				}
 				else if(mapos_x*32==sprites_bo[4].getX() && mapos_y*32==sprites_bo[4].getY()-32){
-					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));	
 				}
 			}	
 			else{
 				if((mapos_x*32==sprites_bo[10].getX() && mapos_y*32==sprites_bo[10].getY()-32) ){
-					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));
 				}	
 				else if(mapos_x*32==sprites_bo[16].getX() && mapos_y*32==sprites_bo[16].getY()-32){
-					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));			
 				}
 				else if(mapos_x*32==sprites_bo[4].getX() && mapos_y*32==sprites_bo[4].getY()-32){
-					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));	
 				}	
@@ -1366,34 +1411,28 @@ public class Bomberbeach{
 		case "haut":
 			if(joueur.equals("1")){
 				if((mapos_x*32==sprites_bo[10].getX() && mapos_y*32==sprites_bo[10].getY()+32) ){
-					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));
 				}	
 				else if(mapos_x*32==sprites_bo[16].getX() && mapos_y*32==sprites_bo[16].getY()+32){
-					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));			
 				}
 				else if(mapos_x*32==sprites_bo[4].getX() && mapos_y*32==sprites_bo[4].getY()+32){
-					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));	
 				}
 			}	
 			else{
 				if((mapos_x*32==sprites_bo[10].getX() && mapos_y*32==sprites_bo[10].getY()+32) ){
-					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));
 				}	
 				else if(mapos_x*32==sprites_bo[16].getX() && mapos_y*32==sprites_bo[16].getY()+32){
-					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));			
 				}
 				else if(mapos_x*32==sprites_bo[4].getX() && mapos_y*32==sprites_bo[4].getY()+32){
-					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));	
 				}	
@@ -1402,34 +1441,28 @@ public class Bomberbeach{
 		case "droite":
 			if(joueur.equals("1")){
 				if((mapos_x*32==sprites_bo[10].getX()-32 && mapos_y*32==sprites_bo[10].getY()) ){
-					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));
 				}	
 				else if(mapos_x*32==sprites_bo[16].getX()-32 && mapos_y*32==sprites_bo[16].getY()){
-					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));			
 				}
 				else if(mapos_x*32==sprites_bo[4].getX()-32 && mapos_y*32==sprites_bo[4].getY()){
-					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));	
 				}
 			}	
 			else{
 				if((mapos_x*32==sprites_bo[10].getX()-32 && mapos_y*32==sprites_bo[10].getY()) ){
-					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));
 				}	
 				else if(mapos_x*32==sprites_bo[16].getX()-32 && mapos_y*32==sprites_bo[16].getY()){
-					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));			
 				}
 				else if(mapos_x*32==sprites_bo[4].getX()-32 && mapos_y*32==sprites_bo[4].getY()){
-					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));	
 				}	
@@ -1438,34 +1471,28 @@ public class Bomberbeach{
 		case "gauche":
 			if(joueur.equals("1")){
 				if((mapos_x*32==sprites_bo[10].getX()+32 && mapos_y*32==sprites_bo[10].getY()) ){
-					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));
 				}	
 				else if(mapos_x*32==sprites_bo[16].getX()+32 && mapos_y*32==sprites_bo[16].getY()){
-					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));			
 				}
 				else if(mapos_x*32==sprites_bo[4].getX()+32 && mapos_y==sprites_bo[4].getY()){
-					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j1,myposy_j1)));	
 				}
 			}	
 			else{
 				if((mapos_x*32==sprites_bo[10].getX()+32 && mapos_y*32==sprites_bo[10].getY()) ){
-					System.out.println("BOOOOOOOOST");
 					int id = 10; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));
 				}	
 				else if(mapos_x*32==sprites_bo[16].getX()+32 && mapos_y*32==sprites_bo[16].getY()){
-					System.out.println("BOOOOOOOOST");
 					int id = 16; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));			
 				}
 				else if(mapos_x*32==sprites_bo[4].getX()+32 && mapos_y*32==sprites_bo[4].getY()){
-					System.out.println("BOOOOOOOOST");
 					int id = 4; //id du boost
 					  moi.getCnx().Envoie((Object) (new Boost(joueur,"speed",id,myposx_j2,myposy_j2)));	
 				}	
@@ -1474,7 +1501,7 @@ public class Bomberbeach{
 		default:
 			break;
 		}
-		
+		System.out.println("Powerup BOOST activé");
 		
 	}
  	// ************************************************************************	
@@ -1486,7 +1513,7 @@ public class Bomberbeach{
 			nombres.add(i);	
 		}
 	}
-		// Méthode pour ne pas tirer au sort les même nombres plusieurs fois de suite :
+		// Méthode pour ne pas tirer au sort les mêmes nombres plusieurs fois de suite :
 		// 1) on tire un nombre au hasard parmi ceux présents dans la liste
 		// 2) on retire ce nombre de la liste
 		//    ainsi, à chaque tirage, la liste comprend n-1 éléments et on piochera parmi n-1 élements
@@ -1526,18 +1553,11 @@ public class Bomberbeach{
 					frmBomberbeach.getContentPane().add(sprites_p[row]);
 				}
 				else if(mamap[row][column].equals("*")){//c'est une boite
-					/*if(sprites_b[row]!=null){
-						sprites_b[row+200] = new JLabel(icon_boite);
-						sprites_b[row+200].setBounds(row*32, column*32, 32, 32);
-						frmBomberbeach.getContentPane().add(sprites_b[row+200]);   
-						System.out.println("caisse n"+(row+200)+" en x: "+row*32+" y: "+column*32);
-					}else{*/
-						int val=pif(1,200);
-						sprites_b[val] = new JLabel(icon_boite);
-						sprites_b[val].setBounds(row*32, column*32, 32, 32);
-						frmBomberbeach.getContentPane().add(sprites_b[val]);   
-						System.out.println("caisse n"+val+" en x: "+row*32+" y: "+column*32);
-					//}
+					int val=pif(1,200);
+					sprites_b[val] = new JLabel(icon_boite);
+					sprites_b[val].setBounds(row*32, column*32, 32, 32);
+					frmBomberbeach.getContentPane().add(sprites_b[val]);   
+					System.out.println("caisse n"+val+" en x: "+row*32+" y: "+column*32);
 				}
 				else if(mamap[row][column].equals("1")){//c'est un joueur
 					sprites_j[row] = new JLabel(icon_player);
@@ -1560,6 +1580,19 @@ public class Bomberbeach{
 	}
 	// ********************************************************************
 
+	// ************************************************************************************
+	// *** Reception et traitement d'un message dans le tchat                           ***
+	// ************************************************************************************
+	
+	public void receive_message(String Mess) {
+		if(tchatarea.getText().equals("")){ //c'est le premier message donc pas besoin d'append ni de sauter de ligne
+			tchatarea.setText(Mess);
+		}else{
+			tchatarea.setText(tchatarea.getText()+"\n"+Mess);
+			tchatarea.setCaretPosition(tchatarea.getDocument().getLength());//permet de se focus sur la dernière ligne du tchat
+		}
+	}
+	// ************************************************************************************
 	
  	// ************************************************************************************
  	// *** Lancement du lvl après connexion entre client et serveur                     ***
@@ -1571,6 +1604,7 @@ public class Bomberbeach{
 		start_game=true;
 		tchatfield.enable();
 		lbl_info.setVisible(false);
+		tchatfield.enable();
 
 		switch (level)
 		{
@@ -1582,6 +1616,7 @@ public class Bomberbeach{
 			/*Action*/;             
 		}
 	}
+<<<<<<< HEAD
 	// ****************************************************************************************
 	// ****************************************************************************************
 	 	// *** Message entre clients                                                        ***
@@ -1599,6 +1634,10 @@ public class Bomberbeach{
 			    JOptionPane.PLAIN_MESSAGE);
 		System.exit(0);
 	}
+=======
+	// ************************************************************************************
+
+>>>>>>> refs/remotes/origin/multiple_client
 	
 	public static Panel getPanel_nogame() {
 		return panel_nogame;
@@ -1606,6 +1645,14 @@ public class Bomberbeach{
 
 	public static void setPanel_nogame(Panel panel_nogame) {
 		Bomberbeach.panel_nogame = panel_nogame;
+	}
+	
+	public static JTextField getTchatfield() {
+		return tchatfield;
+	}
+	
+	public static void setTchatfield(JTextField tchatfield) {
+		Bomberbeach.tchatfield = tchatfield;
 	}
 
 	public static JLabel getLbl_info() {
