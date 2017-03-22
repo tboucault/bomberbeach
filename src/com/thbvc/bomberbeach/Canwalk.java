@@ -15,19 +15,23 @@ public class Canwalk {
 		this.mapos_y=y;
 		
 	}
-	
+
+	// ******************************************************************************
+	// *** Gestion de collision                                                   ***
+	// *** retourne la valeur(int) du nombre de case(s) où le joueur peut avancer ***
+	// ******************************************************************************
 	public int can_walk(String mvmt){
 
 		switch(mvmt){
 			case "bas":
 				if (boost_speed==1){
 					if(mymap[mapos_x][mapos_y+1].equals("#") || mymap[mapos_x][mapos_y+1].equals("@") || mymap[mapos_x][mapos_y+1].equals("*")){
-						return 0;
+						return 0;//on ne peut pas avancer
 					}else{
 						if(mymap[mapos_x][mapos_y+2].equals("#") || mymap[mapos_x][mapos_y+2].equals("@") || mymap[mapos_x][mapos_y+2].equals("*")){
-							return 1;
+							return 1;//on peut avancer d'une case
 						}else{
-							return 2;
+							return 2;//on peut avancer de 2 cases
 						}
 					}
 				}else{
@@ -95,6 +99,7 @@ public class Canwalk {
 				return 0;
 		}	
 	}
+	// ******************************************************************************
 	
 	
 }
