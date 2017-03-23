@@ -410,7 +410,7 @@ public class Bomberbeach{
 			
 			if (e.getKeyCode()== KeyEvent.VK_ENTER) { // si appui sur touche entrer
 				if(getTchatfield().getText().length()>0){
-					moi.getCnx().Envoie((Object) (new Message(mypseudo, tchatfield.getText())));
+					moi.getCnx().Envoie((Object) (new Message(mypseudo, tchatfield.getText()))); // envoi pseudo et contenu au serveur 
 					tchatarea.setCaretPosition(tchatarea.getDocument().getLength());
 					getTchatfield().setText(""); //on vide le champ
 				}

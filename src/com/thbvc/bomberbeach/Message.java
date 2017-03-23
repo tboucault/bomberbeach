@@ -8,7 +8,7 @@ public class Message implements Serializable
 
 /* Constructeur ***************************************************************/
 	
-	public Message(String chateur, String mes) {
+	public Message(String chateur, String mes) { // Recois le pseudo et le contenu
 	
 		this.chateur = chateur;
 		this.mes = mes;	
@@ -18,7 +18,7 @@ public class Message implements Serializable
 /* Methodes *******************************************************************/
 	
 	public String traitement(){
-		String val_retour = chateur + " : "+ mes;
+		String val_retour = chateur + " : "+ mes; //concaténation
 		System.out.println(val_retour);
 		return val_retour;
 	}

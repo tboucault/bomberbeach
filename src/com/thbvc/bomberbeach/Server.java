@@ -128,10 +128,10 @@ public class Server implements Communicateur, Runnable {
 			    		((Connexion)lCli.get(i)).Envoie((Object)m); //resset de la map aux paramètres d'origine 	
 			    	}
 				}else if (Message.class.isInstance(O)) {
-					Message m = (Message) O;
+					Message m = (Message) O; //appel classe message
 					System.out.println("Message reçu : " + O);
 					for (int i = 0; i <= lCli.size(); i ++) {
-						((Connexion)lCli.get(i)).Envoie((Object)m); //envoie aux client d'un nouveau message 	
+						((Connexion)lCli.get(i)).Envoie((Object)m); //envoie aux clients d'un nouveau message 	
 					}
 				}else {
 				
